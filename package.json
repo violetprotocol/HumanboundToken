@@ -85,5 +85,10 @@
     "prettier:check": "prettier --check --config ./.prettierrc.yaml \"**/*.{js,json,md,sol,ts,yaml,yml}\"",
     "test": "hardhat test",
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
+  },
+  "dependencies": {
+    "@violetprotocol/erc721extendable": "^1.1.0",
+    "@violetprotocol/ethereum-access-token": "^0.1.0",
+    "@violetprotocol/extendable": "^1.1.0"
   }
 }

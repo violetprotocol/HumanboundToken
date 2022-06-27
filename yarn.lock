@@ -2508,6 +2508,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts@npm:^4.3.0":
+  version: 4.6.0
+  resolution: "@openzeppelin/contracts@npm:4.6.0"
+  checksum: 1de06211b279d7aef2bb9abbdd58eb80c71256f7e888a10855ea23bb06ef8723b22fb550d06af60247dfbd7f0f23de9821732012d7541a823339070a8442d1db
+  languageName: node
+  linkType: hard
+
 "@prb/solidity-template@workspace:.":
   version: 0.0.0-use.local
   resolution: "@prb/solidity-template@workspace:."
@@ -2531,6 +2538,9 @@ __metadata:
     "@types/node": ^17.0.42
     "@typescript-eslint/eslint-plugin": ^5.27.1
     "@typescript-eslint/parser": ^5.27.1
+    "@violetprotocol/erc721extendable": ^1.1.0
+    "@violetprotocol/ethereum-access-token": ^0.1.0
+    "@violetprotocol/extendable": ^1.1.0
     chai: ^4.3.6
     commitizen: ^4.2.4
     cross-env: ^7.0.3
@@ -3280,6 +3290,32 @@ __metadata:
   version: 1.1.2
   resolution: "@ungap/promise-all-settled@npm:1.1.2"
   checksum: 08d37fdfa23a6fe8139f1305313562ebad973f3fac01bcce2773b2bda5bcb0146dfdcf3cb6a722cf0a5f2ca0bc56a827eac8f1e7b3beddc548f654addf1fc34c
+  languageName: node
+  linkType: hard
+
+"@violetprotocol/erc721extendable@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@violetprotocol/erc721extendable@npm:1.1.0"
+  dependencies:
+    "@openzeppelin/contracts": ^4.3.0
+    "@violetprotocol/extendable": ^1.1.0
+  checksum: 1333e2235960db7cd08804c1ff0ad2ff9c4a82bcc447a78df018204cc2bf37d941055f2d02120abae9b595374e26dfae6fcb3600519ff448df547885ba406fbb
+  languageName: node
+  linkType: hard
+
+"@violetprotocol/ethereum-access-token@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@violetprotocol/ethereum-access-token@npm:0.1.0"
+  checksum: a77014cc9e60f749e37dd281aff423988582b444cf8e9c83285dfd9564a74307a25031b7d2e39ece84f4546e2ba46d8e18c938133a39941725136396fa6f04ff
+  languageName: node
+  linkType: hard
+
+"@violetprotocol/extendable@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@violetprotocol/extendable@npm:1.1.0"
+  dependencies:
+    "@openzeppelin/contracts": ^4.3.0
+  checksum: d7645c5962732ad6a53c5cfa527ac94b6a1596b90b9b0d35c9d024b08a65008176773306dbca8fc2d6e8df042a4aada169ff127adc6af6c0f43159ab23f260cd
   languageName: node
   linkType: hard
 
