@@ -5,37 +5,18 @@ import "@violetprotocol/extendable/extensions/InternalExtension.sol";
 import { RoleState, Permissions } from "@violetprotocol/extendable/storage/PermissionStorage.sol";
 import "@violetprotocol/ethereum-access-token/contracts/AuthCompatible.sol";
 import "../../storage/EthereumAccessTokenStorage.sol";
-import "./IAccessTokenConsumer.sol";
+import "./IEATVerifier.sol";
 import "hardhat/console.sol";
 
-contract AccessTokenConsumer is IAccessTokenConsumer, InternalExtension {
-    modifier onlyOwnerOrSelf() virtual {
-        RoleState storage state = Permissions._getStorage();
-        require(
-            _lastExternalCaller() == state.owner || _lastCaller() == state.owner || _lastCaller() == address(this),
-            "AccessTokenConsumer: unauthorised"
-        );
-        _;
-    }
-
-    function setVerifier(address verifier) external override onlyOwnerOrSelf {
-        EthereumAccessTokenState storage state = EthereumAccessTokenStorage._getState();
-        state.verifier = verifier;
-    }
-
-    function getVerifier() public view override returns (address) {
-        EthereumAccessTokenState storage state = EthereumAccessTokenStorage._getState();
-        return state.verifier;
-    }
-
-    function requiresAuth(
+abstract contract AccessTokenConsumerExtension is Extension {
+    modifier requiresAuth(
         uint8 v,
         bytes32 r,
         bytes32 s,
         uint256 expiry
-    ) external view override _internal {
-        console.logBytes(msg.data);
+    ) {
         require(_verify(v, r, s, expiry), "AuthToken: verification failure");
+        _;
     }
 
     function _verify(
@@ -43,9 +24,10 @@ contract AccessTokenConsumer is IAccessTokenConsumer, InternalExtension {
         bytes32 r,
         bytes32 s,
         uint256 expiry
-    ) internal view returns (bool) {
+    ) internal returns (bool) {
         AuthToken memory token = constructToken(expiry);
-        return IAuthVerifier(getVerifier()).verify(token, v, r, s);
+        address verifier = IEATVerifier(address(this)).getVerifier();
+        return IAuthVerifier(verifier).verify(token, v, r, s);
     }
 
     function constructToken(uint256 expiry) internal view returns (AuthToken memory token) {
@@ -81,16 +63,5 @@ contract AccessTokenConsumer is IAccessTokenConsumer, InternalExtension {
             // Copy bytes from end of signature and expiry section to end of calldata
             calldatacopy(add(inputs, 0x20), endOfSigExp, totalInputSize)
         }
-    }
-
-    function getInterfaceId() public pure virtual override returns (bytes4) {
-        return (type(IAccessTokenConsumer).interfaceId);
-    }
-
-    function getInterface() public pure virtual override returns (string memory) {
-        return
-            "function setVerifier(address verifier) external;\n"
-            "function getVerifier() external returns(address);\n"
-            "function requiresAuth(uint8 v, bytes32 r, bytes32 s, uint256 expiry) external;\n";
     }
 }

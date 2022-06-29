@@ -5,44 +5,39 @@ import { BigNumber } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import {
-  AccessTokenConsumer,
-  AccessTokenConsumerCaller,
-  IAccessTokenConsumer,
-  RequiresAuthExtension,
-} from "../../src/types";
+import { AccessTokenConsumerCaller, EATVerifier, RequiresAuthExtension } from "../../src/types";
 import { getExtendedContractWithInterface } from "../utils";
 
 export function shouldBehaveLikeEthereumAccessToken(): void {
-  let consumerCaller: AccessTokenConsumer;
+  let consumerCallerAsVerifierSetter: EATVerifier;
 
   beforeEach("setup", async function () {
     const consumerCallerArtifact: Artifact = await artifacts.readArtifact("AccessTokenConsumerCaller");
     this.consumerCaller = <AccessTokenConsumerCaller>(
       await waffle.deployContract(this.signers.admin, consumerCallerArtifact, [
         this.extend.address,
-        this.consumer.address,
+        this.verifierExtension.address,
         this.requiresAuth.address,
       ])
     );
-    consumerCaller = <AccessTokenConsumer>(
-      await getExtendedContractWithInterface(this.consumerCaller.address, "AccessTokenConsumer")
+    consumerCallerAsVerifierSetter = <EATVerifier>(
+      await getExtendedContractWithInterface(this.consumerCaller.address, "EATVerifier")
     );
   });
 
   describe("Set Verifier", async function () {
     context("with correct owner", async function () {
       it("should succed", async function () {
-        await expect(consumerCaller.setVerifier(this.verifier.address)).to.not.be.reverted;
-        expect(await consumerCaller.callStatic.getVerifier()).to.equal(this.verifier.address);
+        await expect(consumerCallerAsVerifierSetter.setVerifier(this.verifier.address)).to.not.be.reverted;
+        expect(await consumerCallerAsVerifierSetter.callStatic.getVerifier()).to.equal(this.verifier.address);
       });
     });
 
     context("with incorrect owner", async function () {
       it("should fail", async function () {
-        await expect(consumerCaller.connect(this.signers.user0).setVerifier(this.verifier.address)).to.be.revertedWith(
-          "AccessTokenConsumer: unauthorised",
-        );
+        await expect(
+          consumerCallerAsVerifierSetter.connect(this.signers.user0).setVerifier(this.verifier.address),
+        ).to.be.revertedWith("EATVerifier: unauthorised");
       });
     });
   });
@@ -50,14 +45,14 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
   describe("Get Verifier", async () => {
     context("without set verifier", async function () {
       it("should return zero address", async function () {
-        expect(await consumerCaller.callStatic.getVerifier()).to.equal(ethers.constants.AddressZero);
+        expect(await consumerCallerAsVerifierSetter.callStatic.getVerifier()).to.equal(ethers.constants.AddressZero);
       });
     });
 
     context("with set verifier", async function () {
       it("should return the correct verifier", async function () {
-        await expect(consumerCaller.setVerifier(this.verifier.address)).to.not.be.reverted;
-        expect(await consumerCaller.callStatic.getVerifier()).to.equal(this.verifier.address);
+        await expect(consumerCallerAsVerifierSetter.setVerifier(this.verifier.address)).to.not.be.reverted;
+        expect(await consumerCallerAsVerifierSetter.callStatic.getVerifier()).to.equal(this.verifier.address);
       });
     });
   });
@@ -90,8 +85,8 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
             });
 
             it("with correct values should succeed", async function () {
-              expect(
-                await requiresAuthExtension.doSomething(
+              await expect(
+                requiresAuthExtension.doSomething(
                   this.signature.v,
                   this.signature.r,
                   this.signature.s,
@@ -105,7 +100,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                 requiresAuthExtension
                   .connect(this.signers.user1)
                   .doSomething(this.signature.v, this.signature.r, this.signature.s, this.value.expiry),
-              ).to.be.revertedWith("AccessToken: verification failure");
+              ).to.be.revertedWith("AuthToken: verification failure");
             });
 
             it("with expired token should revert", async function () {
@@ -116,7 +111,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                   this.signature.s,
                   this.value.expiry.sub(50),
                 ),
-              ).to.be.revertedWith("AccessToken: has expired");
+              ).to.be.revertedWith("AuthToken: has expired");
             });
 
             it("with incorrect expiry should revert", async function () {
@@ -127,7 +122,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                   this.signature.s,
                   this.value.expiry.add(50),
                 ),
-              ).to.be.revertedWith("AccessToken: verification failure");
+              ).to.be.revertedWith("AuthToken: verification failure");
             });
 
             it("with incorrect signer should revert", async function () {
@@ -137,7 +132,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
 
               await expect(
                 requiresAuthExtension.doSomething(signature.v, signature.r, signature.s, this.value.expiry),
-              ).to.be.revertedWith("AccessToken: verification failure");
+              ).to.be.revertedWith("AuthToken: verification failure");
             });
 
             it("with incorrect function signature should revert", async function () {
@@ -153,7 +148,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
 
               await expect(
                 requiresAuthExtension.doSomething(signature.v, signature.r, signature.s, this.value.expiry),
-              ).to.be.revertedWith("AccessToken: verification failure");
+              ).to.be.revertedWith("AuthToken: verification failure");
             });
 
             it("with incorrect target contract should revert", async function () {
@@ -169,7 +164,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
 
               await expect(
                 requiresAuthExtension.doSomething(signature.v, signature.r, signature.s, this.value.expiry),
-              ).to.be.revertedWith("AccessToken: verification failure");
+              ).to.be.revertedWith("AuthToken: verification failure");
             });
           });
         });

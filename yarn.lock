@@ -2540,6 +2540,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.27.1
     "@violetprotocol/erc721extendable": ^1.1.0
     "@violetprotocol/ethereum-access-token": ^0.1.0
+    "@violetprotocol/ethereum-access-token-helpers": ^0.1.1
     "@violetprotocol/extendable": ^1.1.0
     chai: ^4.3.6
     commitizen: ^4.2.4
@@ -3300,6 +3301,13 @@ __metadata:
     "@openzeppelin/contracts": ^4.3.0
     "@violetprotocol/extendable": ^1.1.0
   checksum: 1333e2235960db7cd08804c1ff0ad2ff9c4a82bcc447a78df018204cc2bf37d941055f2d02120abae9b595374e26dfae6fcb3600519ff448df547885ba406fbb
+  languageName: node
+  linkType: hard
+
+"@violetprotocol/ethereum-access-token-helpers@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@violetprotocol/ethereum-access-token-helpers@npm:0.1.1"
+  checksum: 94eb239e2bdef7d51db68e5b90b3e7ae75194cbf351756c0895bb11dd8050c2777a95b59ef741a14c82c92cbf657ffeda7a6b02fed2699d2315779acfa9e5a52
   languageName: node
   linkType: hard
 

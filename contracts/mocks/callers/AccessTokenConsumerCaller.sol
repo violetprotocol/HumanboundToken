@@ -3,7 +3,9 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extendable/Extendable.sol";
 import "@violetprotocol/extendable/extensions/Extension.sol";
-import "../../extensions/EAT/IAccessTokenConsumer.sol";
+import "@violetprotocol/ethereum-access-token/contracts/AuthCompatible.sol";
+import "../../extensions/EAT/IEATVerifier.sol";
+import "../../extensions/EAT/AccessTokenConsumerExtension.sol";
 
 interface IRequiresAuthExtension {
     function doSomething(
@@ -14,14 +16,13 @@ interface IRequiresAuthExtension {
     ) external returns (bool);
 }
 
-contract RequiresAuthExtension is IRequiresAuthExtension, Extension {
+contract RequiresAuthExtension is IRequiresAuthExtension, AccessTokenConsumerExtension {
     function doSomething(
         uint8 v,
         bytes32 r,
         bytes32 s,
         uint256 expiry
-    ) public override returns (bool) {
-        IAccessTokenConsumer(address(this)).requiresAuth(v, r, s, expiry);
+    ) public override requiresAuth(v, r, s, expiry) returns (bool) {
         return true;
     }
 
@@ -37,11 +38,13 @@ contract RequiresAuthExtension is IRequiresAuthExtension, Extension {
 contract AccessTokenConsumerCaller is Extendable {
     constructor(
         address extendLogic,
-        address consumer,
+        address eatVerifier,
         address requiresAuth
     ) Extendable(extendLogic) {
-        (bool extendConsumerSuccess, ) = extendLogic.delegatecall(abi.encodeWithSignature("extend(address)", consumer));
-        require(extendConsumerSuccess, "failed to initialise consumer");
+        (bool extendVerifierSuccess, ) = extendLogic.delegatecall(
+            abi.encodeWithSignature("extend(address)", eatVerifier)
+        );
+        require(extendVerifierSuccess, "failed to initialise verifier");
 
         (bool extendRequiresAuthSuccess, ) = extendLogic.delegatecall(
             abi.encodeWithSignature("extend(address)", requiresAuth)

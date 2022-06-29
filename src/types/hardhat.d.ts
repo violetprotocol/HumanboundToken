@@ -105,13 +105,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PermissioningLogic__factory>;
     getContractFactory(
-      name: "AccessTokenConsumer",
+      name: "AccessTokenConsumerExtension",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.AccessTokenConsumer__factory>;
+    ): Promise<Contracts.AccessTokenConsumerExtension__factory>;
     getContractFactory(
-      name: "IAccessTokenConsumer",
+      name: "EATVerifier",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IAccessTokenConsumer__factory>;
+    ): Promise<Contracts.EATVerifier__factory>;
+    getContractFactory(
+      name: "IEATVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IEATVerifier__factory>;
     getContractFactory(
       name: "ISoulMintLogic",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -265,15 +269,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.PermissioningLogic>;
     getContractAt(
-      name: "AccessTokenConsumer",
+      name: "AccessTokenConsumerExtension",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.AccessTokenConsumer>;
+    ): Promise<Contracts.AccessTokenConsumerExtension>;
     getContractAt(
-      name: "IAccessTokenConsumer",
+      name: "EATVerifier",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.IAccessTokenConsumer>;
+    ): Promise<Contracts.EATVerifier>;
+    getContractAt(
+      name: "IEATVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IEATVerifier>;
     getContractAt(
       name: "ISoulMintLogic",
       address: string,

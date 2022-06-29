@@ -25,4 +25,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # typechain artifacts
-src/*
+src/types

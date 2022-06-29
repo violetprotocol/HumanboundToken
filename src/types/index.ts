@@ -54,10 +54,12 @@ export type { IPermissioningLogic } from "./@violetprotocol/extendable/extension
 export { IPermissioningLogic__factory } from "./factories/@violetprotocol/extendable/extensions/permissioning/IPermissioningLogic__factory";
 export type { PermissioningLogic } from "./@violetprotocol/extendable/extensions/permissioning/PermissioningLogic";
 export { PermissioningLogic__factory } from "./factories/@violetprotocol/extendable/extensions/permissioning/PermissioningLogic__factory";
-export type { AccessTokenConsumer } from "./contracts/extensions/EAT/AccessTokenConsumer";
-export { AccessTokenConsumer__factory } from "./factories/contracts/extensions/EAT/AccessTokenConsumer__factory";
-export type { IAccessTokenConsumer } from "./contracts/extensions/EAT/IAccessTokenConsumer";
-export { IAccessTokenConsumer__factory } from "./factories/contracts/extensions/EAT/IAccessTokenConsumer__factory";
+export type { AccessTokenConsumerExtension } from "./contracts/extensions/EAT/AccessTokenConsumerExtension";
+export { AccessTokenConsumerExtension__factory } from "./factories/contracts/extensions/EAT/AccessTokenConsumerExtension__factory";
+export type { EATVerifier } from "./contracts/extensions/EAT/EATVerifier";
+export { EATVerifier__factory } from "./factories/contracts/extensions/EAT/EATVerifier__factory";
+export type { IEATVerifier } from "./contracts/extensions/EAT/IEATVerifier";
+export { IEATVerifier__factory } from "./factories/contracts/extensions/EAT/IEATVerifier__factory";
 export type { ISoulMintLogic } from "./contracts/extensions/mint/ISoulMintLogic";
 export { ISoulMintLogic__factory } from "./factories/contracts/extensions/mint/ISoulMintLogic__factory";
 export type { SoulMintLogic } from "./contracts/extensions/mint/SoulMintLogic";
