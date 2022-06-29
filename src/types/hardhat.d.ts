@@ -13,15 +13,312 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Greeter",
+      name: "ERC165",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Greeter__factory>;
+    ): Promise<Contracts.ERC165__factory>;
+    getContractFactory(
+      name: "ERC165Storage",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165Storage__factory>;
+    getContractFactory(
+      name: "IERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165__factory>;
+    getContractFactory(
+      name: "IApproveLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IApproveLogic__factory>;
+    getContractFactory(
+      name: "Events",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Events__factory>;
+    getContractFactory(
+      name: "IGetterLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IGetterLogic__factory>;
+    getContractFactory(
+      name: "IERC721Hooks",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721Hooks__factory>;
+    getContractFactory(
+      name: "MintLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MintLogic__factory>;
+    getContractFactory(
+      name: "IOnReceiveLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IOnReceiveLogic__factory>;
+    getContractFactory(
+      name: "ITransferLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ITransferLogic__factory>;
+    getContractFactory(
+      name: "TransferLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TransferLogic__factory>;
+    getContractFactory(
+      name: "AuthCompatible",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AuthCompatible__factory>;
+    getContractFactory(
+      name: "AuthVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AuthVerifier__factory>;
+    getContractFactory(
+      name: "IAuthVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAuthVerifier__factory>;
+    getContractFactory(
+      name: "KeyInfrastructure",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.KeyInfrastructure__factory>;
+    getContractFactory(
+      name: "Extendable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Extendable__factory>;
+    getContractFactory(
+      name: "ExtendLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ExtendLogic__factory>;
+    getContractFactory(
+      name: "IExtendLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IExtendLogic__factory>;
+    getContractFactory(
+      name: "Extension",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Extension__factory>;
+    getContractFactory(
+      name: "IExtension",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IExtension__factory>;
+    getContractFactory(
+      name: "InternalExtension",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.InternalExtension__factory>;
+    getContractFactory(
+      name: "IPermissioningLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPermissioningLogic__factory>;
+    getContractFactory(
+      name: "PermissioningLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PermissioningLogic__factory>;
+    getContractFactory(
+      name: "AccessTokenConsumer",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessTokenConsumer__factory>;
+    getContractFactory(
+      name: "IAccessTokenConsumer",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAccessTokenConsumer__factory>;
+    getContractFactory(
+      name: "ISoulMintLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ISoulMintLogic__factory>;
+    getContractFactory(
+      name: "SoulMintLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SoulMintLogic__factory>;
+    getContractFactory(
+      name: "ISoulTransferLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ISoulTransferLogic__factory>;
+    getContractFactory(
+      name: "SoulTransferLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SoulTransferLogic__factory>;
+    getContractFactory(
+      name: "AccessTokenConsumerCaller",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessTokenConsumerCaller__factory>;
+    getContractFactory(
+      name: "IRequiresAuthExtension",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IRequiresAuthExtension__factory>;
+    getContractFactory(
+      name: "RequiresAuthExtension",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.RequiresAuthExtension__factory>;
+    getContractFactory(
+      name: "MockExtend",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockExtend__factory>;
+    getContractFactory(
+      name: "MockVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockVerifier__factory>;
 
     getContractAt(
-      name: "Greeter",
+      name: "ERC165",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Greeter>;
+    ): Promise<Contracts.ERC165>;
+    getContractAt(
+      name: "ERC165Storage",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165Storage>;
+    getContractAt(
+      name: "IERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "IApproveLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IApproveLogic>;
+    getContractAt(
+      name: "Events",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Events>;
+    getContractAt(
+      name: "IGetterLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IGetterLogic>;
+    getContractAt(
+      name: "IERC721Hooks",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Hooks>;
+    getContractAt(
+      name: "MintLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MintLogic>;
+    getContractAt(
+      name: "IOnReceiveLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IOnReceiveLogic>;
+    getContractAt(
+      name: "ITransferLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ITransferLogic>;
+    getContractAt(
+      name: "TransferLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TransferLogic>;
+    getContractAt(
+      name: "AuthCompatible",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AuthCompatible>;
+    getContractAt(
+      name: "AuthVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AuthVerifier>;
+    getContractAt(
+      name: "IAuthVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAuthVerifier>;
+    getContractAt(
+      name: "KeyInfrastructure",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.KeyInfrastructure>;
+    getContractAt(
+      name: "Extendable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Extendable>;
+    getContractAt(
+      name: "ExtendLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ExtendLogic>;
+    getContractAt(
+      name: "IExtendLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IExtendLogic>;
+    getContractAt(
+      name: "Extension",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Extension>;
+    getContractAt(
+      name: "IExtension",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IExtension>;
+    getContractAt(
+      name: "InternalExtension",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.InternalExtension>;
+    getContractAt(
+      name: "IPermissioningLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPermissioningLogic>;
+    getContractAt(
+      name: "PermissioningLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PermissioningLogic>;
+    getContractAt(
+      name: "AccessTokenConsumer",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessTokenConsumer>;
+    getContractAt(
+      name: "IAccessTokenConsumer",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessTokenConsumer>;
+    getContractAt(
+      name: "ISoulMintLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ISoulMintLogic>;
+    getContractAt(
+      name: "SoulMintLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SoulMintLogic>;
+    getContractAt(
+      name: "ISoulTransferLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ISoulTransferLogic>;
+    getContractAt(
+      name: "SoulTransferLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SoulTransferLogic>;
+    getContractAt(
+      name: "AccessTokenConsumerCaller",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessTokenConsumerCaller>;
+    getContractAt(
+      name: "IRequiresAuthExtension",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IRequiresAuthExtension>;
+    getContractAt(
+      name: "RequiresAuthExtension",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.RequiresAuthExtension>;
+    getContractAt(
+      name: "MockExtend",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockExtend>;
+    getContractAt(
+      name: "MockVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockVerifier>;
 
     // default types
     getContractFactory(
