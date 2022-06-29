@@ -1,7 +1,14 @@
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import type { Fixture } from "ethereum-waffle";
 
-import { AccessTokenConsumerCaller, AuthVerifier, EATVerifier, ExtendLogic, RequiresAuthExtension } from "../src/types";
+import {
+  AccessTokenConsumerCaller,
+  AuthVerifier,
+  EATVerifier,
+  ExtendLogic,
+  RequiresAuthExtension,
+  SoulMintLogic,
+} from "../src/types";
 
 declare module "mocha" {
   export interface Context {
@@ -10,6 +17,7 @@ declare module "mocha" {
     verifierExtension: EATVerifier;
     requiresAuth: RequiresAuthExtension;
     consumerCaller: AccessTokenConsumerCaller;
+    mintLogic: SoulMintLogic;
     loadFixture: <T>(fixture: Fixture<T>) => Promise<T>;
     signers: Signers;
   }

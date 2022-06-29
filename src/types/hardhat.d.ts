@@ -33,9 +33,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Events__factory>;
     getContractFactory(
+      name: "GetterLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GetterLogic__factory>;
+    getContractFactory(
       name: "IGetterLogic",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IGetterLogic__factory>;
+    getContractFactory(
+      name: "ERC721HooksLogic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721HooksLogic__factory>;
     getContractFactory(
       name: "IERC721Hooks",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -145,6 +153,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.RequiresAuthExtension__factory>;
     getContractFactory(
+      name: "MockERC721Getter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockERC721Getter__factory>;
+    getContractFactory(
+      name: "MockERC721Hooks",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockERC721Hooks__factory>;
+    getContractFactory(
       name: "MockExtend",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockExtend__factory>;
@@ -179,10 +195,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Events>;
     getContractAt(
+      name: "GetterLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GetterLogic>;
+    getContractAt(
       name: "IGetterLogic",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IGetterLogic>;
+    getContractAt(
+      name: "ERC721HooksLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721HooksLogic>;
     getContractAt(
       name: "IERC721Hooks",
       address: string,
@@ -318,6 +344,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.RequiresAuthExtension>;
+    getContractAt(
+      name: "MockERC721Getter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockERC721Getter>;
+    getContractAt(
+      name: "MockERC721Hooks",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockERC721Hooks>;
     getContractAt(
       name: "MockExtend",
       address: string,

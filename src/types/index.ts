@@ -18,8 +18,12 @@ export type { IApproveLogic } from "./@violetprotocol/erc721extendable/contracts
 export { IApproveLogic__factory } from "./factories/@violetprotocol/erc721extendable/contracts/extensions/base/approve/IApproveLogic__factory";
 export type { Events } from "./@violetprotocol/erc721extendable/contracts/extensions/base/Events";
 export { Events__factory } from "./factories/@violetprotocol/erc721extendable/contracts/extensions/base/Events__factory";
+export type { GetterLogic } from "./@violetprotocol/erc721extendable/contracts/extensions/base/getter/GetterLogic";
+export { GetterLogic__factory } from "./factories/@violetprotocol/erc721extendable/contracts/extensions/base/getter/GetterLogic__factory";
 export type { IGetterLogic } from "./@violetprotocol/erc721extendable/contracts/extensions/base/getter/IGetterLogic";
 export { IGetterLogic__factory } from "./factories/@violetprotocol/erc721extendable/contracts/extensions/base/getter/IGetterLogic__factory";
+export type { ERC721HooksLogic } from "./@violetprotocol/erc721extendable/contracts/extensions/base/hooks/ERC721HooksLogic";
+export { ERC721HooksLogic__factory } from "./factories/@violetprotocol/erc721extendable/contracts/extensions/base/hooks/ERC721HooksLogic__factory";
 export type { IERC721Hooks } from "./@violetprotocol/erc721extendable/contracts/extensions/base/hooks/IERC721Hooks";
 export { IERC721Hooks__factory } from "./factories/@violetprotocol/erc721extendable/contracts/extensions/base/hooks/IERC721Hooks__factory";
 export type { MintLogic } from "./@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic";
@@ -74,6 +78,10 @@ export type { IRequiresAuthExtension } from "./contracts/mocks/callers/AccessTok
 export { IRequiresAuthExtension__factory } from "./factories/contracts/mocks/callers/AccessTokenConsumerCaller.sol/IRequiresAuthExtension__factory";
 export type { RequiresAuthExtension } from "./contracts/mocks/callers/AccessTokenConsumerCaller.sol/RequiresAuthExtension";
 export { RequiresAuthExtension__factory } from "./factories/contracts/mocks/callers/AccessTokenConsumerCaller.sol/RequiresAuthExtension__factory";
+export type { MockERC721Getter } from "./contracts/mocks/MockVerifier.sol/MockERC721Getter";
+export { MockERC721Getter__factory } from "./factories/contracts/mocks/MockVerifier.sol/MockERC721Getter__factory";
+export type { MockERC721Hooks } from "./contracts/mocks/MockVerifier.sol/MockERC721Hooks";
+export { MockERC721Hooks__factory } from "./factories/contracts/mocks/MockVerifier.sol/MockERC721Hooks__factory";
 export type { MockExtend } from "./contracts/mocks/MockVerifier.sol/MockExtend";
 export { MockExtend__factory } from "./factories/contracts/mocks/MockVerifier.sol/MockExtend__factory";
 export type { MockVerifier } from "./contracts/mocks/MockVerifier.sol/MockVerifier";

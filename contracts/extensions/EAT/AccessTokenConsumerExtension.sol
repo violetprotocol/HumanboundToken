@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import "@violetprotocol/extendable/extensions/InternalExtension.sol";
-import { RoleState, Permissions } from "@violetprotocol/extendable/storage/PermissionStorage.sol";
+import "@violetprotocol/extendable/extensions/Extension.sol";
 import "@violetprotocol/ethereum-access-token/contracts/AuthCompatible.sol";
-import "../../storage/EthereumAccessTokenStorage.sol";
 import "./IEATVerifier.sol";
 import "hardhat/console.sol";
 
