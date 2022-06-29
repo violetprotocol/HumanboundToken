@@ -89,6 +89,74 @@ export function shouldBehaveLikeSoulMint(): void {
 
           expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
         });
+
+        it("with already minted token should fail", async function () {
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+              ),
+          ).to.not.be.reverted;
+
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+              ),
+          ).to.be.revertedWith("ERC721: token already minted");
+
+          expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+        });
+      });
+
+      context("from incorrect signer", async function () {
+        beforeEach("construct token", async function () {
+          this.params = [this.signers.user0.address, tokenId];
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 100),
+            functionCall: {
+              functionSignature: extendableAsMint.interface.getSighash("mint"),
+              target: extendableAsMint.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(extendableAsMint.interface, "mint", [
+                this.signers.user0.address.toLowerCase(),
+                tokenId,
+              ]),
+            },
+          };
+          this.signature = splitSignature(await utils.signAuthMessage(this.signers.user1, this.domain, this.value));
+        });
+
+        it("should fail to mint", async function () {
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+              ),
+          ).to.be.revertedWith("AuthToken: verification failure");
+
+          await expect(extendableAsGetter.ownerOf(tokenId)).to.be.revertedWith(
+            "ERC721: owner query for nonexistent token",
+          );
+        });
       });
     });
   });
