@@ -61,7 +61,7 @@ export function shouldBehaveLikeTokenURI(): void {
     context("with minted tokens", async function () {
       beforeEach("mint token", async function () {
         this.value = {
-          expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 300),
+          expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
           functionCall: {
             functionSignature: extendableAsMint.interface.getSighash("mint"),
             target: extendableAsMint.address.toLowerCase(),
