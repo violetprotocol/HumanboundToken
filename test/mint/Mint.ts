@@ -13,7 +13,7 @@ import type {
 import { Signers } from "../types";
 import { shouldBehaveLikeSoulMint } from "./Mint.behavior";
 
-describe("Mint", function () {
+describe("Soul Mint Extension", function () {
   before(async function () {
     this.signers = {} as Signers;
 

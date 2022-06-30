@@ -1,7 +1,7 @@
 import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
-import { BigNumber } from "ethers";
+import { BigNumber, ContractTransaction } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
@@ -121,7 +121,9 @@ export function shouldBehaveLikeSoulMint(): void {
                     tokenId,
                     completeTokenURI,
                   ),
-              ).to.not.be.reverted;
+              )
+                .to.emit(extendableAsMint, "Transfer")
+                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal(
@@ -195,7 +197,9 @@ export function shouldBehaveLikeSoulMint(): void {
                     tokenId,
                     "",
                   ),
-              ).to.not.be.reverted;
+              )
+                .to.emit(extendableAsMint, "Transfer")
+                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal(
@@ -272,7 +276,9 @@ export function shouldBehaveLikeSoulMint(): void {
                     tokenId,
                     completeTokenURI,
                   ),
-              ).to.not.be.reverted;
+              )
+                .to.emit(extendableAsMint, "Transfer")
+                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal(completeTokenURI);
@@ -344,7 +350,9 @@ export function shouldBehaveLikeSoulMint(): void {
                     tokenId,
                     "",
                   ),
-              ).to.not.be.reverted;
+              )
+                .to.emit(extendableAsMint, "Transfer")
+                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal("");
@@ -498,6 +506,46 @@ export function shouldBehaveLikeSoulMint(): void {
                 tokenURI,
               ),
           ).to.be.revertedWith("AccessToken: verification failure");
+
+          await expect(extendableAsGetter.ownerOf(tokenId)).to.be.revertedWith(
+            "ERC721: owner query for nonexistent token",
+          );
+        });
+      });
+
+      context("with expired EAT", async function () {
+        beforeEach("construct ethereum access token", async function () {
+          this.params = [this.signers.user0.address, tokenId];
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) - 10),
+            functionCall: {
+              functionSignature: extendableAsMint.interface.getSighash("mint"),
+              target: extendableAsMint.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(extendableAsMint.interface, "mint", [
+                this.signers.user0.address.toLowerCase(),
+                tokenId,
+                tokenURI,
+              ]),
+            },
+          };
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.user1, this.domain, this.value));
+        });
+
+        it("should fail to mint", async function () {
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user1)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+                tokenURI,
+              ),
+          ).to.be.revertedWith("AccessToken: has expired");
 
           await expect(extendableAsGetter.ownerOf(tokenId)).to.be.revertedWith(
             "ERC721: owner query for nonexistent token",
