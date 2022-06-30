@@ -73,7 +73,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
             before("construct token", async function () {
               this.params = ["some string", "0xaaaaaaaaaaaaaa", this.signers.user0.address, 42, "0xbbbbbbbbbbbb"];
               this.value = {
-                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50),
+                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
                 functionCall: {
                   functionSignature: requiresAuthExtension.interface.getSighash("doSomething"),
                   target: this.consumerCaller.address,
@@ -109,7 +109,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                   this.signature.v,
                   this.signature.r,
                   this.signature.s,
-                  this.value.expiry.sub(50),
+                  this.value.expiry.sub(50000),
                 ),
               ).to.be.revertedWith("AccessToken: has expired");
             });
