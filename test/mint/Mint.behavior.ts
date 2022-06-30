@@ -13,10 +13,7 @@ import {
   ExtendLogic,
   Extendable,
   GetterLogic,
-  IERC721Hooks,
-  IGetterLogic,
   MetadataGetterLogic,
-  RequiresAuthExtension,
   SetTokenURILogic,
   SoulMintLogic,
 } from "../../src/types";
@@ -459,6 +456,46 @@ export function shouldBehaveLikeSoulMint(): void {
                 this.signers.user0.address,
                 tokenId,
                 "baduri",
+              ),
+          ).to.be.revertedWith("AccessToken: verification failure");
+
+          await expect(extendableAsGetter.ownerOf(tokenId)).to.be.revertedWith(
+            "ERC721: owner query for nonexistent token",
+          );
+        });
+      });
+
+      context("from incorrect user", async function () {
+        beforeEach("construct ethereum access token", async function () {
+          this.params = [this.signers.user0.address, tokenId];
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 200),
+            functionCall: {
+              functionSignature: extendableAsMint.interface.getSighash("mint"),
+              target: extendableAsMint.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(extendableAsMint.interface, "mint", [
+                this.signers.user0.address.toLowerCase(),
+                tokenId,
+                tokenURI,
+              ]),
+            },
+          };
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.user1, this.domain, this.value));
+        });
+
+        it("should fail to mint", async function () {
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user1)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+                tokenURI,
               ),
           ).to.be.revertedWith("AccessToken: verification failure");
 
