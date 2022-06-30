@@ -81,7 +81,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                   parameters: utils.packParameters(requiresAuthExtension.interface, "doSomething", []),
                 },
               };
-              this.signature = splitSignature(await utils.signAuthMessage(this.signers.admin, this.domain, this.value));
+              this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
             });
 
             it("with correct values should succeed", async function () {
@@ -100,7 +100,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                 requiresAuthExtension
                   .connect(this.signers.user1)
                   .doSomething(this.signature.v, this.signature.r, this.signature.s, this.value.expiry),
-              ).to.be.revertedWith("AuthToken: verification failure");
+              ).to.be.revertedWith("AccessToken: verification failure");
             });
 
             it("with expired token should revert", async function () {
@@ -111,7 +111,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                   this.signature.s,
                   this.value.expiry.sub(50),
                 ),
-              ).to.be.revertedWith("AuthToken: has expired");
+              ).to.be.revertedWith("AccessToken: has expired");
             });
 
             it("with incorrect expiry should revert", async function () {
@@ -122,22 +122,22 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
                   this.signature.s,
                   this.value.expiry.add(50),
                 ),
-              ).to.be.revertedWith("AuthToken: verification failure");
+              ).to.be.revertedWith("AccessToken: verification failure");
             });
 
             it("with incorrect signer should revert", async function () {
               const signature = splitSignature(
-                await utils.signAuthMessage(this.signers.user0, this.domain, this.value),
+                await utils.signAccessToken(this.signers.user0, this.domain, this.value),
               );
 
               await expect(
                 requiresAuthExtension.doSomething(signature.v, signature.r, signature.s, this.value.expiry),
-              ).to.be.revertedWith("AuthToken: verification failure");
+              ).to.be.revertedWith("AccessToken: verification failure");
             });
 
             it("with incorrect function signature should revert", async function () {
               const signature = splitSignature(
-                await utils.signAuthMessage(this.signers.admin, this.domain, {
+                await utils.signAccessToken(this.signers.admin, this.domain, {
                   ...this.value,
                   functionCall: {
                     ...this.value.functionCall,
@@ -148,12 +148,12 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
 
               await expect(
                 requiresAuthExtension.doSomething(signature.v, signature.r, signature.s, this.value.expiry),
-              ).to.be.revertedWith("AuthToken: verification failure");
+              ).to.be.revertedWith("AccessToken: verification failure");
             });
 
             it("with incorrect target contract should revert", async function () {
               const signature = splitSignature(
-                await utils.signAuthMessage(this.signers.admin, this.domain, {
+                await utils.signAccessToken(this.signers.admin, this.domain, {
                   ...this.value,
                   functionCall: {
                     ...this.value.functionCall,
@@ -164,7 +164,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
 
               await expect(
                 requiresAuthExtension.doSomething(signature.v, signature.r, signature.s, this.value.expiry),
-              ).to.be.revertedWith("AuthToken: verification failure");
+              ).to.be.revertedWith("AccessToken: verification failure");
             });
           });
         });

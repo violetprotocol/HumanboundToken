@@ -8,6 +8,7 @@ interface ISoulMintLogic {
         bytes32 s,
         uint256 expiry,
         address to,
-        uint256 tokenId
+        uint256 tokenId,
+        string calldata tokenURI
     ) external;
 }

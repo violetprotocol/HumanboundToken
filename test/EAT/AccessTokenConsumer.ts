@@ -2,7 +2,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import type { AuthVerifier, EATVerifier, ExtendLogic, RequiresAuthExtension } from "../../src/types";
+import type { AccessTokenVerifier, EATVerifier, ExtendLogic, RequiresAuthExtension } from "../../src/types";
 import { Signers } from "../types";
 import { shouldBehaveLikeEthereumAccessToken } from "./AccessTokenConsumer.behavior";
 
@@ -18,8 +18,8 @@ describe("Ethereum Access Token Extension", function () {
     const extendArtifact: Artifact = await artifacts.readArtifact("ExtendLogic");
     this.extend = <ExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
 
-    const verifierArtifact: Artifact = await artifacts.readArtifact("AuthVerifier");
-    this.verifier = <AuthVerifier>(
+    const verifierArtifact: Artifact = await artifacts.readArtifact("AccessTokenVerifier");
+    this.verifier = <AccessTokenVerifier>(
       await waffle.deployContract(this.signers.admin, verifierArtifact, [this.signers.admin.address])
     );
     await this.verifier.rotateIntermediate(this.signers.admin.address);

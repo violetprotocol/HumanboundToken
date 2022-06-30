@@ -3,7 +3,6 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extendable/Extendable.sol";
 import "@violetprotocol/extendable/extensions/Extension.sol";
-import "@violetprotocol/ethereum-access-token/contracts/AuthCompatible.sol";
 import "../../extensions/EAT/IEATVerifier.sol";
 import "../../extensions/EAT/AccessTokenConsumerExtension.sol";
 

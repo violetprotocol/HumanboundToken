@@ -3,7 +3,7 @@ import type { Fixture } from "ethereum-waffle";
 
 import {
   AccessTokenConsumerCaller,
-  AuthVerifier,
+  AccessTokenVerifier,
   EATVerifier,
   ExtendLogic,
   RequiresAuthExtension,
@@ -13,7 +13,7 @@ import {
 declare module "mocha" {
   export interface Context {
     extend: ExtendLogic;
-    verifier: AuthVerifier;
+    verifier: AccessTokenVerifier;
     verifierExtension: EATVerifier;
     requiresAuth: RequiresAuthExtension;
     consumerCaller: AccessTokenConsumerCaller;

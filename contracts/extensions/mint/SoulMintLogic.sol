@@ -2,6 +2,7 @@
 pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic.sol";
+import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/ISetTokenURILogic.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 import "./ISoulMintLogic.sol";
 
@@ -12,9 +13,11 @@ contract SoulMintLogic is ISoulMintLogic, MintLogic, AccessTokenConsumerExtensio
         bytes32 s,
         uint256 expiry,
         address to,
-        uint256 tokenId
+        uint256 tokenId,
+        string calldata tokenURI
     ) public override requiresAuth(v, r, s, expiry) {
         _mint(to, tokenId);
+        if (bytes(tokenURI).length > 0) ISetTokenURILogic(address(this))._setTokenURI(tokenId, tokenURI);
     }
 
     function getInterfaceId() public pure virtual override returns (bytes4) {
