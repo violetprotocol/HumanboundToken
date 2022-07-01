@@ -15,14 +15,14 @@ import {
   MetadataGetterLogic,
   SetTokenURILogic,
   SoulMintLogic,
+  TokenURILogic,
 } from "../../src/types";
 import { getExtendedContractWithInterface } from "../utils";
 
 export function shouldBehaveLikeSoulMint(): void {
   let extendableAsMint: SoulMintLogic;
   let extendableAsGetter: GetterLogic;
-  let extendableAsURISetter: BasicSetTokenURILogic;
-  let extendableAsURIGetter: MetadataGetterLogic;
+  let extendableAsTokenURI: TokenURILogic;
 
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
@@ -39,15 +39,8 @@ export function shouldBehaveLikeSoulMint(): void {
     const setTokenURIArtifact: Artifact = await artifacts.readArtifact("SetTokenURILogic");
     const setTokenURILogic = <SetTokenURILogic>await waffle.deployContract(this.signers.admin, setTokenURIArtifact, []);
 
-    const basicSetTokenURILogicArtifact: Artifact = await artifacts.readArtifact("BasicSetTokenURILogic");
-    const basicSetTokenURILogic = <BasicSetTokenURILogic>(
-      await waffle.deployContract(this.signers.admin, basicSetTokenURILogicArtifact, [])
-    );
-
-    const metadataGetterLogicArtifact: Artifact = await artifacts.readArtifact("MetadataGetterLogic");
-    const metadataGetterLogic = <MetadataGetterLogic>(
-      await waffle.deployContract(this.signers.admin, metadataGetterLogicArtifact, [])
-    );
+    const tokenURILogicArtifact: Artifact = await artifacts.readArtifact("TokenURILogic");
+    const tokenURILogic = <TokenURILogic>await waffle.deployContract(this.signers.admin, tokenURILogicArtifact, []);
 
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.extend(this.verifierExtension.address);
@@ -55,8 +48,7 @@ export function shouldBehaveLikeSoulMint(): void {
     await extend.extend(erc721GetterLogic.address);
     await extend.extend(erc721HooksLogic.address);
     await extend.extend(setTokenURILogic.address);
-    await extend.extend(basicSetTokenURILogic.address);
-    await extend.extend(metadataGetterLogic.address);
+    await extend.extend(tokenURILogic.address);
 
     const extendableAsVerifierExtension = <EATVerifier>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifier")
@@ -65,11 +57,8 @@ export function shouldBehaveLikeSoulMint(): void {
 
     extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
-    extendableAsURISetter = <BasicSetTokenURILogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "BasicSetTokenURILogic")
-    );
-    extendableAsURIGetter = <MetadataGetterLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "MetadataGetterLogic")
+    extendableAsTokenURI = <TokenURILogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "TokenURILogic")
     );
   });
 
@@ -82,8 +71,8 @@ export function shouldBehaveLikeSoulMint(): void {
       context("from correct signer", async function () {
         context("with baseURI", async function () {
           beforeEach("set base URI", async function () {
-            await extendableAsURISetter.setBaseURI(baseURI);
-            expect(await extendableAsURIGetter.callStatic.baseURI()).to.equal(baseURI);
+            await extendableAsTokenURI.setBaseURI(baseURI);
+            expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal(baseURI);
           });
 
           describe("with tokenURI", async () => {
@@ -125,9 +114,7 @@ export function shouldBehaveLikeSoulMint(): void {
                 .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
-              expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal(
-                `${baseURI}${completeTokenURI}`,
-              );
+              expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${completeTokenURI}`);
             });
 
             it("with already minted token should fail", async function () {
@@ -201,9 +188,7 @@ export function shouldBehaveLikeSoulMint(): void {
                 .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
-              expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal(
-                `${baseURI}${tokenId.toString()}`,
-              );
+              expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}`);
             });
 
             it("with already minted token should fail", async function () {
@@ -280,7 +265,7 @@ export function shouldBehaveLikeSoulMint(): void {
                 .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
-              expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal(completeTokenURI);
+              expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(completeTokenURI);
             });
 
             it("with already minted token should fail", async function () {
@@ -354,7 +339,7 @@ export function shouldBehaveLikeSoulMint(): void {
                 .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
-              expect(await extendableAsURIGetter.callStatic.tokenURI(tokenId)).to.equal("");
+              expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal("");
             });
 
             it("with already minted token should fail", async function () {

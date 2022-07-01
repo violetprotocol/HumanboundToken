@@ -97,7 +97,7 @@ export function shouldBehaveLikeTokenURI(): void {
               .to.emit(extendableAsTokenURI, "BaseURISet")
               .withArgs(baseURI);
             expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal(baseURI);
-            expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}${tokenId.toString()}`);
+            expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(baseURI);
           });
         });
 
@@ -135,6 +135,32 @@ export function shouldBehaveLikeTokenURI(): void {
       });
 
       context("getTokenURI", async function () {
+        context("with set base URI only", async function () {
+          beforeEach("set base URI", async function () {
+            await expect(extendableAsTokenURI.setBaseURI(baseURI))
+              .to.emit(extendableAsTokenURI, "BaseURISet")
+              .withArgs(baseURI);
+          });
+
+          it("should get Token URI correctly", async function () {
+            expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}`);
+          });
+        });
+
+        context("with set token URI only", async function () {
+          beforeEach("set token URI", async function () {
+            await expect(
+              extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
+            ).to.not.be.reverted;
+          });
+
+          it("should get Token URI correctly", async function () {
+            expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(
+              `${tokenURI}${tokenId.toString()}`,
+            );
+          });
+        });
+
         context("with set base URI and token URI", async function () {
           beforeEach("set base URI and token URI", async function () {
             await expect(extendableAsTokenURI.setBaseURI(baseURI))
@@ -147,7 +173,7 @@ export function shouldBehaveLikeTokenURI(): void {
 
           it("should get Token URI correctly", async function () {
             expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(
-              `${baseURI}${tokenURI}${tokenId.toString()}`,
+              `${tokenURI}${tokenId.toString()}`,
             );
           });
         });
