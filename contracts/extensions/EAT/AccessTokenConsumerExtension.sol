@@ -4,7 +4,6 @@ pragma solidity >=0.8.13;
 import "@violetprotocol/extendable/extensions/Extension.sol";
 import "@violetprotocol/ethereum-access-token/contracts/AccessTokenConsumer.sol";
 import "./IEATVerifier.sol";
-import "hardhat/console.sol";
 
 abstract contract AccessTokenConsumerExtension is Extension {
     modifier requiresAuth(
