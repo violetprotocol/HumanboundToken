@@ -1,12 +1,11 @@
 import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
-import { BigNumber, ContractTransaction } from "ethers";
+import { BigNumber } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import {
-  AccessTokenConsumerCaller,
   BasicSetTokenURILogic,
   EATVerifier,
   ERC721HooksLogic,
