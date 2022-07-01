@@ -16,13 +16,12 @@ contract TokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic {
         TokenURIState storage state = TokenURIStorage._getState();
 
         string memory _tokenURI = state._tokenURIs[tokenId];
-        string memory base = _baseURI();
-
         // If tokenURI is set, return it
         if (bytes(_tokenURI).length > 0) {
             return _tokenURI;
         }
 
+        string memory base = _baseURI();
         // If there is no token URI, return the base URI as a generic shared resource
         if (bytes(base).length > 0) {
             return _baseURI();
