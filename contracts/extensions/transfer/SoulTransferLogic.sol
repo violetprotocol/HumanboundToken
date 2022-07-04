@@ -49,7 +49,11 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
         address to,
         uint256 tokenId
     ) public override(ISoulTransferLogic) requiresAuth(v, r, s, expiry) {
-        super.transferFrom(from, to, tokenId);
+        require(
+            IGetterLogic(address(this))._isApprovedOrOwner(_lastExternalCaller(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
+        _transfer(from, to, tokenId);
     }
 
     function safeTransferFrom(
@@ -61,7 +65,11 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
         address to,
         uint256 tokenId
     ) public override(ISoulTransferLogic) requiresAuth(v, r, s, expiry) {
-        super.safeTransferFrom(from, to, tokenId);
+        require(
+            IGetterLogic(address(this))._isApprovedOrOwner(_lastExternalCaller(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
+        _safeTransfer(from, to, tokenId, "");
     }
 
     function safeTransferFrom(
@@ -74,7 +82,11 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
         uint256 tokenId,
         bytes memory data
     ) public override(ISoulTransferLogic) requiresAuth(v, r, s, expiry) {
-        super.safeTransferFrom(from, to, tokenId, data);
+        require(
+            IGetterLogic(address(this))._isApprovedOrOwner(_lastExternalCaller(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
+        _safeTransfer(from, to, tokenId, data);
     }
 
     function getInterfaceId() public pure virtual override(TransferLogic, Extension) returns (bytes4) {

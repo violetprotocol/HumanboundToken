@@ -1,4 +1,4 @@
-import { splitSignature } from "@ethersproject/bytes";
+import { isBytesLike, splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
 import { BigNumber } from "ethers";
@@ -257,6 +257,301 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user0.address,
                   this.signers.user1.address,
                   tokenId,
+                ),
+            ).to.be.revertedWith("AccessToken: has expired");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+      });
+
+      describe("safeTransferFrom without data", async function () {
+        beforeEach("construct ethereum access token", async function () {
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+            functionCall: {
+              functionSignature: extendableAsTransfer.interface.getSighash(
+                "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+              ),
+              target: extendableAsTransfer.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(
+                extendableAsTransfer.interface,
+                "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId],
+              ),
+            },
+          };
+
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+        });
+
+        context("from correct user", async function () {
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from incorrect EAT signer", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.user1, this.domain, this.value));
+          });
+
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.be.revertedWith("AccessToken: verification failure");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("from incorrect user", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user1)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.be.revertedWith("AccessToken: verification failure");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("to incorrect recipient", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.admin.address,
+                  tokenId,
+                ),
+            ).to.be.revertedWith("AccessToken: verification failure");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("with expired EAT", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) - 10),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user0.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId],
+                ),
+              },
+            };
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.be.revertedWith("AccessToken: has expired");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+      });
+
+      describe("safeTransferFrom with data", async function () {
+        beforeEach("construct ethereum access token", async function () {
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+            functionCall: {
+              functionSignature: extendableAsTransfer.interface.getSighash(
+                "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+              ),
+              target: extendableAsTransfer.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(
+                extendableAsTransfer.interface,
+                "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId, "0xab"],
+              ),
+            },
+          };
+
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+        });
+
+        context("from correct user", async function () {
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from incorrect EAT signer", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.user1, this.domain, this.value));
+          });
+
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.be.revertedWith("AccessToken: verification failure");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("from incorrect user", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user1)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.be.revertedWith("AccessToken: verification failure");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("to incorrect recipient", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.admin.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.be.revertedWith("AccessToken: verification failure");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("with expired EAT", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) - 10),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user0.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId, "0xab"],
+                ),
+              },
+            };
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
                 ),
             ).to.be.revertedWith("AccessToken: has expired");
 
