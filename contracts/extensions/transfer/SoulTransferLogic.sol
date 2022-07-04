@@ -83,8 +83,13 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
 
     function getInterface() public pure virtual override(TransferLogic, IExtension) returns (string memory) {
         return
-            "function transferFrom(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address from, address to, uint256 tokenId) external;\n"
-            "function safeTransferFrom(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address from, address to, uint256 tokenId) external;\n"
-            "function safeTransferFrom(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address from, address to, uint256 tokenId, bytes memory data) external;\n";
+            string(
+                abi.encodePacked(
+                    TransferLogic.getInterface(),
+                    "function transferFrom(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address from, address to, uint256 tokenId) external;\n"
+                    "function safeTransferFrom(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address from, address to, uint256 tokenId) external;\n"
+                    "function safeTransferFrom(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address from, address to, uint256 tokenId, bytes memory data) external;\n"
+                )
+            );
     }
 }
