@@ -263,6 +263,22 @@ export function shouldBehaveLikeTransfer(): void {
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
         });
+
+        context("without EAT", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["transferFrom(address,address,uint256)"](
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.be.revertedWith("SoulTransferLogic: deprecated, use alternative transferFrom");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
       });
 
       describe("safeTransferFrom without data", async function () {
@@ -404,6 +420,22 @@ export function shouldBehaveLikeTransfer(): void {
                   tokenId,
                 ),
             ).to.be.revertedWith("AccessToken: has expired");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("without EAT", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(address,address,uint256)"](
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.be.revertedWith("SoulTransferLogic: deprecated, use alternative safeTransferFrom");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
@@ -554,6 +586,23 @@ export function shouldBehaveLikeTransfer(): void {
                   "0xab",
                 ),
             ).to.be.revertedWith("AccessToken: has expired");
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("without EAT", async function () {
+          it("should fail to transfer", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user0)
+                ["safeTransferFrom(address,address,uint256,bytes)"](
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.be.revertedWith("SoulTransferLogic: deprecated, use alternative safeTransferFrom");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
