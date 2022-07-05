@@ -21,6 +21,7 @@ describe("Soul Transfer Extension", function () {
     this.signers.admin = signers[0];
     this.signers.user0 = signers[1];
     this.signers.user1 = signers[2];
+    this.signers.user2 = signers[3];
 
     const extendArtifact: Artifact = await artifacts.readArtifact("ExtendLogic");
     this.extend = <ExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);

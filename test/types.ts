@@ -27,4 +27,5 @@ export interface Signers {
   admin: SignerWithAddress;
   user0: SignerWithAddress;
   user1: SignerWithAddress;
+  user2: SignerWithAddress;
 }

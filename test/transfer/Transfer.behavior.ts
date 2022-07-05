@@ -141,11 +141,91 @@ export function shouldBehaveLikeTransfer(): void {
           this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
         });
 
-        context("from correct user", async function () {
+        context("from user0", async function () {
           it("transfer should transfer successfully", async function () {
             await expect(
               extendableAsTransfer
                 .connect(this.signers.user0)
+                ["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from user1", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user1.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId],
+                ),
+              },
+            };
+
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user1)
+                ["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from user2", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user2.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId],
+                ),
+              },
+            };
+
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user2)
                 ["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
                   this.signature.v,
                   this.signature.r,
@@ -302,11 +382,91 @@ export function shouldBehaveLikeTransfer(): void {
           this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
         });
 
-        context("from correct user", async function () {
+        context("from user0", async function () {
           it("transfer should transfer successfully", async function () {
             await expect(
               extendableAsTransfer
                 .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from user1", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user1.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId],
+                ),
+              },
+            };
+
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user1)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from user2", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user2.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId],
+                ),
+              },
+            };
+
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user2)
                 ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
                   this.signature.v,
                   this.signature.r,
@@ -463,11 +623,93 @@ export function shouldBehaveLikeTransfer(): void {
           this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
         });
 
-        context("from correct user", async function () {
+        context("from user0", async function () {
           it("transfer should transfer successfully", async function () {
             await expect(
               extendableAsTransfer
                 .connect(this.signers.user0)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from user1", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user1.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId, "0xab"],
+                ),
+              },
+            };
+
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user1)
+                ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
+                  this.signature.v,
+                  this.signature.r,
+                  this.signature.s,
+                  this.value.expiry,
+                  this.signers.user0.address,
+                  this.signers.user1.address,
+                  tokenId,
+                  "0xab",
+                ),
+            ).to.not.be.reverted;
+
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
+          });
+        });
+
+        context("from user2", async function () {
+          beforeEach("construct ethereum access token", async function () {
+            this.value = {
+              expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
+              functionCall: {
+                functionSignature: extendableAsTransfer.interface.getSighash(
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                ),
+                target: extendableAsTransfer.address.toLowerCase(),
+                caller: this.signers.user2.address.toLowerCase(),
+                parameters: utils.packParameters(
+                  extendableAsTransfer.interface,
+                  "safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)",
+                  [this.signers.user0.address.toLowerCase(), this.signers.user1.address.toLowerCase(), tokenId, "0xab"],
+                ),
+              },
+            };
+
+            this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+          });
+
+          it("transfer should transfer successfully", async function () {
+            await expect(
+              extendableAsTransfer
+                .connect(this.signers.user2)
                 ["safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)"](
                   this.signature.v,
                   this.signature.r,
