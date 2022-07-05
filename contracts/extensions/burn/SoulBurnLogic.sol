@@ -12,18 +12,18 @@ contract SoulBurnLogic is ISoulBurnLogic, BurnLogic {
 
     modifier onlyOwner() virtual {
         RoleState storage state = Permissions._getStorage();
-        require(_lastExternalCaller() == state.owner, "SoulBurn: unauthorised");
+        require(_lastExternalCaller() == state.owner, "SoulBurnLogic: unauthorised");
         _;
     }
 
-    function burn(uint256 tokenId, string memory burnProofURI) public onlyOwner {
+    function burn(uint256 tokenId, string memory burnProofURI) external onlyOwner {
         _burn(tokenId);
 
         emit BurntWithProof(tokenId, burnProofURI);
     }
 
-    function burn(uint256 tokenId) public {
-        require(msg.sender == IGetterLogic(address(this)).ownerOf(tokenId), "SoulBurn: not token owner");
+    function burn(uint256 tokenId) external {
+        require(msg.sender == IGetterLogic(address(this)).ownerOf(tokenId), "SoulBurnLogic: not token owner");
 
         _burn(tokenId);
 

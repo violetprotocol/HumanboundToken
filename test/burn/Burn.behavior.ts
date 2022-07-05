@@ -124,9 +124,9 @@ export function shouldBehaveLikeSoulBurn(): void {
           it("should fail to burn token", async function () {
             await expect(
               extendableAsBurn.connect(this.signers.user1)["burn(uint256,string)"](tokenId, burnProofURI),
-            ).to.be.revertedWith("SoulBurn: unauthorised");
+            ).to.be.revertedWith("SoulBurnLogic: unauthorised");
             await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
-              "SoulBurn: not token owner",
+              "SoulBurnLogic: not token owner",
             );
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
