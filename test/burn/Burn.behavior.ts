@@ -104,7 +104,9 @@ export function shouldBehaveLikeSoulBurn(): void {
       context("burn", async function () {
         context("as user owner", async function () {
           it("should burn token successfully", async function () {
-            await expect(extendableAsBurn.connect(this.signers.user0)["burn(uint256)"](tokenId)).to.not.be.reverted;
+            await expect(extendableAsBurn.connect(this.signers.user0)["burn(uint256)"](tokenId))
+              .to.emit(extendableAsBurn, "BurntByOwner")
+              .withArgs(tokenId);
             await expect(extendableAsGetter.callStatic.ownerOf(tokenId)).to.be.revertedWith(
               "ERC721: owner query for nonexistent token",
             );
@@ -113,7 +115,9 @@ export function shouldBehaveLikeSoulBurn(): void {
 
         context("as contract owner", async function () {
           it("should burn token successfully", async function () {
-            await expect(extendableAsBurn["burn(uint256,string)"](tokenId, burnProofURI)).to.not.be.reverted;
+            await expect(extendableAsBurn["burn(uint256,string)"](tokenId, burnProofURI))
+              .to.emit(extendableAsBurn, "BurntWithProof")
+              .withArgs(tokenId, burnProofURI);
             await expect(extendableAsGetter.callStatic.ownerOf(tokenId)).to.be.revertedWith(
               "ERC721: owner query for nonexistent token",
             );
