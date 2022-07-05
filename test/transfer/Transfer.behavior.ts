@@ -155,7 +155,9 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -195,7 +197,9 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -235,7 +239,9 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -396,7 +402,9 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -436,7 +444,9 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -476,7 +486,9 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -638,7 +650,9 @@ export function shouldBehaveLikeTransfer(): void {
                   tokenId,
                   "0xab",
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -679,7 +693,9 @@ export function shouldBehaveLikeTransfer(): void {
                   tokenId,
                   "0xab",
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
@@ -720,7 +736,9 @@ export function shouldBehaveLikeTransfer(): void {
                   tokenId,
                   "0xab",
                 ),
-            ).to.not.be.reverted;
+            )
+              .to.emit(extendableAsTransfer, "Transfer")
+              .withArgs(this.signers.user0.address, this.signers.user1.address, tokenId);
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user1.address);
           });
