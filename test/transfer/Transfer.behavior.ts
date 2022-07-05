@@ -360,7 +360,7 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.be.revertedWith("SoulTransferLogic: deprecated, use alternative transferFrom");
+            ).to.be.revertedWith("SoulTransferLogic-transferFrom: disallowed without EAT");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
@@ -607,7 +607,7 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.be.revertedWith("SoulTransferLogic: deprecated, use alternative safeTransferFrom");
+            ).to.be.revertedWith("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
@@ -862,7 +862,7 @@ export function shouldBehaveLikeTransfer(): void {
                   tokenId,
                   "0xab",
                 ),
-            ).to.be.revertedWith("SoulTransferLogic: deprecated, use alternative safeTransferFrom");
+            ).to.be.revertedWith("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });

@@ -14,7 +14,7 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
         address to,
         uint256 tokenId
     ) public virtual override {
-        revert("SoulTransferLogic: deprecated, use alternative transferFrom");
+        revert("SoulTransferLogic-transferFrom: disallowed without EAT");
     }
 
     /**
@@ -25,7 +25,7 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
         address to,
         uint256 tokenId
     ) public virtual override {
-        revert("SoulTransferLogic: deprecated, use alternative safeTransferFrom");
+        revert("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
     }
 
     /**
@@ -37,7 +37,7 @@ contract SoulTransferLogic is ISoulTransferLogic, TransferLogic, AccessTokenCons
         uint256 tokenId,
         bytes memory _data
     ) public virtual override {
-        revert("SoulTransferLogic: deprecated, use alternative safeTransferFrom");
+        revert("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
     }
 
     function transferFrom(
