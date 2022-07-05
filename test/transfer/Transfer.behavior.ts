@@ -141,7 +141,7 @@ export function shouldBehaveLikeTransfer(): void {
           this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
         });
 
-        context("from user0", async function () {
+        context("as token owner", async function () {
           it("transfer should transfer successfully", async function () {
             await expect(
               extendableAsTransfer
@@ -163,7 +163,7 @@ export function shouldBehaveLikeTransfer(): void {
           });
         });
 
-        context("from user1", async function () {
+        context("as token recipient", async function () {
           beforeEach("construct ethereum access token", async function () {
             this.value = {
               expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
@@ -205,7 +205,7 @@ export function shouldBehaveLikeTransfer(): void {
           });
         });
 
-        context("from user2", async function () {
+        context("as third party", async function () {
           beforeEach("construct ethereum access token", async function () {
             this.value = {
               expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
@@ -388,7 +388,7 @@ export function shouldBehaveLikeTransfer(): void {
           this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
         });
 
-        context("from user0", async function () {
+        context("as token owner", async function () {
           it("transfer should transfer successfully", async function () {
             await expect(
               extendableAsTransfer
@@ -410,7 +410,7 @@ export function shouldBehaveLikeTransfer(): void {
           });
         });
 
-        context("from user1", async function () {
+        context("as token recipient", async function () {
           beforeEach("construct ethereum access token", async function () {
             this.value = {
               expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
@@ -452,7 +452,7 @@ export function shouldBehaveLikeTransfer(): void {
           });
         });
 
-        context("from user2", async function () {
+        context("as third party", async function () {
           beforeEach("construct ethereum access token", async function () {
             this.value = {
               expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
@@ -635,7 +635,7 @@ export function shouldBehaveLikeTransfer(): void {
           this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
         });
 
-        context("from user0", async function () {
+        context("as token owner", async function () {
           it("transfer should transfer successfully", async function () {
             await expect(
               extendableAsTransfer
@@ -658,7 +658,7 @@ export function shouldBehaveLikeTransfer(): void {
           });
         });
 
-        context("from user1", async function () {
+        context("as token recipient", async function () {
           beforeEach("construct ethereum access token", async function () {
             this.value = {
               expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
@@ -701,7 +701,7 @@ export function shouldBehaveLikeTransfer(): void {
           });
         });
 
-        context("from user2", async function () {
+        context("as third party", async function () {
           beforeEach("construct ethereum access token", async function () {
             this.value = {
               expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 50000),
