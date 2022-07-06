@@ -29,5 +29,3 @@ contract MockBasicTokenURI is BasicSetTokenURILogic {}
 contract MockMetadataGetterLogic is MetadataGetterLogic {}
 
 contract MockOnReceive is OnReceiveLogic {}
-
-contract MockApprove is ApproveLogic {}

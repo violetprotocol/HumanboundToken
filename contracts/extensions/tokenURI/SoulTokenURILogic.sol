@@ -6,7 +6,7 @@ import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenU
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/MetadataGetterLogic.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 
-contract TokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic {
+contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic {
     event BaseURISet(string newBaseURI);
 
     function tokenURI(uint256 tokenId) public virtual override(MetadataGetterLogic) returns (string memory) {

@@ -7,7 +7,6 @@ import { Artifact } from "hardhat/types";
 
 import {
   ApproveLogic,
-  BasicSetTokenURILogic,
   EATVerifier,
   ERC721HooksLogic,
   ExtendLogic,
@@ -16,7 +15,6 @@ import {
   SetTokenURILogic,
   SoulBurnLogic,
   SoulMintLogic,
-  TokenURILogic,
 } from "../../src/types";
 import { getExtendedContractWithInterface } from "../utils";
 
