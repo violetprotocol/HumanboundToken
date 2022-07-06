@@ -1,12 +1,7 @@
-import { splitSignature } from "@ethersproject/bytes";
-import { Domain } from "@violetprotocol/ethereum-access-token-helpers/dist/messages";
-import { AccessTokenStruct } from "@violetprotocol/ethereum-access-token-helpers/dist/types/IAccessTokenVerifier";
-import { packParameters, signAccessToken } from "@violetprotocol/ethereum-access-token-helpers/dist/utils";
-import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { EATVerifier, ExtendLogic, SoulMintLogic } from "../../src/types";
+import { EATVerifier } from "../../src/types";
 
 task("soul:Verifier:set")
   .addParam("address", "Contract address of SoulToken")

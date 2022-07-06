@@ -6,7 +6,7 @@ import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { EATVerifier, ExtendLogic, SoulMintLogic, SoulTransferLogic } from "../../src/types";
+import { EATVerifier, SoulTransferLogic } from "../../src/types";
 
 task("soul:Transfer")
   .addParam("address", "Contract address of SoulToken")
