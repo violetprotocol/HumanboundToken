@@ -7,25 +7,22 @@ import { Artifact } from "hardhat/types";
 
 import {
   ApproveLogic,
-  BasicSetTokenURILogic,
   EATVerifier,
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
   GetterLogic,
-  MetadataGetterLogic,
   OnReceiveLogic,
-  SetTokenURILogic,
   SoulMintLogic,
   SoulTransferLogic,
-  TokenURILogic,
 } from "../../src/types";
+import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils";
 
 export function shouldBehaveLikeTransfer(): void {
   let extendableAsMint: SoulMintLogic;
   let extendableAsGetter: GetterLogic;
-  let extendableAsTokenURI: TokenURILogic;
+  let extendableAsTokenURI: SoulTokenURILogic;
   let extendableAsTransfer: SoulTransferLogic;
 
   beforeEach("setup", async function () {
@@ -40,11 +37,10 @@ export function shouldBehaveLikeTransfer(): void {
     const erc721HooksArtifact: Artifact = await artifacts.readArtifact("ERC721HooksLogic");
     const erc721HooksLogic = <ERC721HooksLogic>await waffle.deployContract(this.signers.admin, erc721HooksArtifact, []);
 
-    const setTokenURIArtifact: Artifact = await artifacts.readArtifact("SetTokenURILogic");
-    const setTokenURILogic = <SetTokenURILogic>await waffle.deployContract(this.signers.admin, setTokenURIArtifact, []);
-
-    const tokenURILogicArtifact: Artifact = await artifacts.readArtifact("TokenURILogic");
-    const tokenURILogic = <TokenURILogic>await waffle.deployContract(this.signers.admin, tokenURILogicArtifact, []);
+    const soulTokenURILogicArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
+    const soulTokenURILogic = <SoulTokenURILogic>(
+      await waffle.deployContract(this.signers.admin, soulTokenURILogicArtifact, [])
+    );
 
     const transferLogicArtifact: Artifact = await artifacts.readArtifact("SoulTransferLogic");
     const transferLogic = <SoulTransferLogic>await waffle.deployContract(this.signers.admin, transferLogicArtifact, []);
@@ -60,8 +56,7 @@ export function shouldBehaveLikeTransfer(): void {
     await extend.extend(this.mintLogic.address);
     await extend.extend(erc721GetterLogic.address);
     await extend.extend(erc721HooksLogic.address);
-    await extend.extend(setTokenURILogic.address);
-    await extend.extend(tokenURILogic.address);
+    await extend.extend(soulTokenURILogic.address);
     await extend.extend(transferLogic.address);
     await extend.extend(onReceiveLogic.address);
     await extend.extend(approveLogic.address);
@@ -76,8 +71,8 @@ export function shouldBehaveLikeTransfer(): void {
       await getExtendedContractWithInterface(this.extendable.address, "SoulTransferLogic")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
-    extendableAsTokenURI = <TokenURILogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "TokenURILogic")
+    extendableAsTokenURI = <SoulTokenURILogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
     );
   });
 
