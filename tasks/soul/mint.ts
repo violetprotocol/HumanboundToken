@@ -11,7 +11,7 @@ task("soul:Mint")
   .addParam("address", "Contract address of SoulToken")
   .addParam("to", "Recipient address of the token to be minted")
   .addParam("id", "TokenID of the token being minted")
-  .addParam("tokenuri", "TokenURI resource link that contains the token metadata")
+  .addParam("tokenuri", "TokenURI resource link that contains the token metadata", "")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
     const soulTokenAsEATVerifier = <EATVerifier>await ethers.getContractAt("EATVerifier", taskArguments.address);
     const verifier = await soulTokenAsEATVerifier.callStatic.getVerifier();
