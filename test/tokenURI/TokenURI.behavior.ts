@@ -115,9 +115,9 @@ export function shouldBehaveLikeTokenURI(): void {
       context("setTokenURI", async function () {
         context("from valid address", async function () {
           it("should set Token URI correctly", async function () {
-            await expect(
-              extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
-            ).to.not.be.reverted;
+            await expect(extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`))
+              .to.emit(extendableAsTokenURI, "TokenURISet")
+              .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
             expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(
               `${tokenURI}${tokenId.toString()}`,
             );
@@ -149,9 +149,9 @@ export function shouldBehaveLikeTokenURI(): void {
 
         context("with set token URI only", async function () {
           beforeEach("set token URI", async function () {
-            await expect(
-              extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
-            ).to.not.be.reverted;
+            await expect(extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`))
+              .to.emit(extendableAsTokenURI, "TokenURISet")
+              .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
           });
 
           it("should get Token URI correctly", async function () {
@@ -166,9 +166,9 @@ export function shouldBehaveLikeTokenURI(): void {
             await expect(extendableAsTokenURI.setBaseURI(baseURI))
               .to.emit(extendableAsTokenURI, "BaseURISet")
               .withArgs(baseURI);
-            await expect(
-              extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
-            ).to.not.be.reverted;
+            await expect(extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`))
+              .to.emit(extendableAsTokenURI, "TokenURISet")
+              .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
           });
 
           it("should get Token URI correctly", async function () {

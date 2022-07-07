@@ -8,6 +8,7 @@ import "../EAT/AccessTokenConsumerExtension.sol";
 
 contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic {
     event BaseURISet(string newBaseURI);
+    event TokenURISet(uint256 tokenId, string newTokenURI);
 
     function tokenURI(uint256 tokenId) public virtual override(MetadataGetterLogic) returns (string memory) {
         // See {IERC721URIStorage-tokenURI}
@@ -34,6 +35,11 @@ contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic 
     function setBaseURI(string memory baseURI) public override {
         super.setBaseURI(baseURI);
         emit BaseURISet(baseURI);
+    }
+
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) public override {
+        super.setTokenURI(tokenId, _tokenURI);
+        emit TokenURISet(tokenId, _tokenURI);
     }
 
     function getInterfaceId()
