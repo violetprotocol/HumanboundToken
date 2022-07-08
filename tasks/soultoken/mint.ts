@@ -5,16 +5,18 @@ import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { EATVerifier, SoulMintLogic } from "../../src/types";
+import { EATVerifierConnector, SoulMintLogic } from "../../src/types";
 
-task("soul:Mint")
+task("soultoken:mint")
   .addParam("address", "Contract address of SoulToken")
   .addParam("to", "Recipient address of the token to be minted")
   .addParam("id", "TokenID of the token being minted")
   .addParam("tokenuri", "TokenURI resource link that contains the token metadata", "")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulTokenAsEATVerifier = <EATVerifier>await ethers.getContractAt("EATVerifier", taskArguments.address);
-    const verifier = await soulTokenAsEATVerifier.callStatic.getVerifier();
+    const soulTokenAsEATVerifierConnector = <EATVerifierConnector>(
+      await ethers.getContractAt("EATVerifierConnector", taskArguments.address)
+    );
+    const verifier = await soulTokenAsEATVerifierConnector.callStatic.getVerifier();
 
     const soulTokenAsMint = <SoulMintLogic>await ethers.getContractAt("SoulMintLogic", taskArguments.address);
 

@@ -3,7 +3,7 @@ import { TaskArguments } from "hardhat/types";
 
 import { SoulTokenURILogic } from "../../src/types";
 
-task("soul:URI:getBaseURI")
+task("soultoken:getBaseURI")
   .addParam("address", "Contract address of SoulToken")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
     const soulTokenAsTokenURI = <SoulTokenURILogic>(
@@ -15,7 +15,7 @@ task("soul:URI:getBaseURI")
     console.log(`BaseURI: ${baseURI}`);
   });
 
-task("soul:URI:setBaseURI")
+task("soultoken:setBaseURI")
   .addParam("address", "Contract address of SoulToken")
   .addParam("uri", "URI to set the BaseURI with")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
@@ -34,7 +34,7 @@ task("soul:URI:setBaseURI")
     }
   });
 
-task("soul:URI:getTokenURI")
+task("soultoken:getTokenURI")
   .addParam("address", "Contract address of SoulToken")
   .addParam("id", "TokenID to check the tokenURI of")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
@@ -47,7 +47,7 @@ task("soul:URI:getTokenURI")
     console.log(`TokenURI of token ${taskArguments.id}: ${uri}!`);
   });
 
-task("soul:URI:setTokenURI")
+task("soultoken:setTokenURI")
   .addParam("address", "Contract address of SoulToken")
   .addParam("id", "TokenID to check the owner of")
   .addParam("uri", "URI to set the specified token as", "")

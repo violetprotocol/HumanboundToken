@@ -8,7 +8,7 @@ import { TaskArguments } from "hardhat/types";
 
 import { GetterLogic } from "../../src/types";
 
-task("soul:Getter:ownerOf")
+task("soultoken:ownerOf")
   .addParam("address", "Contract address of SoulToken")
   .addParam("id", "TokenID to check the owner of")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
@@ -19,7 +19,7 @@ task("soul:Getter:ownerOf")
     console.log(`Owner of token ${taskArguments.id}: ${owner}!`);
   });
 
-task("soul:Getter:balanceOf")
+task("soultoken:balanceOf")
   .addParam("address", "Contract address of SoulToken")
   .addParam("user", "User address to check the balance of")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {

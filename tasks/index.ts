@@ -4,11 +4,11 @@ const deploySoul = require("./deploy/soul");
 const extend = require("./extend");
 const accounts = require("./accounts");
 
-const eatVerifier = require("./soul/eatVerifier");
-const mint = require("./soul/mint");
-const burn = require("./soul/burn");
-const transfer = require("./soul/transfer");
-const getter = require("./soul/getter");
-const uri = require("./soul/uri");
+const eatVerifier = require("./soultoken/eatVerifier");
+const mint = require("./soultoken/mint");
+const burn = require("./soultoken/burn");
+const transfer = require("./soultoken/transfer");
+const getter = require("./soultoken/getter");
+const uri = require("./soultoken/uri");
 
 export { accounts, deployExtension, extend, deploySoul, eatVerifier, mint, burn, transfer, getter, uri };

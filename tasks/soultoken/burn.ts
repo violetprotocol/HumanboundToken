@@ -4,9 +4,9 @@ import { TaskArguments } from "hardhat/types";
 
 import { SoulBurnLogic } from "../../src/types";
 
-task("soul:Burn")
+task("soultoken:burn")
   .addParam("address", "Contract address of SoulToken")
-  .addParam("id", "TokenID of the token being minted")
+  .addParam("id", "TokenID of the token being burnt")
   .addOptionalParam("burnproof", "URI containing a proof of why the token is to be burned")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
     const soulTokenAsBurn = <SoulBurnLogic>await ethers.getContractAt("SoulBurnLogic", taskArguments.address);

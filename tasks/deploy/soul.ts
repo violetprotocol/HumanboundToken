@@ -4,39 +4,42 @@ import { TaskArguments } from "hardhat/types";
 import { ExtendLogic } from "../../src/types";
 import { deploy } from "../helpers";
 
-task("deploy:Soul")
-  .addParam("name", "Name to give your ERC721 token")
-  .addParam("symbol", "Symbol for your ERC721 token")
-  .addParam("extend", "Extend Logic address")
-  .addParam("approve", "Approve Logic address")
-  .addParam("getter", "Base Getter Logic address")
-  .addParam("onreceive", "onReceive Logic address")
-  .addParam("transfer", "SoulTransfer Logic address")
-  .addParam("hooks", "Hooks Logic address")
-  .addParam("mint", "SoulMint Logic address")
-  .addParam("burn", "SoulBurn Logic address")
-  .addParam("tokenuri", "SoulTokenURI Logic address")
-  .addParam("eatverifier", "EATVerifier Logic address")
-  .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulToken = await deploy(
-      ethers,
-      "SoulToken",
-      taskArguments.name,
-      taskArguments.symbol,
-      taskArguments.extend,
-      taskArguments.approve,
-      taskArguments.getter,
-      taskArguments.onreceive,
-      taskArguments.transfer,
-      taskArguments.hooks,
-    );
-    console.log("SoulToken deployed to: ", soulToken.address);
+// Populate this config for your SoulToken deployment
+const soulConfig = {
+  name: "Soul Token",
+  symbol: "SOUL",
+  extend: "",
+  approve: "",
+  getter: "",
+  onreceive: "",
+  transfer: "",
+  hooks: "",
+  mint: "",
+  burn: "",
+  tokenuri: "",
+  eatverifierconnector: "",
+};
 
-    const soulTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", soulToken.address);
-    await soulTokenAsExtend.extend(taskArguments.mint);
-    await soulTokenAsExtend.extend(taskArguments.burn);
-    await soulTokenAsExtend.extend(taskArguments.tokenuri);
-    await soulTokenAsExtend.extend(taskArguments.eatverifier);
+task("deploy:soultoken").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const soulToken = await deploy(
+    ethers,
+    "SoulToken",
+    soulConfig.name,
+    soulConfig.symbol,
+    soulConfig.extend,
+    soulConfig.approve,
+    soulConfig.getter,
+    soulConfig.onreceive,
+    soulConfig.transfer,
+    soulConfig.hooks,
+  );
+  console.log("SoulToken deployed to: ", soulToken.address);
 
-    console.log("SoulToken extended with all functionality!");
-  });
+  const soulTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", soulToken.address);
+  await soulTokenAsExtend.extend(soulConfig.mint);
+  await soulTokenAsExtend.extend(soulConfig.burn);
+  await soulTokenAsExtend.extend(soulConfig.tokenuri);
+  await soulTokenAsExtend.extend(soulConfig.eatverifierconnector);
+
+  console.log("SoulToken extended with all functionality!");
+});

@@ -5,7 +5,14 @@ import { BigNumber } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import { EATVerifier, ERC721HooksLogic, ExtendLogic, Extendable, GetterLogic, SoulMintLogic } from "../../src/types";
+import {
+  EATVerifierConnector,
+  ERC721HooksLogic,
+  ExtendLogic,
+  Extendable,
+  GetterLogic,
+  SoulMintLogic,
+} from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils";
 
@@ -36,8 +43,8 @@ export function shouldBehaveLikeSoulMint(): void {
     await extend.extend(erc721HooksLogic.address);
     await extend.extend(tokenURILogic.address);
 
-    const extendableAsVerifierExtension = <EATVerifier>(
-      await getExtendedContractWithInterface(this.extendable.address, "EATVerifier")
+    const extendableAsVerifierExtension = <EATVerifierConnector>(
+      await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
     );
     await extendableAsVerifierExtension.setVerifier(this.verifier.address);
 

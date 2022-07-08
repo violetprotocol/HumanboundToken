@@ -7,7 +7,7 @@ import { Artifact } from "hardhat/types";
 
 import {
   ApproveLogic,
-  EATVerifier,
+  EATVerifierConnector,
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
@@ -61,8 +61,8 @@ export function shouldBehaveLikeTransfer(): void {
     await extend.extend(onReceiveLogic.address);
     await extend.extend(approveLogic.address);
 
-    const extendableAsVerifierExtension = <EATVerifier>(
-      await getExtendedContractWithInterface(this.extendable.address, "EATVerifier")
+    const extendableAsVerifierExtension = <EATVerifierConnector>(
+      await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
     );
     await extendableAsVerifierExtension.setVerifier(this.verifier.address);
 
