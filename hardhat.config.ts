@@ -32,7 +32,7 @@ const chainIds = {
   hardhat: 31337,
   mainnet: 1,
   optimism: 10,
-  polygon: 137,
+  polygonMainnet: 137,
   rinkeby: 4,
   kovan: 42,
 };
@@ -80,7 +80,7 @@ const config: HardhatUserConfig = {
     bsc: getChainConfig("bsc"),
     mainnet: getChainConfig("mainnet"),
     optimism: getChainConfig("optimism"),
-    polygon: getChainConfig("polygon"),
+    polygon: getChainConfig("polygonMainnet"),
     rinkeby: getChainConfig("rinkeby"),
     kovan: getChainConfig("kovan"),
   },
