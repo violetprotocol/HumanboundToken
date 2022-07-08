@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extendable/Extendable.sol";
 import "@violetprotocol/extendable/extensions/Extension.sol";
-import "../../extensions/EAT/IEATVerifier.sol";
+import "../../extensions/EAT/IEATVerifierConnector.sol";
 import "../../extensions/EAT/AccessTokenConsumerExtension.sol";
 
 interface IRequiresAuthExtension {
@@ -37,11 +37,11 @@ contract RequiresAuthExtension is IRequiresAuthExtension, AccessTokenConsumerExt
 contract AccessTokenConsumerCaller is Extendable {
     constructor(
         address extendLogic,
-        address eatVerifier,
+        address eatVerifierConnector,
         address requiresAuth
     ) Extendable(extendLogic) {
         (bool extendVerifierSuccess, ) = extendLogic.delegatecall(
-            abi.encodeWithSignature("extend(address)", eatVerifier)
+            abi.encodeWithSignature("extend(address)", eatVerifierConnector)
         );
         require(extendVerifierSuccess, "failed to initialise verifier");
 
