@@ -1,4 +1,3 @@
-const deployExtendable = require("./deploy/extendable");
 const deployExtension = require("./deploy/extension");
 const deploySoul = require("./deploy/soul");
 
@@ -12,16 +11,4 @@ const transfer = require("./soul/transfer");
 const getter = require("./soul/getter");
 const uri = require("./soul/uri");
 
-export {
-  accounts,
-  deployExtendable,
-  deployExtension,
-  extend,
-  deploySoul,
-  eatVerifier,
-  mint,
-  burn,
-  transfer,
-  getter,
-  uri,
-};
+export { accounts, deployExtension, extend, deploySoul, eatVerifier, mint, burn, transfer, getter, uri };
