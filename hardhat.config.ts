@@ -66,7 +66,16 @@ const config: HardhatUserConfig = {
     src: "./contracts",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      arbitrumOne: process.env.ARBISCAN_API_KEY || "",
+      avalanche: process.env.SNOWTRACE_API_KEY || "",
+      bsc: process.env.BSCSCAN_API_KEY || "",
+      mainnet: process.env.ETHERSCAN_API_KEY || "",
+      optimism: process.env.OPTIMISM_API_KEY || "",
+      polygon: process.env.POLYGONSCAN_API_KEY || "",
+      rinkeby: process.env.ETHERSCAN_API_KEY || "",
+      kovan: process.env.ETHERSCAN_API_KEY || "",
+    },
   },
   networks: {
     hardhat: {
