@@ -2,7 +2,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import type { AccessTokenVerifier, EATVerifier, ExtendLogic, SoulMintLogic } from "../../src/types";
+import type { AccessTokenVerifier, EATVerifierConnector, ExtendLogic, SoulMintLogic } from "../../src/types";
 import { Signers } from "../types";
 import { shouldBehaveLikeTokenURI } from "./TokenURI.behavior";
 
@@ -25,8 +25,10 @@ describe("TokenURI Extension", function () {
     await this.verifier.rotateIntermediate(this.signers.admin.address);
     await this.verifier.rotateIssuer(this.signers.admin.address);
 
-    const EATVerifierArtifact: Artifact = await artifacts.readArtifact("EATVerifier");
-    this.verifierExtension = <EATVerifier>await waffle.deployContract(this.signers.admin, EATVerifierArtifact);
+    const EATVerifierConnectorArtifact: Artifact = await artifacts.readArtifact("EATVerifierConnector");
+    this.verifierExtension = <EATVerifierConnector>(
+      await waffle.deployContract(this.signers.admin, EATVerifierConnectorArtifact)
+    );
 
     const mintArtifact: Artifact = await artifacts.readArtifact("SoulMintLogic");
     this.mintLogic = <SoulMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);

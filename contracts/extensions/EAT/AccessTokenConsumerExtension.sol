@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extensions/Extension.sol";
 import "@violetprotocol/ethereum-access-token/contracts/AccessTokenConsumer.sol";
-import "./IEATVerifier.sol";
+import "./IEATVerifierConnector.sol";
 
 abstract contract AccessTokenConsumerExtension is Extension {
     modifier requiresAuth(
@@ -23,7 +23,7 @@ abstract contract AccessTokenConsumerExtension is Extension {
         uint256 expiry
     ) internal returns (bool) {
         AccessToken memory token = constructToken(expiry);
-        address verifier = IEATVerifier(address(this)).getVerifier();
+        address verifier = IEATVerifierConnector(address(this)).getVerifier();
         return IAccessTokenVerifier(verifier).verify(token, v, r, s);
     }
 

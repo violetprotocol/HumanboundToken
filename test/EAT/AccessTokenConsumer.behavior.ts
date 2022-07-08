@@ -5,11 +5,11 @@ import { BigNumber } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import { AccessTokenConsumerCaller, EATVerifier, RequiresAuthExtension } from "../../src/types";
+import { AccessTokenConsumerCaller, EATVerifierConnector, RequiresAuthExtension } from "../../src/types";
 import { getExtendedContractWithInterface } from "../utils";
 
 export function shouldBehaveLikeEthereumAccessToken(): void {
-  let consumerCallerAsVerifierSetter: EATVerifier;
+  let consumerCallerAsVerifierSetter: EATVerifierConnector;
 
   beforeEach("setup", async function () {
     const consumerCallerArtifact: Artifact = await artifacts.readArtifact("AccessTokenConsumerCaller");
@@ -20,8 +20,8 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
         this.requiresAuth.address,
       ])
     );
-    consumerCallerAsVerifierSetter = <EATVerifier>(
-      await getExtendedContractWithInterface(this.consumerCaller.address, "EATVerifier")
+    consumerCallerAsVerifierSetter = <EATVerifierConnector>(
+      await getExtendedContractWithInterface(this.consumerCaller.address, "EATVerifierConnector")
     );
   });
 
@@ -37,7 +37,7 @@ export function shouldBehaveLikeEthereumAccessToken(): void {
       it("should fail", async function () {
         await expect(
           consumerCallerAsVerifierSetter.connect(this.signers.user0).setVerifier(this.verifier.address),
-        ).to.be.revertedWith("EATVerifier: unauthorised");
+        ).to.be.revertedWith("EATVerifierConnector: unauthorised");
       });
     });
   });

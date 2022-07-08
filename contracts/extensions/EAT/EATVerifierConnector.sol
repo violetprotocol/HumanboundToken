@@ -4,14 +4,14 @@ pragma solidity >=0.8.13;
 import "@violetprotocol/extendable/extensions/Extension.sol";
 import { RoleState, Permissions } from "@violetprotocol/extendable/storage/PermissionStorage.sol";
 import "../../storage/EthereumAccessTokenStorage.sol";
-import "./IEATVerifier.sol";
+import "./IEATVerifierConnector.sol";
 
-contract EATVerifier is IEATVerifier, Extension {
+contract EATVerifierConnector is IEATVerifierConnector, Extension {
     modifier onlyOwnerOrSelf() virtual {
         RoleState storage state = Permissions._getStorage();
         require(
             _lastExternalCaller() == state.owner || _lastCaller() == state.owner || _lastCaller() == address(this),
-            "EATVerifier: unauthorised"
+            "EATVerifierConnector: unauthorised"
         );
         _;
     }
@@ -27,7 +27,7 @@ contract EATVerifier is IEATVerifier, Extension {
     }
 
     function getInterfaceId() public pure virtual override returns (bytes4) {
-        return (type(IEATVerifier).interfaceId);
+        return (type(IEATVerifierConnector).interfaceId);
     }
 
     function getInterface() public pure virtual override returns (string memory) {
