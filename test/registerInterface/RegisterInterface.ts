@@ -2,7 +2,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import type { AccessTokenVerifier, EATVerifierConnector, ExtendLogic, RequiresAuthExtension } from "../../src/types";
+import type { ExtendLogic } from "../../src/types";
 import { Signers } from "../types";
 import { shouldBehaveLikeRegisterInterface } from "./RegisterInterface.behavior";
 

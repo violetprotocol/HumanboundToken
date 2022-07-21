@@ -1,18 +1,8 @@
-import { splitSignature } from "@ethersproject/bytes";
-import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
-import { BigNumber } from "ethers";
-import { artifacts, ethers, waffle } from "hardhat";
+import { artifacts, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import {
-  AccessTokenConsumerCaller,
-  EATVerifierConnector,
-  ExtendLogic,
-  Extendable,
-  RegisterInterfaceLogic,
-  RequiresAuthExtension,
-} from "../../src/types";
+import { ExtendLogic, Extendable, RegisterInterfaceLogic } from "../../src/types";
 import { getExtendedContractWithInterface } from "../utils";
 
 export function shouldBehaveLikeRegisterInterface(): void {
