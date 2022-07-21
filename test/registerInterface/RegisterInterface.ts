@@ -17,28 +17,6 @@ describe("Ethereum Access Token Extension", function () {
 
     const extendArtifact: Artifact = await artifacts.readArtifact("ExtendLogic");
     this.extend = <ExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
-
-    const verifierArtifact: Artifact = await artifacts.readArtifact("AccessTokenVerifier");
-    this.verifier = <AccessTokenVerifier>(
-      await waffle.deployContract(this.signers.admin, verifierArtifact, [this.signers.admin.address])
-    );
-    await this.verifier.rotateIntermediate(this.signers.admin.address);
-    await this.verifier.rotateIssuer(this.signers.admin.address);
-
-    const EATVerifierConnectorArtifact: Artifact = await artifacts.readArtifact("EATVerifierConnector");
-    this.verifierExtension = <EATVerifierConnector>(
-      await waffle.deployContract(this.signers.admin, EATVerifierConnectorArtifact)
-    );
-
-    const requiresAuthArtifact: Artifact = await artifacts.readArtifact("RequiresAuthExtension");
-    this.requiresAuth = <RequiresAuthExtension>await waffle.deployContract(this.signers.admin, requiresAuthArtifact);
-
-    this.domain = {
-      name: "Ethereum Access Token",
-      version: "1",
-      chainId: await this.signers.admin.getChainId(),
-      verifyingContract: this.verifier.address,
-    };
   });
 
   shouldBehaveLikeRegisterInterface();
