@@ -6,7 +6,7 @@ import type { ExtendLogic } from "../../src/types";
 import { Signers } from "../types";
 import { shouldBehaveLikeRegisterInterface } from "./RegisterInterface.behavior";
 
-describe("Ethereum Access Token Extension", function () {
+describe("RegisterInterface Extension", function () {
   before(async function () {
     this.signers = {} as Signers;
 
