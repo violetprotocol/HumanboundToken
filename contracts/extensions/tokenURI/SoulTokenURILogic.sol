@@ -49,23 +49,31 @@ contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
         emit TokenURISet(tokenId, _tokenURI);
     }
 
-    function getInterfaceId()
+    function getSolidityInterface()
         public
         pure
         virtual
-        override(BasicSetTokenURILogic, MetadataGetterLogic)
-        returns (bytes4)
+        override(BasicSetTokenURIExtension, MetadataGetterExtension)
+        returns (string memory)
     {
-        return (type(IBasicSetTokenURILogic).interfaceId ^ type(IMetadataGetterLogic).interfaceId);
+        return
+            string(
+                abi.encodePacked(
+                    BasicSetTokenURIExtension.getSolidityInterface(),
+                    MetadataGetterExtension.getSolidityInterface()
+                )
+            );
     }
 
     function getInterface()
         public
-        pure
         virtual
-        override(BasicSetTokenURILogic, MetadataGetterLogic)
-        returns (string memory)
+        override(BasicSetTokenURIExtension, MetadataGetterExtension)
+        returns (Interface[] memory interfaces)
     {
-        return string(abi.encodePacked(BasicSetTokenURILogic.getInterface(), MetadataGetterLogic.getInterface()));
+        interfaces = new Interface[](2);
+
+        interfaces[0] = BasicSetTokenURIExtension.getInterface()[0];
+        interfaces[1] = MetadataGetterExtension.getInterface()[0];
     }
 }
