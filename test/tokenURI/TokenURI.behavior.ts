@@ -115,12 +115,11 @@ export function shouldBehaveLikeTokenURI(): void {
       context("setTokenURI", async function () {
         context("from valid address", async function () {
           it("should set Token URI correctly", async function () {
-            await expect(extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`))
+            const fullTokenURI = `${tokenURI}${tokenId.toString()}`;
+            await expect(extendableAsTokenURI.setTokenURI(tokenId, fullTokenURI))
               .to.emit(extendableAsTokenURI, "TokenURISet")
               .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
-            expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(
-              `${tokenURI}${tokenId.toString()}`,
-            );
+            expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(fullTokenURI);
           });
         });
 
