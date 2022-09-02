@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import "@violetprotocol/erc721extendable/contracts/extensions/base/burn/BurnLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/base/getter/IGetterLogic.sol";
 import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
 import "./ISoulBurnLogic.sol";
 
-contract SoulBurnLogic is ISoulBurnLogic, BurnLogic {
-    event BurntWithProof(uint256 tokenId, string burnProofURI);
-    event BurntByOwner(uint256 tokenId);
-
+contract SoulBurnLogic is SoulBurnExtension, Burn {
     modifier onlyOperator() virtual {
         SoulPermissionState storage state = SoulPermissionStorage._getState();
         require(_lastExternalCaller() == state.operator, "SoulBurnLogic: unauthorised");
@@ -28,15 +24,5 @@ contract SoulBurnLogic is ISoulBurnLogic, BurnLogic {
         _burn(tokenId);
 
         emit BurntByOwner(tokenId);
-    }
-
-    function getInterfaceId() public pure virtual override returns (bytes4) {
-        return (type(ISoulBurnLogic).interfaceId);
-    }
-
-    function getInterface() public pure virtual override returns (string memory) {
-        return
-            "function burn(uint256 tokenId, string memory burnProofURI) external;\n"
-            "function burn(uint256 tokenId) external;\n";
     }
 }
