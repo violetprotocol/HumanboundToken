@@ -2515,64 +2515,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prb/solidity-template@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@prb/solidity-template@workspace:."
-  dependencies:
-    "@commitlint/cli": ^17.0.2
-    "@commitlint/config-conventional": ^17.0.2
-    "@ethersproject/abi": ^5.6.3
-    "@ethersproject/abstract-signer": ^5.6.2
-    "@ethersproject/bignumber": ^5.6.2
-    "@ethersproject/bytes": ^5.6.1
-    "@ethersproject/providers": ^5.6.8
-    "@nomiclabs/hardhat-ethers": ^2.0.6
-    "@nomiclabs/hardhat-etherscan": ^3.1.0
-    "@nomiclabs/hardhat-waffle": ^2.0.3
-    "@trivago/prettier-plugin-sort-imports": ^3.2.0
-    "@typechain/ethers-v5": ^10.1.0
-    "@typechain/hardhat": ^6.1.0
-    "@types/chai": ^4.3.1
-    "@types/fs-extra": ^9.0.13
-    "@types/mocha": ^9.1.1
-    "@types/node": ^17.0.42
-    "@typescript-eslint/eslint-plugin": ^5.27.1
-    "@typescript-eslint/parser": ^5.27.1
-    "@violetprotocol/erc721extendable": ^1.1.0
-    "@violetprotocol/ethereum-access-token": ^0.2.0
-    "@violetprotocol/ethereum-access-token-helpers": ^0.2.0
-    "@violetprotocol/extendable": ^1.1.0
-    chai: ^4.3.6
-    commitizen: ^4.2.4
-    cross-env: ^7.0.3
-    cz-conventional-changelog: ^3.3.0
-    dotenv: ^16.0.1
-    eslint: ^8.17.0
-    eslint-config-prettier: ^8.5.0
-    ethereum-waffle: ^3.4.4
-    ethers: ^5.6.8
-    fs-extra: ^10.1.0
-    hardhat: ^2.9.9
-    hardhat-gas-reporter: ^1.0.8
-    husky: ^8.0.1
-    lint-staged: ^13.0.1
-    lodash: ^4.17.21
-    mocha: ^10.0.0
-    pinst: ^3.0.0
-    prettier: ^2.6.2
-    prettier-plugin-solidity: ^1.0.0-dev.21
-    shelljs: ^0.8.5
-    shx: ^0.3.4
-    solhint: ^3.3.7
-    solhint-plugin-prettier: ^0.0.5
-    solidity-coverage: ^0.7.21
-    ts-generator: ^0.1.1
-    ts-node: ^10.8.1
-    typechain: ^8.1.0
-    typescript: ^4.7.3
-  languageName: unknown
-  linkType: soft
-
 "@resolver-engine/core@npm:^0.3.3":
   version: 0.3.3
   resolution: "@resolver-engine/core@npm:0.3.3"
@@ -3294,13 +3236,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@violetprotocol/erc721extendable@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@violetprotocol/erc721extendable@npm:1.1.0"
+"@violetprotocol/erc721extendable@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@violetprotocol/erc721extendable@npm:1.2.0"
   dependencies:
     "@openzeppelin/contracts": ^4.3.0
-    "@violetprotocol/extendable": ^1.1.0
-  checksum: 1333e2235960db7cd08804c1ff0ad2ff9c4a82bcc447a78df018204cc2bf37d941055f2d02120abae9b595374e26dfae6fcb3600519ff448df547885ba406fbb
+    "@violetprotocol/extendable": ^1.2.0
+  checksum: f294d8ff2fa178d6efb7552e8d86c2219036d7236c1b063f8e213ee5ae344240e7f24dc380c782faf7fbd69ed89e5f043f455af8188a3f530078d8c1863bf4ae
   languageName: node
   linkType: hard
 
@@ -3318,12 +3260,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@violetprotocol/extendable@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@violetprotocol/extendable@npm:1.1.0"
+"@violetprotocol/extendable@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@violetprotocol/extendable@npm:1.2.0"
   dependencies:
     "@openzeppelin/contracts": ^4.3.0
-  checksum: d7645c5962732ad6a53c5cfa527ac94b6a1596b90b9b0d35c9d024b08a65008176773306dbca8fc2d6e8df042a4aada169ff127adc6af6c0f43159ab23f260cd
+  checksum: 7b92c0fd7509d0a658248fe3a39ded74d10a605d97e7a56a708d8e70a18d0229b352feea8b251d3a376f451677b3e9a6f8514059239861c6ec11e4e3a7cbc831
   languageName: node
   linkType: hard
 
@@ -14059,6 +14001,64 @@ resolve@1.1.x:
   checksum: 2601225df0fe7aa3b497b33a12fd9fbaf8fb1d2989ecc5c091918ed93ee77d1c3fab20ddd3891a9ca66a8ba66d993e6079be6fb31f450fcf38ba30873102ca46
   languageName: node
   linkType: hard
+
+"root-workspace-0b6124@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "root-workspace-0b6124@workspace:."
+  dependencies:
+    "@commitlint/cli": ^17.0.2
+    "@commitlint/config-conventional": ^17.0.2
+    "@ethersproject/abi": ^5.6.3
+    "@ethersproject/abstract-signer": ^5.6.2
+    "@ethersproject/bignumber": ^5.6.2
+    "@ethersproject/bytes": ^5.6.1
+    "@ethersproject/providers": ^5.6.8
+    "@nomiclabs/hardhat-ethers": ^2.0.6
+    "@nomiclabs/hardhat-etherscan": ^3.1.0
+    "@nomiclabs/hardhat-waffle": ^2.0.3
+    "@trivago/prettier-plugin-sort-imports": ^3.2.0
+    "@typechain/ethers-v5": ^10.1.0
+    "@typechain/hardhat": ^6.1.0
+    "@types/chai": ^4.3.1
+    "@types/fs-extra": ^9.0.13
+    "@types/mocha": ^9.1.1
+    "@types/node": ^17.0.42
+    "@typescript-eslint/eslint-plugin": ^5.27.1
+    "@typescript-eslint/parser": ^5.27.1
+    "@violetprotocol/erc721extendable": ^1.2.0
+    "@violetprotocol/ethereum-access-token": ^0.2.0
+    "@violetprotocol/ethereum-access-token-helpers": ^0.2.0
+    "@violetprotocol/extendable": ^1.2.0
+    chai: ^4.3.6
+    commitizen: ^4.2.4
+    cross-env: ^7.0.3
+    cz-conventional-changelog: ^3.3.0
+    dotenv: ^16.0.1
+    eslint: ^8.17.0
+    eslint-config-prettier: ^8.5.0
+    ethereum-waffle: ^3.4.4
+    ethers: ^5.6.8
+    fs-extra: ^10.1.0
+    hardhat: ^2.9.9
+    hardhat-gas-reporter: ^1.0.8
+    husky: ^8.0.1
+    lint-staged: ^13.0.1
+    lodash: ^4.17.21
+    mocha: ^10.0.0
+    pinst: ^3.0.0
+    prettier: ^2.6.2
+    prettier-plugin-solidity: ^1.0.0-dev.21
+    shelljs: ^0.8.5
+    shx: ^0.3.4
+    solhint: ^3.3.7
+    solhint-plugin-prettier: ^0.0.5
+    solidity-coverage: ^0.7.21
+    ts-generator: ^0.1.1
+    ts-node: ^10.8.1
+    typechain: ^8.1.0
+    typescript: ^4.7.3
+  languageName: unknown
+  linkType: soft
 
 "run-async@npm:^2.2.0":
   version: 2.4.1
