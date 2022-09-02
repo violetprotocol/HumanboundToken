@@ -4,11 +4,18 @@ pragma solidity >=0.8.13;
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/PermissionedSetTokenURILogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/MetadataGetterLogic.sol";
+import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 
-contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic {
+contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
     event BaseURISet(string newBaseURI);
     event TokenURISet(uint256 tokenId, string newTokenURI);
+
+    modifier onlyOperator() virtual {
+        SoulPermissionState storage state = SoulPermissionStorage._getState();
+        require(_lastExternalCaller() == state.operator || msg.sender == state.operator, "SetTokenURI: unauthorised");
+        _;
+    }
 
     function tokenURI(uint256 tokenId) public virtual override(MetadataGetterLogic) returns (string memory) {
         // See {IERC721URIStorage-tokenURI}
@@ -32,12 +39,12 @@ contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic 
         return "";
     }
 
-    function setBaseURI(string memory baseURI) public override {
+    function setBaseURI(string memory baseURI) public override onlyOperator {
         super.setBaseURI(baseURI);
         emit BaseURISet(baseURI);
     }
 
-    function setTokenURI(uint256 tokenId, string memory _tokenURI) public override {
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) public override onlyOperator {
         super.setTokenURI(tokenId, _tokenURI);
         emit TokenURISet(tokenId, _tokenURI);
     }

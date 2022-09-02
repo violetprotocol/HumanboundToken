@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import { RoleState, Permissions } from "@violetprotocol/extendable/storage/PermissionStorage.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/base/burn/BurnLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/base/getter/IGetterLogic.sol";
+import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
 import "./ISoulBurnLogic.sol";
 
 contract SoulBurnLogic is ISoulBurnLogic, BurnLogic {
     event BurntWithProof(uint256 tokenId, string burnProofURI);
     event BurntByOwner(uint256 tokenId);
 
-    modifier onlyOwner() virtual {
-        RoleState storage state = Permissions._getStorage();
-        require(_lastExternalCaller() == state.owner, "SoulBurnLogic: unauthorised");
+    modifier onlyOperator() virtual {
+        SoulPermissionState storage state = SoulPermissionStorage._getState();
+        require(_lastExternalCaller() == state.operator, "SoulBurnLogic: unauthorised");
         _;
     }
 
-    function burn(uint256 tokenId, string memory burnProofURI) external onlyOwner {
+    function burn(uint256 tokenId, string memory burnProofURI) external onlyOperator {
         _burn(tokenId);
 
         emit BurntWithProof(tokenId, burnProofURI);

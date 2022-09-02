@@ -2,17 +2,17 @@
 pragma solidity ^0.8.4;
 
 import "@violetprotocol/extendable/extensions/Extension.sol";
-import { RoleState, Permissions } from "@violetprotocol/extendable/storage/PermissionStorage.sol";
+import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
 import "./IRegisterInterfaceLogic.sol";
 
 contract RegisterInterfaceLogic is IRegisterInterfaceLogic, Extension {
-    modifier onlyOwner() virtual {
-        RoleState storage state = Permissions._getStorage();
-        require(_lastExternalCaller() == state.owner, "RegisterInterfaceLogic: unauthorised");
+    modifier onlyOperator() virtual {
+        SoulPermissionState storage state = SoulPermissionStorage._getState();
+        require(_lastExternalCaller() == state.operator, "RegisterInterfaceLogic: unauthorised");
         _;
     }
 
-    function registerInterface(bytes4 interfaceId) public override onlyOwner {
+    function registerInterface(bytes4 interfaceId) public override onlyOperator {
         _registerInterface(interfaceId);
     }
 
