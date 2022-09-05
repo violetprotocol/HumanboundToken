@@ -7,12 +7,15 @@ import {
   EATVerifierConnector,
   ExtendLogic,
   RequiresAuthExtension,
+  SoulExtendLogic,
   SoulMintLogic,
+  SoulPermissionLogic,
 } from "../src/types";
 
 declare module "mocha" {
   export interface Context {
-    extend: ExtendLogic;
+    extend: SoulExtendLogic;
+    permissioning: SoulPermissionLogic;
     verifier: AccessTokenVerifier;
     verifierExtension: EATVerifierConnector;
     requiresAuth: RequiresAuthExtension;
@@ -25,6 +28,8 @@ declare module "mocha" {
 
 export interface Signers {
   admin: SignerWithAddress;
+  owner: SignerWithAddress;
+  operator: SignerWithAddress;
   user0: SignerWithAddress;
   user1: SignerWithAddress;
   user2: SignerWithAddress;

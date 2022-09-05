@@ -43,9 +43,9 @@ abstract contract SoulPermissionExtension is ISoulPermissionLogic, Permissioning
 
         bytes4[] memory functions = new bytes4[](2);
         functions[0] = ISoulPermissionLogic.updateOperator.selector;
-        functions[0] = ISoulPermissionLogic.getOperator.selector;
+        functions[1] = ISoulPermissionLogic.getOperator.selector;
 
-        interfaces[0] = super.getInterface()[0];
-        interfaces[1] = Interface(type(ISoulPermissionLogic).interfaceId, functions);
+        interfaces[1] = super.getInterface()[0];
+        interfaces[0] = Interface(type(ISoulPermissionLogic).interfaceId, functions);
     }
 }

@@ -2515,6 +2515,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts@npm:^4.7.0":
+  version: 4.7.3
+  resolution: "@openzeppelin/contracts@npm:4.7.3"
+  checksum: 18382fcacf7cfd652f5dd0e70c08f08ea74eaa8ff11e9f9850639ada70198ae01a3f9493d89a52d724f2db394e9616bf6258017804612ba273167cf657fbb073
+  languageName: node
+  linkType: hard
+
 "@resolver-engine/core@npm:^0.3.3":
   version: 0.3.3
   resolution: "@resolver-engine/core@npm:0.3.3"
@@ -3266,6 +3273,15 @@ __metadata:
   dependencies:
     "@openzeppelin/contracts": ^4.3.0
   checksum: 7b92c0fd7509d0a658248fe3a39ded74d10a605d97e7a56a708d8e70a18d0229b352feea8b251d3a376f451677b3e9a6f8514059239861c6ec11e4e3a7cbc831
+  languageName: node
+  linkType: hard
+
+"@violetprotocol/extendable@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@violetprotocol/extendable@npm:1.2.1"
+  dependencies:
+    "@openzeppelin/contracts": ^4.3.0
+  checksum: af6b9d651e30db0e4f480655f900e78486e43179915860cd715fb9cc4f1a2ad180e7155d06e0875cd51374671397ac6401cb0fd2c7264e5f72affce4d93d36c2
   languageName: node
   linkType: hard
 
@@ -14016,6 +14032,7 @@ resolve@1.1.x:
     "@nomiclabs/hardhat-ethers": ^2.0.6
     "@nomiclabs/hardhat-etherscan": ^3.1.0
     "@nomiclabs/hardhat-waffle": ^2.0.3
+    "@openzeppelin/contracts": ^4.7.0
     "@trivago/prettier-plugin-sort-imports": ^3.2.0
     "@typechain/ethers-v5": ^10.1.0
     "@typechain/hardhat": ^6.1.0
@@ -14028,7 +14045,7 @@ resolve@1.1.x:
     "@violetprotocol/erc721extendable": ^1.2.0
     "@violetprotocol/ethereum-access-token": ^0.2.0
     "@violetprotocol/ethereum-access-token-helpers": ^0.2.0
-    "@violetprotocol/extendable": ^1.2.0
+    "@violetprotocol/extendable": ^1.2.1
     chai: ^4.3.6
     commitizen: ^4.2.4
     cross-env: ^7.0.3

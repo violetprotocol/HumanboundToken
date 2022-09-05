@@ -87,8 +87,9 @@
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.7.0",
     "@violetprotocol/erc721extendable": "^1.2.0",
     "@violetprotocol/ethereum-access-token": "^0.2.0",
-    "@violetprotocol/extendable": "^1.2.0"
+    "@violetprotocol/extendable": "^1.2.1"
   }
 }
