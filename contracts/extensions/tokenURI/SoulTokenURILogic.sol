@@ -13,7 +13,10 @@ contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
 
     modifier onlyOperator() virtual {
         SoulPermissionState storage state = SoulPermissionStorage._getState();
-        require(_lastExternalCaller() == state.operator || msg.sender == state.operator, "SetTokenURI: unauthorised");
+        require(
+            _lastExternalCaller() == state.operator || _lastCaller() == state.operator,
+            "SetTokenURI: unauthorised"
+        );
         _;
     }
 

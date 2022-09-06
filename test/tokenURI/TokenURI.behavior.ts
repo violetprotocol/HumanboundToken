@@ -11,10 +11,11 @@ import {
   ExtendLogic,
   Extendable,
   GetterLogic,
+  SetTokenURILogic,
   SoulMintLogic,
 } from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
-import { getExtendedContractWithInterface } from "../utils";
+import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeTokenURI(): void {
   let extendableAsMint: SoulMintLogic;
@@ -35,11 +36,15 @@ export function shouldBehaveLikeTokenURI(): void {
     const soulTokenURIArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
     this.soulTokenURILogic = <SoulTokenURILogic>await waffle.deployContract(this.signers.admin, soulTokenURIArtifact);
 
+    const setTokenURIArtifact: Artifact = await artifacts.readArtifact("SetTokenURILogic");
+    const setTokenURILogic = <SetTokenURILogic>await waffle.deployContract(this.signers.admin, setTokenURIArtifact);
+
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.extend(this.verifierExtension.address);
     await extend.extend(this.mintLogic.address);
     await extend.extend(erc721GetterLogic.address);
     await extend.extend(erc721HooksLogic.address);
+    await extend.extend(setTokenURILogic.address);
     await extend.extend(this.soulTokenURILogic.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
