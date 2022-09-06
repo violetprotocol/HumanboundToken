@@ -15,8 +15,9 @@ import {
   SetTokenURILogic,
   SoulBurnLogic,
   SoulMintLogic,
+  SoulPermissionLogic,
 } from "../../src/types";
-import { getExtendedContractWithInterface } from "../utils";
+import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeSoulBurn(): void {
   let extendableAsMint: SoulMintLogic;
@@ -26,7 +27,7 @@ export function shouldBehaveLikeSoulBurn(): void {
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
     this.extendable = <Extendable>(
-      await waffle.deployContract(this.signers.admin, extendableArtifact, [this.extend.address])
+      await waffle.deployContract(this.signers.owner, extendableArtifact, [this.extend.address])
     );
 
     const erc721GetterArtifact: Artifact = await artifacts.readArtifact("GetterLogic");
@@ -45,18 +46,25 @@ export function shouldBehaveLikeSoulBurn(): void {
     this.burnLogic = <SoulBurnLogic>await waffle.deployContract(this.signers.admin, burnArtifact);
 
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
-    await extend.extend(this.verifierExtension.address);
-    await extend.extend(this.mintLogic.address);
-    await extend.extend(erc721GetterLogic.address);
-    await extend.extend(erc721HooksLogic.address);
-    await extend.extend(setTokenURILogic.address);
-    await extend.extend(approveLogic.address);
-    await extend.extend(this.burnLogic.address);
+    await extend.connect(this.signers.owner).extend(this.permissioning.address);
+
+    const permission = <SoulPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    );
+    await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
+
+    await extend.connect(this.signers.operator).extend(this.verifierExtension.address);
+    await extend.connect(this.signers.operator).extend(this.mintLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
+    await extend.connect(this.signers.operator).extend(setTokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(approveLogic.address);
+    await extend.connect(this.signers.operator).extend(this.burnLogic.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
     );
-    await extendableAsVerifierExtension.setVerifier(this.verifier.address);
+    await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
     extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
     extendableAsBurn = <SoulBurnLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulBurnLogic");
@@ -111,9 +119,9 @@ export function shouldBehaveLikeSoulBurn(): void {
           });
         });
 
-        context("as contract owner", async function () {
+        context("as contract operator", async function () {
           it("should burn token successfully", async function () {
-            await expect(extendableAsBurn["burn(uint256,string)"](tokenId, burnProofURI))
+            await expect(extendableAsBurn.connect(this.signers.operator)["burn(uint256,string)"](tokenId, burnProofURI))
               .to.emit(extendableAsBurn, "BurntWithProof")
               .withArgs(tokenId, burnProofURI);
             await expect(extendableAsGetter.callStatic.ownerOf(tokenId)).to.be.revertedWith(
@@ -126,6 +134,18 @@ export function shouldBehaveLikeSoulBurn(): void {
           it("should fail to burn token", async function () {
             await expect(
               extendableAsBurn.connect(this.signers.user1)["burn(uint256,string)"](tokenId, burnProofURI),
+            ).to.be.revertedWith("SoulBurnLogic: unauthorised");
+            await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
+              "SoulBurnLogic: not token owner",
+            );
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("as contract owner", async function () {
+          it("should fail to burn token", async function () {
+            await expect(
+              extendableAsBurn.connect(this.signers.owner)["burn(uint256,string)"](tokenId, burnProofURI),
             ).to.be.revertedWith("SoulBurnLogic: unauthorised");
             await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
               "SoulBurnLogic: not token owner",
