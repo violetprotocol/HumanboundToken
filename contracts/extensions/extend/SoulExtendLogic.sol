@@ -19,10 +19,7 @@ contract SoulExtendLogic is ExtendLogic {
             emit OperatorInitialised(_lastCaller());
         }
 
-        require(
-            _lastExternalCaller() == state.operator || _lastCaller() == state.operator,
-            "SoulExtendLogic: unauthorised"
-        );
+        require(_lastCaller() == state.operator, "SoulExtendLogic: unauthorised");
         _;
     }
 
