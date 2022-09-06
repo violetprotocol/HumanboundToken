@@ -11,10 +11,12 @@ import {
   ExtendLogic,
   Extendable,
   GetterLogic,
+  SetTokenURILogic,
   SoulMintLogic,
+  SoulPermissionLogic,
 } from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
-import { getExtendedContractWithInterface } from "../utils";
+import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeSoulMint(): void {
   let extendableAsMint: SoulMintLogic;
@@ -24,7 +26,7 @@ export function shouldBehaveLikeSoulMint(): void {
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
     this.extendable = <Extendable>(
-      await waffle.deployContract(this.signers.admin, extendableArtifact, [this.extend.address])
+      await waffle.deployContract(this.signers.owner, extendableArtifact, [this.extend.address])
     );
 
     const erc721GetterArtifact: Artifact = await artifacts.readArtifact("GetterLogic");
@@ -36,17 +38,31 @@ export function shouldBehaveLikeSoulMint(): void {
     const tokenURILogicArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
     const tokenURILogic = <SoulTokenURILogic>await waffle.deployContract(this.signers.admin, tokenURILogicArtifact, []);
 
+    const setTokenURIArtifact: Artifact = await artifacts.readArtifact("SetTokenURILogic");
+    const setTokenURILogic = <SetTokenURILogic>await waffle.deployContract(this.signers.admin, setTokenURIArtifact);
+
+    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
+    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
-    await extend.extend(this.verifierExtension.address);
-    await extend.extend(this.mintLogic.address);
-    await extend.extend(erc721GetterLogic.address);
-    await extend.extend(erc721HooksLogic.address);
-    await extend.extend(tokenURILogic.address);
+    await extend.connect(this.signers.owner).extend(this.permissioning.address);
+
+    const permission = <SoulPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    );
+    await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
+
+    await extend.connect(this.signers.operator).extend(this.verifierExtension.address);
+    await extend.connect(this.signers.operator).extend(this.mintLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
+    await extend.connect(this.signers.operator).extend(setTokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(tokenURILogic.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
     );
-    await extendableAsVerifierExtension.setVerifier(this.verifier.address);
+    await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
     extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
@@ -64,7 +80,7 @@ export function shouldBehaveLikeSoulMint(): void {
       context("from correct signer", async function () {
         context("with baseURI", async function () {
           beforeEach("set base URI", async function () {
-            await extendableAsTokenURI.setBaseURI(baseURI);
+            await extendableAsTokenURI.connect(this.signers.operator).setBaseURI(baseURI);
             expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal(baseURI);
           });
 
@@ -225,7 +241,7 @@ export function shouldBehaveLikeSoulMint(): void {
             beforeEach("construct ethereum access token", async function () {
               this.params = [this.signers.user0.address, tokenId];
               this.value = {
-                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 200),
+                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
                 functionCall: {
                   functionSignature: extendableAsMint.interface.getSighash("mint"),
                   target: extendableAsMint.address.toLowerCase(),
