@@ -6,7 +6,7 @@ import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import { AccessTokenConsumerCaller, EATVerifierConnector, RequiresAuthExtension } from "../../src/types";
-import { getExtendedContractWithInterface } from "../utils";
+import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeEthereumAccessToken(): void {
   let consumerCallerAsVerifierSetter: EATVerifierConnector;
