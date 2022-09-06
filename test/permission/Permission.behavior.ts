@@ -1,18 +1,9 @@
-import { splitSignature } from "@ethersproject/bytes";
-import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
-import { BigNumber, ContractTransaction } from "ethers";
+import { ContractTransaction } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import {
-  AccessTokenConsumerCaller,
-  EATVerifierConnector,
-  Extendable,
-  RequiresAuthExtension,
-  SoulExtendLogic,
-  SoulPermissionLogic,
-} from "../../src/types";
+import { Extendable, SoulExtendLogic, SoulPermissionLogic } from "../../src/types";
 import { PERMISSIONING } from "../utils/constants";
 import { expectEvent, getExtendedContractWithInterface } from "../utils/utils";
 
