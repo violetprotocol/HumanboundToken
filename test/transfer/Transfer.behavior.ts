@@ -1,4 +1,4 @@
-import { isBytesLike, splitSignature } from "@ethersproject/bytes";
+import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
 import { BigNumber } from "ethers";
@@ -17,7 +17,7 @@ import {
   SoulTransferLogic,
 } from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
-import { getExtendedContractWithInterface } from "../utils";
+import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeTransfer(): void {
   let extendableAsMint: SoulMintLogic;

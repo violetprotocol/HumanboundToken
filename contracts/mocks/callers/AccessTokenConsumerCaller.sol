@@ -25,12 +25,17 @@ contract RequiresAuthExtension is IRequiresAuthExtension, AccessTokenConsumerExt
         return true;
     }
 
-    function getInterfaceId() public pure override returns (bytes4) {
-        return type(IRequiresAuthExtension).interfaceId;
+    function getSolidityInterface() public pure override returns (string memory) {
+        return "function doSomething(uint8 v, bytes32 r, bytes32 s, uint256 expiry) external returns(bool);\n";
     }
 
-    function getInterface() public pure override returns (string memory) {
-        return "function doSomething(uint8 v, bytes32 r, bytes32 s, uint256 expiry) external returns(bool);\n";
+    function getInterface() public pure override returns (Interface[] memory interfaces) {
+        interfaces = new Interface[](1);
+
+        bytes4[] memory functions = new bytes4[](1);
+        functions[0] = IRequiresAuthExtension.doSomething.selector;
+
+        interfaces[0] = Interface(type(IRequiresAuthExtension).interfaceId, functions);
     }
 }
 

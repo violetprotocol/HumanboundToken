@@ -11,10 +11,11 @@ import {
   ExtendLogic,
   Extendable,
   GetterLogic,
+  SetTokenURILogic,
   SoulMintLogic,
 } from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
-import { getExtendedContractWithInterface } from "../utils";
+import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeTokenURI(): void {
   let extendableAsMint: SoulMintLogic;

@@ -1,10 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import "@violetprotocol/extendable/extensions/Extension.sol";
 import "@violetprotocol/ethereum-access-token/contracts/AccessTokenConsumer.sol";
 import "./IEATVerifierConnector.sol";
 
+/**
+ * @title Abstract Extension to be inherited by Extensions that have functions that wish to consume
+ *        Ethereum Access Tokens
+ *
+ * @dev Inherit this contract to implement functions that are EAT-gated
+ * @notice Exposes the `requiresAuth` modifier by child contracts
+ */
 abstract contract AccessTokenConsumerExtension is Extension {
     modifier requiresAuth(
         uint8 v,

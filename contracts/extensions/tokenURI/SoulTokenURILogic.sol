@@ -4,11 +4,21 @@ pragma solidity >=0.8.13;
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/PermissionedSetTokenURILogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/MetadataGetterLogic.sol";
+import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 
-contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic {
+contract SoulTokenURILogic is SetTokenURILogic, MetadataGetterLogic, BasicSetTokenURIExtension {
     event BaseURISet(string newBaseURI);
     event TokenURISet(uint256 tokenId, string newTokenURI);
+
+    modifier onlyOperator() virtual {
+        SoulPermissionState storage state = SoulPermissionStorage._getState();
+        require(
+            _lastExternalCaller() == state.operator || _lastCaller() == state.operator,
+            "SetTokenURI: unauthorised"
+        );
+        _;
+    }
 
     function tokenURI(uint256 tokenId) public virtual override(MetadataGetterLogic) returns (string memory) {
         // See {IERC721URIStorage-tokenURI}
@@ -32,33 +42,43 @@ contract SoulTokenURILogic is PermissionedSetTokenURILogic, MetadataGetterLogic 
         return "";
     }
 
-    function setBaseURI(string memory baseURI) public override {
-        super.setBaseURI(baseURI);
+    function setBaseURI(string memory baseURI) public override onlyOperator {
+        ISetTokenURILogic(address(this))._setBaseURI(baseURI);
         emit BaseURISet(baseURI);
     }
 
-    function setTokenURI(uint256 tokenId, string memory _tokenURI) public override {
-        super.setTokenURI(tokenId, _tokenURI);
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) public override onlyOperator {
+        ISetTokenURILogic(address(this))._setTokenURI(tokenId, _tokenURI);
         emit TokenURISet(tokenId, _tokenURI);
     }
 
-    function getInterfaceId()
+    function getSolidityInterface()
         public
         pure
         virtual
-        override(BasicSetTokenURILogic, MetadataGetterLogic)
-        returns (bytes4)
+        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension)
+        returns (string memory)
     {
-        return (type(IBasicSetTokenURILogic).interfaceId ^ type(IMetadataGetterLogic).interfaceId);
+        return
+            string(
+                abi.encodePacked(
+                    SetTokenURIExtension.getSolidityInterface(),
+                    BasicSetTokenURIExtension.getSolidityInterface(),
+                    MetadataGetterExtension.getSolidityInterface()
+                )
+            );
     }
 
     function getInterface()
         public
-        pure
         virtual
-        override(BasicSetTokenURILogic, MetadataGetterLogic)
-        returns (string memory)
+        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension)
+        returns (Interface[] memory interfaces)
     {
-        return string(abi.encodePacked(BasicSetTokenURILogic.getInterface(), MetadataGetterLogic.getInterface()));
+        interfaces = new Interface[](3);
+
+        interfaces[0] = SetTokenURIExtension.getInterface()[0];
+        interfaces[1] = BasicSetTokenURIExtension.getInterface()[0];
+        interfaces[2] = MetadataGetterExtension.getInterface()[0];
     }
 }

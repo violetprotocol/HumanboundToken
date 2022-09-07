@@ -1,23 +1,13 @@
-import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { artifacts, ethers, waffle } from "hardhat";
+import { artifacts, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import type { AccessTokenVerifier, EATVerifierConnector, ExtendLogic, SoulMintLogic } from "../../src/types";
-import { Signers } from "../types";
+import type { AccessTokenVerifier, EATVerifierConnector, SoulExtendLogic, SoulMintLogic } from "../../src/types";
 import { shouldBehaveLikeTransfer } from "./Transfer.behavior";
 
 describe("Soul Transfer Extension", function () {
   before(async function () {
-    this.signers = {} as Signers;
-
-    const signers: SignerWithAddress[] = await ethers.getSigners();
-    this.signers.admin = signers[0];
-    this.signers.user0 = signers[1];
-    this.signers.user1 = signers[2];
-    this.signers.user2 = signers[3];
-
-    const extendArtifact: Artifact = await artifacts.readArtifact("ExtendLogic");
-    this.extend = <ExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
+    const extendArtifact: Artifact = await artifacts.readArtifact("SoulExtendLogic");
+    this.extend = <SoulExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
 
     const verifierArtifact: Artifact = await artifacts.readArtifact("AccessTokenVerifier");
     this.verifier = <AccessTokenVerifier>(

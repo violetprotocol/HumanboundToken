@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/ISetTokenURILogic.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 import "./ISoulMintLogic.sol";
 
-contract SoulMintLogic is ISoulMintLogic, MintLogic, AccessTokenConsumerExtension {
+contract SoulMintLogic is SoulMintExtension, Mint, AccessTokenConsumerExtension {
     function mint(
         uint8 v,
         bytes32 r,
@@ -18,13 +17,5 @@ contract SoulMintLogic is ISoulMintLogic, MintLogic, AccessTokenConsumerExtensio
     ) public override requiresAuth(v, r, s, expiry) {
         _mint(to, tokenId);
         if (bytes(tokenURI).length > 0) ISetTokenURILogic(address(this))._setTokenURI(tokenId, tokenURI);
-    }
-
-    function getInterfaceId() public pure virtual override returns (bytes4) {
-        return (type(ISoulMintLogic).interfaceId);
-    }
-
-    function getInterface() public pure virtual override returns (string memory) {
-        return "function mint(uint8 v, bytes32 r, bytes32 s, uint256 expiry, address to, uint256 tokenId) external;\n";
     }
 }
