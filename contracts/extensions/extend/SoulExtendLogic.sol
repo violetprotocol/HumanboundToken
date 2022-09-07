@@ -3,7 +3,6 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extensions/extend/ExtendLogic.sol";
 import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
-import "hardhat/console.sol";
 
 contract SoulExtendLogic is ExtendLogic {
     event OperatorInitialised(address initialOperator);
