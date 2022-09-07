@@ -12,7 +12,6 @@ import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/Me
 import "@violetprotocol/erc721extendable/contracts/extensions/base/receiver/OnReceiveLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/base/approve/ApproveLogic.sol";
 import "../extensions/refund/IGasRefundLogic.sol";
-import "hardhat/console.sol";
 
 abstract contract MockVerifier is AccessTokenVerifier {}
 
