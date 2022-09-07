@@ -7,7 +7,7 @@ interface ISoulPermissionLogic {
     /**
      * @dev Emitted when `operator` is updated in any way
      */
-    event OperatorUpdated(address oldOperator, address newOperator);
+    event OperatorUpdated(address newOperator);
 
     /**
      * @notice Updates the `operator` to `newOperator`

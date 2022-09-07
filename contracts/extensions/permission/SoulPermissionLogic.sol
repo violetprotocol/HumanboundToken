@@ -7,10 +7,9 @@ import "./ISoulPermissionLogic.sol";
 contract SoulPermissionLogic is SoulPermissionExtension {
     function updateOperator(address newOperator) external onlyOwner {
         SoulPermissionState storage state = SoulPermissionStorage._getState();
-        address oldOperator = state.operator;
-
         state.operator = newOperator;
-        emit OperatorUpdated(oldOperator, newOperator);
+
+        emit OperatorUpdated(newOperator);
     }
 
     function getOperator() external view returns (address) {
