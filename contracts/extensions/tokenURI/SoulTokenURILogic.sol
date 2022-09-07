@@ -7,7 +7,7 @@ import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/Me
 import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 
-contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
+contract SoulTokenURILogic is SetTokenURILogic, MetadataGetterLogic, BasicSetTokenURIExtension {
     event BaseURISet(string newBaseURI);
     event TokenURISet(uint256 tokenId, string newTokenURI);
 
@@ -43,12 +43,12 @@ contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
     }
 
     function setBaseURI(string memory baseURI) public override onlyOperator {
-        super.setBaseURI(baseURI);
+        ISetTokenURILogic(address(this))._setBaseURI(baseURI);
         emit BaseURISet(baseURI);
     }
 
     function setTokenURI(uint256 tokenId, string memory _tokenURI) public override onlyOperator {
-        super.setTokenURI(tokenId, _tokenURI);
+        ISetTokenURILogic(address(this))._setTokenURI(tokenId, _tokenURI);
         emit TokenURISet(tokenId, _tokenURI);
     }
 
@@ -56,12 +56,13 @@ contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
         public
         pure
         virtual
-        override(BasicSetTokenURIExtension, MetadataGetterExtension)
+        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension)
         returns (string memory)
     {
         return
             string(
                 abi.encodePacked(
+                    SetTokenURIExtension.getSolidityInterface(),
                     BasicSetTokenURIExtension.getSolidityInterface(),
                     MetadataGetterExtension.getSolidityInterface()
                 )
@@ -71,12 +72,13 @@ contract SoulTokenURILogic is BasicSetTokenURILogic, MetadataGetterLogic {
     function getInterface()
         public
         virtual
-        override(BasicSetTokenURIExtension, MetadataGetterExtension)
+        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension)
         returns (Interface[] memory interfaces)
     {
-        interfaces = new Interface[](2);
+        interfaces = new Interface[](3);
 
-        interfaces[0] = BasicSetTokenURIExtension.getInterface()[0];
-        interfaces[1] = MetadataGetterExtension.getInterface()[0];
+        interfaces[0] = SetTokenURIExtension.getInterface()[0];
+        interfaces[1] = BasicSetTokenURIExtension.getInterface()[0];
+        interfaces[2] = MetadataGetterExtension.getInterface()[0];
     }
 }

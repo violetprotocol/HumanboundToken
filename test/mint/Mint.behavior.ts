@@ -38,9 +38,6 @@ export function shouldBehaveLikeSoulMint(): void {
     const tokenURILogicArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
     const tokenURILogic = <SoulTokenURILogic>await waffle.deployContract(this.signers.admin, tokenURILogicArtifact, []);
 
-    const setTokenURIArtifact: Artifact = await artifacts.readArtifact("SetTokenURILogic");
-    const setTokenURILogic = <SetTokenURILogic>await waffle.deployContract(this.signers.admin, setTokenURIArtifact);
-
     const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
     this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
 
@@ -56,7 +53,6 @@ export function shouldBehaveLikeSoulMint(): void {
     await extend.connect(this.signers.operator).extend(this.mintLogic.address);
     await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
     await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
-    await extend.connect(this.signers.operator).extend(setTokenURILogic.address);
     await extend.connect(this.signers.operator).extend(tokenURILogic.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
