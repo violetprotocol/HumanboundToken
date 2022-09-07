@@ -10,12 +10,12 @@ interface ISoulPermissionLogic {
     event OperatorUpdated(address oldOperator, address newOperator);
 
     /**
-     * @notice Updates the `owner` to `newOwner`
+     * @notice Updates the `operator` to `newOperator`
      */
     function updateOperator(address newOperator) external;
 
     /**
-     * @notice Returns the current `owner`
+     * @notice Returns the current `operator`
      */
     function getOperator() external returns (address);
 }
