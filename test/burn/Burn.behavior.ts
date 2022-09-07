@@ -132,9 +132,6 @@ export function shouldBehaveLikeSoulBurn(): void {
 
         context("as invalid user", async function () {
           it("should fail to burn token", async function () {
-            await expect(
-              extendableAsBurn.connect(this.signers.user1)["burn(uint256,string)"](tokenId, burnProofURI),
-            ).to.be.revertedWith("SoulBurnLogic: unauthorised");
             await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
               "SoulBurnLogic: not token owner",
             );
@@ -147,9 +144,6 @@ export function shouldBehaveLikeSoulBurn(): void {
             await expect(
               extendableAsBurn.connect(this.signers.owner)["burn(uint256,string)"](tokenId, burnProofURI),
             ).to.be.revertedWith("SoulBurnLogic: unauthorised");
-            await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
-              "SoulBurnLogic: not token owner",
-            );
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
         });
