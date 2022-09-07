@@ -1,17 +1,19 @@
 import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
-import { BigNumber } from "ethers";
+import { BigNumber, ContractTransaction } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
+import { text } from "stream/consumers";
 
 import {
   EATVerifierConnector,
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
+  GasRefundLogic,
   GetterLogic,
-  SetTokenURILogic,
   SoulMintLogic,
   SoulPermissionLogic,
 } from "../../src/types";
@@ -41,6 +43,9 @@ export function shouldBehaveLikeSoulMint(): void {
     const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
     this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
 
+    const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
+    const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
+
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
 
@@ -54,6 +59,7 @@ export function shouldBehaveLikeSoulMint(): void {
     await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
     await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
     await extend.connect(this.signers.operator).extend(tokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(refund.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
@@ -65,6 +71,12 @@ export function shouldBehaveLikeSoulMint(): void {
     extendableAsTokenURI = <SoulTokenURILogic>(
       await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
     );
+    const extendableAsRefund = <GasRefundLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
+    );
+    await expect(
+      extendableAsRefund.connect(this.signers.operator).depositFunds({ value: parseEther("10") }),
+    ).to.not.be.reverted;
   });
 
   describe("Mint", async () => {
@@ -579,6 +591,84 @@ export function shouldBehaveLikeSoulMint(): void {
           await expect(extendableAsGetter.ownerOf(tokenId)).to.be.revertedWith(
             "ERC721: owner query for nonexistent token",
           );
+        });
+      });
+    });
+
+    context("with refunds", async () => {
+      beforeEach("set baseURI", async function () {
+        await extendableAsTokenURI.connect(this.signers.operator).setBaseURI(baseURI);
+        expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal(baseURI);
+      });
+
+      context("with baseURI", async () => {
+        beforeEach("construct ethereum access token", async function () {
+          this.params = [this.signers.user0.address, tokenId];
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
+            functionCall: {
+              functionSignature: extendableAsMint.interface.getSighash("mint"),
+              target: extendableAsMint.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(extendableAsMint.interface, "mint", [
+                this.signers.user0.address.toLowerCase(),
+                tokenId,
+                "",
+              ]),
+            },
+          };
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+        });
+
+        it("should successfully refund mint transaction fee", async function () {
+          const userBalanceBefore = await ethers.provider.getBalance(this.signers.user0.address);
+          const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+
+          const tx: any = await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+                "",
+              ),
+          ).to.not.be.reverted;
+
+          const receipt = await tx.wait();
+          const ethSpent = receipt.gasUsed.mul(receipt.effectiveGasPrice);
+
+          const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
+          const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+
+          expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}`);
+          expect(userBalanceAfter).to.equal(userBalanceBefore);
+          expect(contractBalanceAfter).to.equal(contractBalanceBefore.sub(ethSpent));
+        });
+
+        it("should fail to refund failed mint transaction", async function () {
+          const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                0,
+                "",
+              ),
+          ).to.be.reverted;
+
+          const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+          expect(contractBalanceBefore).to.equal(contractBalanceAfter);
         });
       });
     });

@@ -2,6 +2,7 @@ import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
 import { BigNumber, ContractTransaction } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
@@ -11,6 +12,7 @@ import {
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
+  GasRefundLogic,
   GetterLogic,
   SetTokenURILogic,
   SoulBurnLogic,
@@ -42,6 +44,9 @@ export function shouldBehaveLikeSoulBurn(): void {
     const approveArtifact: Artifact = await artifacts.readArtifact("ApproveLogic");
     const approveLogic = <ApproveLogic>await waffle.deployContract(this.signers.admin, approveArtifact);
 
+    const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
+    const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
+
     const burnArtifact: Artifact = await artifacts.readArtifact("SoulBurnLogic");
     this.burnLogic = <SoulBurnLogic>await waffle.deployContract(this.signers.admin, burnArtifact);
 
@@ -60,6 +65,7 @@ export function shouldBehaveLikeSoulBurn(): void {
     await extend.connect(this.signers.operator).extend(setTokenURILogic.address);
     await extend.connect(this.signers.operator).extend(approveLogic.address);
     await extend.connect(this.signers.operator).extend(this.burnLogic.address);
+    await extend.connect(this.signers.operator).extend(refund.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
@@ -69,6 +75,12 @@ export function shouldBehaveLikeSoulBurn(): void {
     extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
     extendableAsBurn = <SoulBurnLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulBurnLogic");
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
+    const extendableAsRefund = <GasRefundLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
+    );
+    await expect(
+      extendableAsRefund.connect(this.signers.operator).depositFunds({ value: parseEther("10") }),
+    ).to.not.be.reverted;
   });
 
   describe("Burn", async () => {

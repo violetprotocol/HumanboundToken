@@ -2,6 +2,7 @@ import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
 import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
@@ -11,9 +12,11 @@ import {
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
+  GasRefundLogic,
   GetterLogic,
   OnReceiveLogic,
   SoulMintLogic,
+  SoulPermissionLogic,
   SoulTransferLogic,
 } from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
@@ -28,7 +31,7 @@ export function shouldBehaveLikeTransfer(): void {
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
     this.extendable = <Extendable>(
-      await waffle.deployContract(this.signers.admin, extendableArtifact, [this.extend.address])
+      await waffle.deployContract(this.signers.owner, extendableArtifact, [this.extend.address])
     );
 
     const erc721GetterArtifact: Artifact = await artifacts.readArtifact("GetterLogic");
@@ -52,19 +55,30 @@ export function shouldBehaveLikeTransfer(): void {
     const approveLogic = <ApproveLogic>await waffle.deployContract(this.signers.admin, approveArtifact, []);
 
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
-    await extend.extend(this.verifierExtension.address);
-    await extend.extend(this.mintLogic.address);
-    await extend.extend(erc721GetterLogic.address);
-    await extend.extend(erc721HooksLogic.address);
-    await extend.extend(soulTokenURILogic.address);
-    await extend.extend(transferLogic.address);
-    await extend.extend(onReceiveLogic.address);
-    await extend.extend(approveLogic.address);
+    await extend.connect(this.signers.owner).extend(this.permissioning.address);
+
+    const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
+    const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
+
+    const permission = <SoulPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    );
+    await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
+
+    await extend.connect(this.signers.operator).extend(this.verifierExtension.address);
+    await extend.connect(this.signers.operator).extend(this.mintLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
+    await extend.connect(this.signers.operator).extend(soulTokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(transferLogic.address);
+    await extend.connect(this.signers.operator).extend(onReceiveLogic.address);
+    await extend.connect(this.signers.operator).extend(approveLogic.address);
+    await extend.connect(this.signers.operator).extend(refund.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
     );
-    await extendableAsVerifierExtension.setVerifier(this.verifier.address);
+    await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
     extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
     extendableAsTransfer = <SoulTransferLogic>(
@@ -74,6 +88,12 @@ export function shouldBehaveLikeTransfer(): void {
     extendableAsTokenURI = <SoulTokenURILogic>(
       await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
     );
+    const extendableAsRefund = <GasRefundLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
+    );
+    await expect(
+      extendableAsRefund.connect(this.signers.operator).depositFunds({ value: parseEther("10") }),
+    ).to.not.be.reverted;
   });
 
   describe("Transfer", async () => {

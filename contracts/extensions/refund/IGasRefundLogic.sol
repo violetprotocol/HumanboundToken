@@ -32,7 +32,7 @@ interface IGasRefund {
     /**
      * @notice Refunds all gas spent up until this point in execution to the transaction sender
      */
-    function refundExecution() external;
+    function refundExecution(uint256 amount) external;
 }
 
 abstract contract GasRefundExtension is IGasRefund, InternalExtension {
@@ -43,7 +43,7 @@ abstract contract GasRefundExtension is IGasRefund, InternalExtension {
         return
             "function depositFunds() external;\n"
             "function withdrawFunds(uint256 amount) external;\n"
-            "function refundExecution() external;\n";
+            "function refundExecution(uint256 amount) external;\n";
     }
 
     /**

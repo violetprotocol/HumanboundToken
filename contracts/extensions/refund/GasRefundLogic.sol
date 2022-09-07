@@ -32,9 +32,11 @@ contract GasRefundLogic is GasRefundExtension {
         emit Withdrawn(_lastCaller(), amount);
     }
 
-    function refundExecution() external _internal {
+    /**
+     * @notice Refunds an amount of gas spent at the current gas price
+     */
+    function refundExecution(uint256 gasSpent) external _internal {
         address transactionSender = tx.origin;
-        uint256 gasSpent = block.gaslimit - gasleft();
         uint256 ethSpent = gasSpent * tx.gasprice;
 
         require(

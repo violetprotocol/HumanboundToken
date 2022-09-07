@@ -143,20 +143,23 @@ export function shouldBehaveLikeGasRefund(): void {
           const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
           const userBalanceBefore = await ethers.provider.getBalance(this.signers.user0.address);
 
-          tx = await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1)).to.not.be.reverted;
+          tx = await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1000)).to.not.be.reverted;
 
           const receipt = await tx.wait();
           const gasSpent = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
-          console.log("gas spent:", gasSpent);
+          // console.log(receipt);
+          console.log("gas cost:", gasSpent);
+          // 282472
+          // 299223
+
+          // 77347
+          // 106656
 
           const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
           const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
           const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
 
-          console.log("before:", userBalanceBefore);
-          console.log("after:", userBalanceAfter);
-
-          console.log(userBalanceBefore.sub(userBalanceAfter));
+          console.log("eth spent:", userBalanceBefore.sub(userBalanceAfter));
           expect(contractBalanceAfter).to.eq(contractBalanceBefore);
           expect(operatorBalanceAfter).to.eq(operatorBalanceBefore);
         });
