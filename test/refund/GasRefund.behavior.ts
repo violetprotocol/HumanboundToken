@@ -78,16 +78,16 @@ export function shouldBehaveLikeGasRefund(): void {
     });
 
     context("withdraw funds", async function () {
-      context("with deposited funds", async function () {
-        const deposit = ethers.utils.parseEther("1");
+      const amount = ethers.utils.parseEther("1");
 
+      context("with deposited funds", async function () {
         beforeEach("deposit funds", async function () {
           const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
-          await expect(extendableAsRefund.connect(this.signers.operator).depositFunds({ value: deposit }))
+          await expect(extendableAsRefund.connect(this.signers.operator).depositFunds({ value: amount }))
             .to.emit(extendableAsRefund, "Deposited")
-            .withArgs(this.signers.operator.address, deposit);
+            .withArgs(this.signers.operator.address, amount);
           const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
-          expect(contractBalanceAfter).to.eq(contractBalanceBefore.add(deposit));
+          expect(contractBalanceAfter).to.eq(contractBalanceBefore.add(amount));
         });
 
         context("as operator", async function () {
@@ -95,11 +95,11 @@ export function shouldBehaveLikeGasRefund(): void {
             const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
             const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
 
-            tx = await expect(extendableAsRefund.connect(this.signers.operator).withdrawFunds(deposit)).to.not.be
+            tx = await expect(extendableAsRefund.connect(this.signers.operator).withdrawFunds(amount)).to.not.be
               .reverted;
             await expectEvent(tx, extendableAsRefund.interface, "Withdrawn", {
               by: this.signers.operator.address,
-              amount: deposit,
+              amount,
             });
 
             const receipt = await tx.wait();
@@ -107,8 +107,8 @@ export function shouldBehaveLikeGasRefund(): void {
 
             const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
             const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
-            expect(contractBalanceAfter).to.eq(contractBalanceBefore.sub(deposit));
-            expect(operatorBalanceAfter).to.eq(operatorBalanceBefore.add(deposit).sub(gasSpent));
+            expect(contractBalanceAfter).to.eq(contractBalanceBefore.sub(amount));
+            expect(operatorBalanceAfter).to.eq(operatorBalanceBefore.add(amount).sub(gasSpent));
           });
         });
 
@@ -117,7 +117,40 @@ export function shouldBehaveLikeGasRefund(): void {
             const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
             const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
 
-            await expect(extendableAsRefund.connect(this.signers.owner).withdrawFunds(deposit)).to.be.revertedWith(
+            await expect(extendableAsRefund.connect(this.signers.owner).withdrawFunds(amount)).to.be.revertedWith(
+              "GasRefund: unauthorised",
+            );
+
+            const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+            const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
+            expect(contractBalanceAfter).to.eq(contractBalanceBefore);
+            expect(operatorBalanceAfter).to.eq(operatorBalanceBefore);
+          });
+        });
+      });
+
+      context("without deposited funds", async function () {
+        context("as operator", async function () {
+          it("should fail", async function () {
+            const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+            const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
+
+            tx = await expect(extendableAsRefund.connect(this.signers.operator).withdrawFunds(amount)).to.be.reverted;
+            console.log(await tx.wait());
+
+            const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+            const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
+            expect(contractBalanceAfter).to.eq(contractBalanceBefore);
+            expect(operatorBalanceAfter).to.eq(operatorBalanceBefore);
+          });
+        });
+
+        context("as non-operator", async function () {
+          it("should fail", async function () {
+            const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+            const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
+
+            await expect(extendableAsRefund.connect(this.signers.owner).withdrawFunds(amount)).to.be.revertedWith(
               "GasRefund: unauthorised",
             );
 
@@ -132,28 +165,48 @@ export function shouldBehaveLikeGasRefund(): void {
 
     context("refund execution", async function () {
       context("hashing", async function () {
-        beforeEach("fund contract", async function () {
-          await expect(
-            extendableAsRefund.connect(this.signers.operator).depositFunds({ value: parseEther("10") }),
-          ).to.not.be.reverted;
-        });
+        context("with enough funds", async function () {
+          beforeEach("fund contract", async function () {
+            await expect(
+              extendableAsRefund.connect(this.signers.operator).depositFunds({ value: parseEther("10") }),
+            ).to.not.be.reverted;
+          });
 
-        it("should succeed", async function () {
+          it("should succeed", async function () {
+            const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+            const userBalanceBefore = await ethers.provider.getBalance(this.signers.user0.address);
+
+            tx = await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1000)).to.not.be.reverted;
+
+            const receipt = await tx.wait();
+            const gasSpent = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
+            // console.log(receipt);
+            console.log("gas cost:", gasSpent);
+            // 282472
+            // 299223
+
+            // 77347
+            // 106656
+
+            const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+            const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
+
+            console.log("eth spent:", userBalanceBefore.sub(userBalanceAfter));
+            expect(contractBalanceAfter).to.not.eq(contractBalanceBefore);
+            expect(userBalanceAfter).to.eq(userBalanceBefore);
+          });
+        });
+      });
+
+      context("without enough funds", async function () {
+        it("should fail", async function () {
           const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
           const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
           const userBalanceBefore = await ethers.provider.getBalance(this.signers.user0.address);
 
-          tx = await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1000)).to.not.be.reverted;
-
-          const receipt = await tx.wait();
-          const gasSpent = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
-          // console.log(receipt);
-          console.log("gas cost:", gasSpent);
-          // 282472
-          // 299223
-
-          // 77347
-          // 106656
+          await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1000)).to.be.revertedWith(
+            "GasRefund: insufficient funds to refund, please contact contract owner",
+          );
 
           const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
           const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
@@ -161,7 +214,7 @@ export function shouldBehaveLikeGasRefund(): void {
 
           console.log("eth spent:", userBalanceBefore.sub(userBalanceAfter));
           expect(contractBalanceAfter).to.eq(contractBalanceBefore);
-          expect(operatorBalanceAfter).to.eq(operatorBalanceBefore);
+          expect(operatorBalanceAfter).to.not.eq(operatorBalanceBefore);
         });
       });
     });
