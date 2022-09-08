@@ -39,11 +39,7 @@ contract GasRefundLogic is GasRefundExtension {
         address transactionSender = tx.origin;
         uint256 ethSpent = gasSpent * tx.gasprice;
 
-        console.log("checking funds");
-        require(
-            ethSpent <= address(this).balance,
-            "GasRefund: insufficient funds to refund, please contact contract owner"
-        );
+        require(ethSpent <= address(this).balance, "GasRefund: insufficient funds");
 
         (bool success, ) = transactionSender.call{ value: ethSpent }("");
         require(success, "GasRefund: failed to send eth back");

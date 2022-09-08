@@ -19,8 +19,10 @@ contract SoulMintLogic is SoulMintExtension, Mint, AccessTokenConsumerExtension 
         _mint(to, tokenId);
         if (bytes(tokenURI).length > 0) ISetTokenURILogic(address(this))._setTokenURI(tokenId, tokenURI);
 
+        emit Minted(to, tokenId);
+
         // refund the cost of entire transaction
-        // gas steps 226830 includes the minting and the refund execution
-        IGasRefund(address(this)).refundExecution(226830);
+        // gas steps 228068 includes the minting and the refund execution
+        IGasRefund(address(this)).refundExecution(228068);
     }
 }

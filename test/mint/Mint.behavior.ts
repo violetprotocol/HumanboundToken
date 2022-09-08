@@ -127,8 +127,8 @@ export function shouldBehaveLikeSoulMint(): void {
                     completeTokenURI,
                   ),
               )
-                .to.emit(extendableAsMint, "Transfer")
-                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
+                .to.emit(extendableAsMint, "Minted")
+                .withArgs(this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${completeTokenURI}`);
@@ -201,8 +201,8 @@ export function shouldBehaveLikeSoulMint(): void {
                     "",
                   ),
               )
-                .to.emit(extendableAsMint, "Transfer")
-                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
+                .to.emit(extendableAsMint, "Minted")
+                .withArgs(this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}`);
@@ -278,8 +278,8 @@ export function shouldBehaveLikeSoulMint(): void {
                     completeTokenURI,
                   ),
               )
-                .to.emit(extendableAsMint, "Transfer")
-                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
+                .to.emit(extendableAsMint, "Minted")
+                .withArgs(this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(completeTokenURI);
@@ -352,8 +352,8 @@ export function shouldBehaveLikeSoulMint(): void {
                     "",
                   ),
               )
-                .to.emit(extendableAsMint, "Transfer")
-                .withArgs(ethers.constants.AddressZero, this.signers.user0.address, tokenId);
+                .to.emit(extendableAsMint, "Minted")
+                .withArgs(this.signers.user0.address, tokenId);
 
               expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
               expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal("");

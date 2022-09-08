@@ -82,12 +82,7 @@ export function shouldBehaveLikeGasRefund(): void {
 
       context("with deposited funds", async function () {
         beforeEach("deposit funds", async function () {
-          const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
-          await expect(extendableAsRefund.connect(this.signers.operator).depositFunds({ value: amount }))
-            .to.emit(extendableAsRefund, "Deposited")
-            .withArgs(this.signers.operator.address, amount);
-          const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
-          expect(contractBalanceAfter).to.eq(contractBalanceBefore.add(amount));
+          await expect(extendableAsRefund.connect(this.signers.operator).depositFunds({ value: amount }));
         });
 
         context("as operator", async function () {
@@ -133,15 +128,13 @@ export function shouldBehaveLikeGasRefund(): void {
         context("as operator", async function () {
           it("should fail", async function () {
             const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
-            const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
 
-            tx = await expect(extendableAsRefund.connect(this.signers.operator).withdrawFunds(amount)).to.be.reverted;
-            console.log(await tx.wait());
+            await expect(extendableAsRefund.connect(this.signers.operator).withdrawFunds(amount)).to.be.revertedWith(
+              "GasRefund: withdraw amount exceeds funds",
+            );
 
             const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
-            const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
             expect(contractBalanceAfter).to.eq(contractBalanceBefore);
-            expect(operatorBalanceAfter).to.eq(operatorBalanceBefore);
           });
         });
 
@@ -180,18 +173,10 @@ export function shouldBehaveLikeGasRefund(): void {
 
             const receipt = await tx.wait();
             const gasSpent = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
-            // console.log(receipt);
-            console.log("gas cost:", gasSpent);
-            // 282472
-            // 299223
-
-            // 77347
-            // 106656
 
             const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
             const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
 
-            console.log("eth spent:", userBalanceBefore.sub(userBalanceAfter));
             expect(contractBalanceAfter).to.not.eq(contractBalanceBefore);
             expect(userBalanceAfter).to.eq(userBalanceBefore);
           });
@@ -201,49 +186,17 @@ export function shouldBehaveLikeGasRefund(): void {
       context("without enough funds", async function () {
         it("should fail", async function () {
           const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
-          const operatorBalanceBefore = await ethers.provider.getBalance(this.signers.operator.address);
           const userBalanceBefore = await ethers.provider.getBalance(this.signers.user0.address);
 
-          await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1000)).to.be.revertedWith(
-            "GasRefund: insufficient funds to refund, please contact contract owner",
-          );
+          await expect(extendableAsMockRefund.connect(this.signers.user0).hashing(1000)).to.be.reverted;
 
           const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
-          const operatorBalanceAfter = await ethers.provider.getBalance(this.signers.operator.address);
           const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
 
-          console.log("eth spent:", userBalanceBefore.sub(userBalanceAfter));
           expect(contractBalanceAfter).to.eq(contractBalanceBefore);
-          expect(operatorBalanceAfter).to.not.eq(operatorBalanceBefore);
+          expect(userBalanceBefore).to.not.eq(userBalanceAfter);
         });
       });
     });
   });
-
-  // describe("ERC165 compatibility", async function () {
-  //   it("should register interface id during constructor correctly", async function () {
-  //     expect(await this.permissioning.callStatic.supportsInterface(PERMISSIONING[0].INTERFACE)).to.be.true;
-  //     expect(await this.permissioning.callStatic.supportsInterface(PERMISSIONING[1].INTERFACE)).to.be.true;
-  //   });
-
-  //   it("should return implemented interfaces correctly", async function () {
-  //     expect(await this.permissioning.callStatic.getInterface()).to.deep.equal([
-  //       [PERMISSIONING[1].INTERFACE, PERMISSIONING[1].SELECTORS],
-  //       [PERMISSIONING[0].INTERFACE, PERMISSIONING[0].SELECTORS],
-  //     ]);
-  //   });
-
-  //   it("should return solidity interface correctly", async function () {
-  //     expect(await this.permissioning.callStatic.getSolidityInterface()).to.equal(
-  //       "".concat(
-  //         "function init() external;\n",
-  //         "function updateOwner(address newOwner) external;\n",
-  //         "function renounceOwnership() external;\n",
-  //         "function getOwner() external view returns(address);\n",
-  //         "function updateOperator(address newOperator) external;\n",
-  //         "function getOperator() external returns(address);\n",
-  //       ),
-  //     );
-  //   });
-  // });
 }

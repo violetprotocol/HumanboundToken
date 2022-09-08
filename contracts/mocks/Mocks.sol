@@ -62,6 +62,6 @@ contract MockRefund is MockExtension {
             res = keccak256(abi.encode(res));
         }
 
-        IGasRefund(address(this)).refundExecution(226830);
+        IGasRefund(address(this)).refundExecution(299223);
     }
 }
