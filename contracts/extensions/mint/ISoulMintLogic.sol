@@ -4,6 +4,8 @@ pragma solidity >=0.8.13;
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/Mint.sol";
 
 interface ISoulMintLogic {
+    event Minted(address indexed to, uint256 indexed tokenId);
+
     function mint(
         uint8 v,
         bytes32 r,

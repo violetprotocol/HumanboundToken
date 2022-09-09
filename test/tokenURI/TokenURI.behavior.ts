@@ -2,17 +2,19 @@ import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
 import { BigNumber, ContractTransaction } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import {
   EATVerifierConnector,
   ERC721HooksLogic,
-  ExtendLogic,
   Extendable,
+  GasRefundLogic,
   GetterLogic,
-  SetTokenURILogic,
+  SoulExtendLogic,
   SoulMintLogic,
+  SoulPermissionLogic,
 } from "../../src/types";
 import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
@@ -24,7 +26,7 @@ export function shouldBehaveLikeTokenURI(): void {
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
     this.extendable = <Extendable>(
-      await waffle.deployContract(this.signers.admin, extendableArtifact, [this.extend.address])
+      await waffle.deployContract(this.signers.owner, extendableArtifact, [this.extend.address])
     );
 
     const erc721GetterArtifact: Artifact = await artifacts.readArtifact("GetterLogic");
@@ -36,22 +38,43 @@ export function shouldBehaveLikeTokenURI(): void {
     const soulTokenURIArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
     this.soulTokenURILogic = <SoulTokenURILogic>await waffle.deployContract(this.signers.admin, soulTokenURIArtifact);
 
-    const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
-    await extend.extend(this.verifierExtension.address);
-    await extend.extend(this.mintLogic.address);
-    await extend.extend(erc721GetterLogic.address);
-    await extend.extend(erc721HooksLogic.address);
-    await extend.extend(this.soulTokenURILogic.address);
+    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
+    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+
+    const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
+    const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
+
+    const extend = <SoulExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulExtendLogic");
+    await extend.connect(this.signers.owner).extend(this.permissioning.address);
+
+    const permission = <SoulPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    );
+    await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
+
+    await extend.connect(this.signers.operator).extend(this.verifierExtension.address);
+    await extend.connect(this.signers.operator).extend(this.mintLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
+    await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
+    await extend.connect(this.signers.operator).extend(this.soulTokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(refund.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
       await getExtendedContractWithInterface(this.extendable.address, "EATVerifierConnector")
     );
-    await extendableAsVerifierExtension.setVerifier(this.verifier.address);
+    await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
     extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
     extendableAsTokenURI = <SoulTokenURILogic>(
       await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
     );
+
+    const extendableAsRefund = <GasRefundLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
+    );
+    await expect(
+      extendableAsRefund.connect(this.signers.operator).depositFunds({ value: parseEther("10") }),
+    ).to.not.be.reverted;
   });
 
   describe("TokenURI", async () => {
@@ -94,7 +117,7 @@ export function shouldBehaveLikeTokenURI(): void {
       context("setBaseURI", async function () {
         context("from valid address", async function () {
           it("should set Base URI correctly", async function () {
-            await expect(extendableAsTokenURI.setBaseURI(baseURI))
+            await expect(extendableAsTokenURI.connect(this.signers.operator).setBaseURI(baseURI))
               .to.emit(extendableAsTokenURI, "BaseURISet")
               .withArgs(baseURI);
             expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal(baseURI);
@@ -117,7 +140,7 @@ export function shouldBehaveLikeTokenURI(): void {
         context("from valid address", async function () {
           it("should set Token URI correctly", async function () {
             const fullTokenURI = `${tokenURI}${tokenId.toString()}`;
-            await expect(extendableAsTokenURI.setTokenURI(tokenId, fullTokenURI))
+            await expect(extendableAsTokenURI.connect(this.signers.operator).setTokenURI(tokenId, fullTokenURI))
               .to.emit(extendableAsTokenURI, "TokenURISet")
               .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
             expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(fullTokenURI);
@@ -137,7 +160,7 @@ export function shouldBehaveLikeTokenURI(): void {
       context("getTokenURI", async function () {
         context("with set base URI only", async function () {
           beforeEach("set base URI", async function () {
-            await expect(extendableAsTokenURI.setBaseURI(baseURI))
+            await expect(extendableAsTokenURI.connect(this.signers.operator).setBaseURI(baseURI))
               .to.emit(extendableAsTokenURI, "BaseURISet")
               .withArgs(baseURI);
           });
@@ -149,7 +172,11 @@ export function shouldBehaveLikeTokenURI(): void {
 
         context("with set token URI only", async function () {
           beforeEach("set token URI", async function () {
-            await expect(extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`))
+            await expect(
+              extendableAsTokenURI
+                .connect(this.signers.operator)
+                .setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
+            )
               .to.emit(extendableAsTokenURI, "TokenURISet")
               .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
           });
@@ -163,10 +190,14 @@ export function shouldBehaveLikeTokenURI(): void {
 
         context("with set base URI and token URI", async function () {
           beforeEach("set base URI and token URI", async function () {
-            await expect(extendableAsTokenURI.setBaseURI(baseURI))
+            await expect(extendableAsTokenURI.connect(this.signers.operator).setBaseURI(baseURI))
               .to.emit(extendableAsTokenURI, "BaseURISet")
               .withArgs(baseURI);
-            await expect(extendableAsTokenURI.setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`))
+            await expect(
+              extendableAsTokenURI
+                .connect(this.signers.operator)
+                .setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
+            )
               .to.emit(extendableAsTokenURI, "TokenURISet")
               .withArgs(tokenId, `${tokenURI}${tokenId.toString()}`);
           });

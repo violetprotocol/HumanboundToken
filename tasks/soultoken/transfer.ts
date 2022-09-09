@@ -52,17 +52,21 @@ task("soultoken:transfer")
     const signature = splitSignature(await signAccessToken(signers[0], domain, accessToken));
 
     console.log("Transferring...");
-    const tx = await soulTokenAsTransfer["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
-      signature.v,
-      signature.r,
-      signature.s,
-      accessToken.expiry,
-      signers[0].address,
-      taskArguments.to,
-      taskArguments.id,
-    );
-    const receipt = await tx.wait();
+    try {
+      const tx = await soulTokenAsTransfer["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+        signature.v,
+        signature.r,
+        signature.s,
+        accessToken.expiry,
+        signers[0].address,
+        taskArguments.to,
+        taskArguments.id,
+      );
+      const receipt = await tx.wait();
 
-    console.log(`Soul token ${taskArguments.id} transferred from ${signers[0].address} to ${taskArguments.to}!`);
-    console.log(`Transaction: ${receipt.transactionHash}`);
+      console.log(`Soul token ${taskArguments.id} transferred from ${signers[0].address} to ${taskArguments.to}!`);
+      console.log(`Transaction: ${receipt.transactionHash}`);
+    } catch (e) {
+      console.log(e);
+    }
   });
