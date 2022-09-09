@@ -1,12 +1,8 @@
 import { task } from "hardhat/config";
-import { TaskArguments } from "hardhat/types";
 
 import { deploy } from "../helpers";
 
-task("deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function (
-  taskArguments: TaskArguments,
-  { ethers },
-) {
+task("deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function ({ ethers }) {
   let contract = await deploy(ethers, "HumanboundExtendLogic");
   console.log(`HumanboundExtendLogic deployed to: `, contract.address);
 

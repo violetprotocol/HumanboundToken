@@ -18,6 +18,7 @@ const humanboundConfig = {
   mint: "0x2cB39a40a37d025F20A0282553d58f723b62D845",
   burn: "0xEed9A8A6B32204Bd158Fe4C99BD25AD84E97b8ED",
   tokenuri: "0x25EAff0804c008c4226e17159a38A1515d929CCd",
+  gasrefund: "0x25EAff0804c008c4226e17159a38A1515d929CCd",
   eatverifierconnector: "0x880058Ba98E914760545fedfe8C52a8EAb3054Ab",
 };
 
@@ -41,6 +42,7 @@ task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArgu
   console.log(await humanboundTokenAsExtend.extend(humanboundConfig.mint));
   console.log(await humanboundTokenAsExtend.extend(humanboundConfig.burn));
   console.log(await humanboundTokenAsExtend.extend(humanboundConfig.tokenuri));
+  console.log(await humanboundTokenAsExtend.extend(humanboundConfig.gasrefund));
   console.log(await humanboundTokenAsExtend.extend(humanboundConfig.eatverifierconnector));
 
   console.log("HumanboundToken extended with all functionality!");
