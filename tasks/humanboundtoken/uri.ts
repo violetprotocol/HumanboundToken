@@ -59,6 +59,6 @@ task("humanboundtoken:setTokenURI")
     const tx = await humanboundTokenAsTokenURI.setTokenURI(taskArguments.id, taskArguments.uri);
     const receipt = await tx.wait();
 
-    console.log(`Set TokenURI!`);
+    console.log(`TokenURI set!`);
     console.log(`Transaction: ${receipt.transactionHash}`);
   });

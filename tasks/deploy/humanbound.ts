@@ -7,7 +7,7 @@ import { deploy } from "../helpers";
 // Populate this config for your HumanboundToken deployment
 const humanboundConfig = {
   name: "Humanbound Token",
-  symbol: "HUMAN",
+  symbol: "HBT",
   extend: "0x182E32209c5a5a857726911B93204F4228b61941",
   permission: "0xdA57594848b066b85dF38bA9d53f10402C76D494",
   approve: "0xd77C3840dE2C630bD503E812ddE73dA0d5e26A8F",
