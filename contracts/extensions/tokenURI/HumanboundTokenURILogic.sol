@@ -2,19 +2,14 @@
 pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic.sol";
-import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/PermissionedSetTokenURILogic.sol";
+import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/IBasicSetTokenURILogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/MetadataGetterLogic.sol";
 import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../storage/HumanboundPermissionStorage.sol";
 import { ContractMetadataState, ContractMetadataStorage } from "../../storage/ContractMetadataStorage.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 import "./IContractMetadata.sol";
 
-contract HumanboundTokenURILogic is
-    SetTokenURILogic,
-    MetadataGetterLogic,
-    BasicSetTokenURIExtension,
-    ContractMetadataExtension
-{
+contract HumanboundTokenURILogic is MetadataGetterLogic, BasicSetTokenURIExtension, ContractMetadataExtension {
     event BaseURISet(string newBaseURI);
     event TokenURISet(uint256 tokenId, string newTokenURI);
     event ContractURISet(string newContractURI);
@@ -76,13 +71,12 @@ contract HumanboundTokenURILogic is
         public
         pure
         virtual
-        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
+        override(BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
         returns (string memory)
     {
         return
             string(
                 abi.encodePacked(
-                    SetTokenURIExtension.getSolidityInterface(),
                     BasicSetTokenURIExtension.getSolidityInterface(),
                     MetadataGetterExtension.getSolidityInterface(),
                     ContractMetadataExtension.getSolidityInterface()
@@ -93,14 +87,13 @@ contract HumanboundTokenURILogic is
     function getInterface()
         public
         virtual
-        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
+        override(BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
         returns (Interface[] memory interfaces)
     {
-        interfaces = new Interface[](4);
+        interfaces = new Interface[](3);
 
-        interfaces[0] = SetTokenURIExtension.getInterface()[0];
-        interfaces[1] = BasicSetTokenURIExtension.getInterface()[0];
-        interfaces[2] = MetadataGetterExtension.getInterface()[0];
-        interfaces[3] = ContractMetadataExtension.getInterface()[0];
+        interfaces[0] = BasicSetTokenURIExtension.getInterface()[0];
+        interfaces[1] = MetadataGetterExtension.getInterface()[0];
+        interfaces[2] = ContractMetadataExtension.getInterface()[0];
     }
 }
