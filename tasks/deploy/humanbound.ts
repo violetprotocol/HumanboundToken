@@ -5,9 +5,9 @@ import { ExtendLogic } from "../../src/types";
 import { deploy } from "../helpers";
 
 // Populate this config for your HumanboundToken deployment
-const soulConfig = {
+const humanboundConfig = {
   name: "Humanbound Token",
-  symbol: "SOUL",
+  symbol: "HUMAN",
   extend: "0x182E32209c5a5a857726911B93204F4228b61941",
   permission: "0xdA57594848b066b85dF38bA9d53f10402C76D494",
   approve: "0xd77C3840dE2C630bD503E812ddE73dA0d5e26A8F",
@@ -21,27 +21,27 @@ const soulConfig = {
   eatverifierconnector: "0x880058Ba98E914760545fedfe8C52a8EAb3054Ab",
 };
 
-task("deploy:soultoken").setAction(async function (taskArguments: TaskArguments, { ethers }) {
-  const soulToken = await deploy(
+task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const humanboundToken = await deploy(
     ethers,
     "HumanboundToken",
-    soulConfig.name,
-    soulConfig.symbol,
-    soulConfig.extend,
-    soulConfig.approve,
-    soulConfig.getter,
-    soulConfig.onreceive,
-    soulConfig.transfer,
-    soulConfig.hooks,
+    humanboundConfig.name,
+    humanboundConfig.symbol,
+    humanboundConfig.extend,
+    humanboundConfig.approve,
+    humanboundConfig.getter,
+    humanboundConfig.onreceive,
+    humanboundConfig.transfer,
+    humanboundConfig.hooks,
   );
-  console.log("HumanboundToken deployed to: ", soulToken.address);
+  console.log("HumanboundToken deployed to: ", humanboundToken.address);
 
-  const soulTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", soulToken.address);
-  console.log(await soulTokenAsExtend.extend(soulConfig.permission));
-  console.log(await soulTokenAsExtend.extend(soulConfig.mint));
-  console.log(await soulTokenAsExtend.extend(soulConfig.burn));
-  console.log(await soulTokenAsExtend.extend(soulConfig.tokenuri));
-  console.log(await soulTokenAsExtend.extend(soulConfig.eatverifierconnector));
+  const humanboundTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", humanboundToken.address);
+  console.log(await humanboundTokenAsExtend.extend(humanboundConfig.permission));
+  console.log(await humanboundTokenAsExtend.extend(humanboundConfig.mint));
+  console.log(await humanboundTokenAsExtend.extend(humanboundConfig.burn));
+  console.log(await humanboundTokenAsExtend.extend(humanboundConfig.tokenuri));
+  console.log(await humanboundTokenAsExtend.extend(humanboundConfig.eatverifierconnector));
 
   console.log("HumanboundToken extended with all functionality!");
 });
