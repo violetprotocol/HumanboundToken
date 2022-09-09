@@ -5,6 +5,7 @@ import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPe
 import { GasRefundState, GasRefundStorage } from "../../storage/GasRefundStorage.sol";
 import "./IGasRefundLogic.sol";
 
+// Not currently used
 contract GasRefunder {
     modifier refunds() virtual {
         uint256 startGas = gasleft();
