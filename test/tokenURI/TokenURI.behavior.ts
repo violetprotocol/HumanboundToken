@@ -12,16 +12,16 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
-  SoulExtendLogic,
-  SoulMintLogic,
-  SoulPermissionLogic,
+  HumanboundExtendLogic,
+  HumanboundMintLogic,
+  HumanboundPermissionLogic,
 } from "../../src/types";
-import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
+import { HumanboundTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/HumanboundTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeTokenURI(): void {
-  let extendableAsMint: SoulMintLogic;
-  let extendableAsTokenURI: SoulTokenURILogic;
+  let extendableAsMint: HumanboundMintLogic;
+  let extendableAsTokenURI: HumanboundTokenURILogic;
 
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
@@ -35,20 +35,26 @@ export function shouldBehaveLikeTokenURI(): void {
     const erc721HooksArtifact: Artifact = await artifacts.readArtifact("ERC721HooksLogic");
     const erc721HooksLogic = <ERC721HooksLogic>await waffle.deployContract(this.signers.admin, erc721HooksArtifact, []);
 
-    const soulTokenURIArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
-    this.soulTokenURILogic = <SoulTokenURILogic>await waffle.deployContract(this.signers.admin, soulTokenURIArtifact);
+    const humanboundTokenURIArtifact: Artifact = await artifacts.readArtifact("HumanboundTokenURILogic");
+    this.humanboundTokenURILogic = <HumanboundTokenURILogic>(
+      await waffle.deployContract(this.signers.admin, humanboundTokenURIArtifact)
+    );
 
-    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
-    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+    const permissionArtifact: Artifact = await artifacts.readArtifact("HumanboundPermissionLogic");
+    this.permissioning = <HumanboundPermissionLogic>(
+      await waffle.deployContract(this.signers.admin, permissionArtifact, [])
+    );
 
     const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
     const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
 
-    const extend = <SoulExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulExtendLogic");
+    const extend = <HumanboundExtendLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundExtendLogic")
+    );
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
 
-    const permission = <SoulPermissionLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    const permission = <HumanboundPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundPermissionLogic")
     );
     await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
 
@@ -56,7 +62,7 @@ export function shouldBehaveLikeTokenURI(): void {
     await extend.connect(this.signers.operator).extend(this.mintLogic.address);
     await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
     await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
-    await extend.connect(this.signers.operator).extend(this.soulTokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(this.humanboundTokenURILogic.address);
     await extend.connect(this.signers.operator).extend(refund.address);
 
     const extendableAsVerifierExtension = <EATVerifierConnector>(
@@ -64,9 +70,11 @@ export function shouldBehaveLikeTokenURI(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
-    extendableAsTokenURI = <SoulTokenURILogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
+    extendableAsMint = <HumanboundMintLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
+    );
+    extendableAsTokenURI = <HumanboundTokenURILogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundTokenURILogic")
     );
 
     const extendableAsRefund = <GasRefundLogic>(
@@ -80,7 +88,7 @@ export function shouldBehaveLikeTokenURI(): void {
   describe("TokenURI", async () => {
     const tokenId = 42;
     const baseURI = "violet.co/";
-    const tokenURI = "soul/";
+    const tokenURI = "humanbound/";
 
     context("with minted tokens", async function () {
       beforeEach("mint token", async function () {

@@ -8,24 +8,24 @@ import { TaskArguments } from "hardhat/types";
 
 import { GetterLogic } from "../../src/types";
 
-task("soultoken:ownerOf")
-  .addParam("address", "Contract address of SoulToken")
+task("humanboundtoken:ownerOf")
+  .addParam("address", "Contract address of HumanboundToken")
   .addParam("id", "TokenID to check the owner of")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulTokenAsGetter = <GetterLogic>await ethers.getContractAt("GetterLogic", taskArguments.address);
+    const humanboundTokenAsGetter = <GetterLogic>await ethers.getContractAt("GetterLogic", taskArguments.address);
 
-    const owner = await soulTokenAsGetter.callStatic.ownerOf(taskArguments.id);
+    const owner = await humanboundTokenAsGetter.callStatic.ownerOf(taskArguments.id);
 
     console.log(`Owner of token ${taskArguments.id}: ${owner}!`);
   });
 
-task("soultoken:balanceOf")
-  .addParam("address", "Contract address of SoulToken")
+task("humanboundtoken:balanceOf")
+  .addParam("address", "Contract address of HumanboundToken")
   .addParam("user", "User address to check the balance of")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulTokenAsGetter = <GetterLogic>await ethers.getContractAt("GetterLogic", taskArguments.address);
+    const humanboundTokenAsGetter = <GetterLogic>await ethers.getContractAt("GetterLogic", taskArguments.address);
 
-    const balance = await soulTokenAsGetter.callStatic.balanceOf(taskArguments.user);
+    const balance = await humanboundTokenAsGetter.callStatic.balanceOf(taskArguments.user);
 
     console.log(`Balance of ${taskArguments.user}: ${balance}!`);
   });

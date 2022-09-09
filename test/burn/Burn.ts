@@ -1,13 +1,18 @@
 import { artifacts, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import type { AccessTokenVerifier, EATVerifierConnector, SoulExtendLogic, SoulMintLogic } from "../../src/types";
-import { shouldBehaveLikeSoulBurn } from "./Burn.behavior";
+import type {
+  AccessTokenVerifier,
+  EATVerifierConnector,
+  HumanboundExtendLogic,
+  HumanboundMintLogic,
+} from "../../src/types";
+import { shouldBehaveLikeHumanboundBurn } from "./Burn.behavior";
 
-describe("Soul Burn Extension", function () {
+describe("Humanbound Burn Extension", function () {
   before(async function () {
-    const extendArtifact: Artifact = await artifacts.readArtifact("SoulExtendLogic");
-    this.extend = <SoulExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
+    const extendArtifact: Artifact = await artifacts.readArtifact("HumanboundExtendLogic");
+    this.extend = <HumanboundExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
 
     const verifierArtifact: Artifact = await artifacts.readArtifact("AccessTokenVerifier");
     this.verifier = <AccessTokenVerifier>(
@@ -21,8 +26,8 @@ describe("Soul Burn Extension", function () {
       await waffle.deployContract(this.signers.admin, EATVerifierConnectorArtifact)
     );
 
-    const mintArtifact: Artifact = await artifacts.readArtifact("SoulMintLogic");
-    this.mintLogic = <SoulMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
+    const mintArtifact: Artifact = await artifacts.readArtifact("HumanboundMintLogic");
+    this.mintLogic = <HumanboundMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
 
     this.domain = {
       name: "Ethereum Access Token",
@@ -32,5 +37,5 @@ describe("Soul Burn Extension", function () {
     };
   });
 
-  shouldBehaveLikeSoulBurn();
+  shouldBehaveLikeHumanboundBurn();
 });

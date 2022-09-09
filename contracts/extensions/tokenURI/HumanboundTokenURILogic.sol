@@ -4,15 +4,15 @@ pragma solidity >=0.8.13;
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/PermissionedSetTokenURILogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/MetadataGetterLogic.sol";
-import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
+import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../storage/HumanboundPermissionStorage.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
 
-contract SoulTokenURILogic is SetTokenURILogic, MetadataGetterLogic, BasicSetTokenURIExtension {
+contract HumanboundTokenURILogic is SetTokenURILogic, MetadataGetterLogic, BasicSetTokenURIExtension {
     event BaseURISet(string newBaseURI);
     event TokenURISet(uint256 tokenId, string newTokenURI);
 
     modifier onlyOperator() virtual {
-        SoulPermissionState storage state = SoulPermissionStorage._getState();
+        HumanboundPermissionState storage state = HumanboundPermissionStorage._getState();
         require(
             _lastExternalCaller() == state.operator || _lastCaller() == state.operator,
             "SetTokenURI: unauthorised"

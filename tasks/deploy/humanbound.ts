@@ -4,9 +4,9 @@ import { TaskArguments } from "hardhat/types";
 import { ExtendLogic } from "../../src/types";
 import { deploy } from "../helpers";
 
-// Populate this config for your SoulToken deployment
+// Populate this config for your HumanboundToken deployment
 const soulConfig = {
-  name: "Soul Token",
+  name: "Humanbound Token",
   symbol: "SOUL",
   extend: "0x182E32209c5a5a857726911B93204F4228b61941",
   permission: "0xdA57594848b066b85dF38bA9d53f10402C76D494",
@@ -24,7 +24,7 @@ const soulConfig = {
 task("deploy:soultoken").setAction(async function (taskArguments: TaskArguments, { ethers }) {
   const soulToken = await deploy(
     ethers,
-    "SoulToken",
+    "HumanboundToken",
     soulConfig.name,
     soulConfig.symbol,
     soulConfig.extend,
@@ -34,7 +34,7 @@ task("deploy:soultoken").setAction(async function (taskArguments: TaskArguments,
     soulConfig.transfer,
     soulConfig.hooks,
   );
-  console.log("SoulToken deployed to: ", soulToken.address);
+  console.log("HumanboundToken deployed to: ", soulToken.address);
 
   const soulTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", soulToken.address);
   console.log(await soulTokenAsExtend.extend(soulConfig.permission));
@@ -43,5 +43,5 @@ task("deploy:soultoken").setAction(async function (taskArguments: TaskArguments,
   console.log(await soulTokenAsExtend.extend(soulConfig.tokenuri));
   console.log(await soulTokenAsExtend.extend(soulConfig.eatverifierconnector));
 
-  console.log("SoulToken extended with all functionality!");
+  console.log("HumanboundToken extended with all functionality!");
 });

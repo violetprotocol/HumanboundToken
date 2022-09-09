@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import { SoulExtendLogic, SoulPermissionLogic } from "../src/types";
+import { HumanboundExtendLogic, HumanboundPermissionLogic } from "../src/types";
 import { Signers } from "./types";
 import { deployERC165Singleton } from "./utils/utils";
 
@@ -22,10 +22,12 @@ before("setup", async function () {
   });
 
   it("deploy extensions", async function () {
-    const extendArtifact: Artifact = await artifacts.readArtifact("SoulExtendLogic");
-    this.extend = <SoulExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
+    const extendArtifact: Artifact = await artifacts.readArtifact("HumanboundExtendLogic");
+    this.extend = <HumanboundExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
 
-    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
-    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+    const permissionArtifact: Artifact = await artifacts.readArtifact("HumanboundPermissionLogic");
+    this.permissioning = <HumanboundPermissionLogic>(
+      await waffle.deployContract(this.signers.admin, permissionArtifact, [])
+    );
   });
 });

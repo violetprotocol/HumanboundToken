@@ -2,14 +2,19 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import type { AccessTokenVerifier, EATVerifierConnector, SoulExtendLogic, SoulMintLogic } from "../../src/types";
+import type {
+  AccessTokenVerifier,
+  EATVerifierConnector,
+  HumanboundExtendLogic,
+  HumanboundMintLogic,
+} from "../../src/types";
 import { Signers } from "../types";
-import { shouldBehaveLikeSoulMint } from "./Mint.behavior";
+import { shouldBehaveLikeHumanboundMint } from "./Mint.behavior";
 
-describe("Soul Mint Extension", function () {
+describe("Humanbound Mint Extension", function () {
   before(async function () {
-    const extendArtifact: Artifact = await artifacts.readArtifact("SoulExtendLogic");
-    this.extend = <SoulExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
+    const extendArtifact: Artifact = await artifacts.readArtifact("HumanboundExtendLogic");
+    this.extend = <HumanboundExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
 
     const verifierArtifact: Artifact = await artifacts.readArtifact("AccessTokenVerifier");
     this.verifier = <AccessTokenVerifier>(
@@ -23,8 +28,8 @@ describe("Soul Mint Extension", function () {
       await waffle.deployContract(this.signers.admin, EATVerifierConnectorArtifact)
     );
 
-    const mintArtifact: Artifact = await artifacts.readArtifact("SoulMintLogic");
-    this.mintLogic = <SoulMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
+    const mintArtifact: Artifact = await artifacts.readArtifact("HumanboundMintLogic");
+    this.mintLogic = <HumanboundMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
 
     this.domain = {
       name: "Ethereum Access Token",
@@ -34,5 +39,5 @@ describe("Soul Mint Extension", function () {
     };
   });
 
-  shouldBehaveLikeSoulMint();
+  shouldBehaveLikeHumanboundMint();
 });

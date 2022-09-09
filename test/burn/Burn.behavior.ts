@@ -14,16 +14,16 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
+  HumanboundBurnLogic,
+  HumanboundMintLogic,
+  HumanboundPermissionLogic,
   SetTokenURILogic,
-  SoulBurnLogic,
-  SoulMintLogic,
-  SoulPermissionLogic,
 } from "../../src/types";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
-export function shouldBehaveLikeSoulBurn(): void {
-  let extendableAsMint: SoulMintLogic;
-  let extendableAsBurn: SoulBurnLogic;
+export function shouldBehaveLikeHumanboundBurn(): void {
+  let extendableAsMint: HumanboundMintLogic;
+  let extendableAsBurn: HumanboundBurnLogic;
   let extendableAsGetter: GetterLogic;
 
   beforeEach("setup", async function () {
@@ -47,14 +47,14 @@ export function shouldBehaveLikeSoulBurn(): void {
     const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
     const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
 
-    const burnArtifact: Artifact = await artifacts.readArtifact("SoulBurnLogic");
-    this.burnLogic = <SoulBurnLogic>await waffle.deployContract(this.signers.admin, burnArtifact);
+    const burnArtifact: Artifact = await artifacts.readArtifact("HumanboundBurnLogic");
+    this.burnLogic = <HumanboundBurnLogic>await waffle.deployContract(this.signers.admin, burnArtifact);
 
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
 
-    const permission = <SoulPermissionLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    const permission = <HumanboundPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundPermissionLogic")
     );
     await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
 
@@ -72,8 +72,12 @@ export function shouldBehaveLikeSoulBurn(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
-    extendableAsBurn = <SoulBurnLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulBurnLogic");
+    extendableAsMint = <HumanboundMintLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
+    );
+    extendableAsBurn = <HumanboundBurnLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundBurnLogic")
+    );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
     const extendableAsRefund = <GasRefundLogic>(
       await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
@@ -145,7 +149,7 @@ export function shouldBehaveLikeSoulBurn(): void {
         context("as invalid user", async function () {
           it("should fail to burn token", async function () {
             await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
-              "SoulBurnLogic: not token owner",
+              "HumanboundBurnLogic: not token owner",
             );
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
@@ -155,7 +159,7 @@ export function shouldBehaveLikeSoulBurn(): void {
           it("should fail to burn token", async function () {
             await expect(
               extendableAsBurn.connect(this.signers.owner)["burn(uint256,string)"](tokenId, burnProofURI),
-            ).to.be.revertedWith("SoulBurnLogic: unauthorised");
+            ).to.be.revertedWith("HumanboundBurnLogic: unauthorised");
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
         });

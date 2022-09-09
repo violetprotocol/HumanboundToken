@@ -5,8 +5,8 @@ import type { Artifact } from "hardhat/types";
 import type {
   AccessTokenVerifier,
   EATVerifierConnector,
+  HumanboundExtendLogic,
   RequiresAuthExtension,
-  SoulExtendLogic,
 } from "../../src/types";
 import { shouldBehaveLikeEthereumAccessToken } from "./AccessTokenConsumer.behavior";
 

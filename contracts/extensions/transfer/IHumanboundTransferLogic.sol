@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/base/transfer/TransferLogic.sol";
 
-interface ISoulTransferLogic {
+interface IHumanboundTransferLogic {
     function transferFrom(
         uint8 v,
         bytes32 r,
@@ -36,7 +36,7 @@ interface ISoulTransferLogic {
     ) external;
 }
 
-abstract contract SoulTransferExtension is ISoulTransferLogic, TransferLogic {
+abstract contract HumanboundTransferExtension is IHumanboundTransferLogic, TransferLogic {
     /**
      * @dev see {IExtension-getSolidityInterface}
      */
@@ -59,13 +59,13 @@ abstract contract SoulTransferExtension is ISoulTransferLogic, TransferLogic {
         interfaces = new Interface[](2);
 
         bytes4[] memory functions = new bytes4[](3);
-        functions[0] = ISoulTransferLogic.transferFrom.selector;
+        functions[0] = IHumanboundTransferLogic.transferFrom.selector;
         functions[1] = bytes4(keccak256("safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"));
         functions[2] = bytes4(
             keccak256("safeTransferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256,bytes)")
         );
 
         interfaces[0] = super.getInterface()[0];
-        interfaces[1] = Interface(type(ISoulTransferLogic).interfaceId, functions);
+        interfaces[1] = Interface(type(IHumanboundTransferLogic).interfaceId, functions);
     }
 }

@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extensions/permissioning/PermissioningLogic.sol";
 
-interface ISoulPermissionLogic {
+interface IHumanboundPermissionLogic {
     /**
      * @dev Emitted when `operator` is updated in any way
      */
@@ -20,7 +20,7 @@ interface ISoulPermissionLogic {
     function getOperator() external returns (address);
 }
 
-abstract contract SoulPermissionExtension is ISoulPermissionLogic, PermissioningLogic {
+abstract contract HumanboundPermissionExtension is IHumanboundPermissionLogic, PermissioningLogic {
     /**
      * @dev see {IExtension-getSolidityInterface}
      */
@@ -42,10 +42,10 @@ abstract contract SoulPermissionExtension is ISoulPermissionLogic, Permissioning
         interfaces = new Interface[](2);
 
         bytes4[] memory functions = new bytes4[](2);
-        functions[0] = ISoulPermissionLogic.updateOperator.selector;
-        functions[1] = ISoulPermissionLogic.getOperator.selector;
+        functions[0] = IHumanboundPermissionLogic.updateOperator.selector;
+        functions[1] = IHumanboundPermissionLogic.getOperator.selector;
 
         interfaces[1] = super.getInterface()[0];
-        interfaces[0] = Interface(type(ISoulPermissionLogic).interfaceId, functions);
+        interfaces[0] = Interface(type(IHumanboundPermissionLogic).interfaceId, functions);
     }
 }

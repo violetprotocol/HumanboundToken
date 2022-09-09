@@ -1,5 +1,5 @@
-import { shouldBehaveLikeSoulPermissioning } from "./Permission.behavior";
+import { shouldBehaveLikeHumanboundPermissioning } from "./Permission.behavior";
 
-describe("SoulPermission Extension", function () {
-  shouldBehaveLikeSoulPermissioning();
+describe("HumanboundPermission Extension", function () {
+  shouldBehaveLikeHumanboundPermissioning();
 });

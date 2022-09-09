@@ -2,13 +2,13 @@
 pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extensions/Extension.sol";
-import { SoulPermissionState, SoulPermissionStorage } from "../../storage/SoulPermissionStorage.sol";
+import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../storage/HumanboundPermissionStorage.sol";
 import { EthereumAccessTokenState, EthereumAccessTokenStorage } from "../../storage/EthereumAccessTokenStorage.sol";
 import "./IEATVerifierConnector.sol";
 
 contract EATVerifierConnector is EATVerifierConnectorExtension {
     modifier onlyOperatorOrSelf() virtual {
-        SoulPermissionState storage state = SoulPermissionStorage._getState();
+        HumanboundPermissionState storage state = HumanboundPermissionStorage._getState();
         require(
             _lastExternalCaller() == state.operator ||
                 _lastCaller() == state.operator ||

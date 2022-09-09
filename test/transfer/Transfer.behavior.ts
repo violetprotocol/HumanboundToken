@@ -14,19 +14,19 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
+  HumanboundMintLogic,
+  HumanboundPermissionLogic,
+  HumanboundTransferLogic,
   OnReceiveLogic,
-  SoulMintLogic,
-  SoulPermissionLogic,
-  SoulTransferLogic,
 } from "../../src/types";
-import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
+import { HumanboundTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/HumanboundTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeTransfer(): void {
-  let extendableAsMint: SoulMintLogic;
+  let extendableAsMint: HumanboundMintLogic;
   let extendableAsGetter: GetterLogic;
-  let extendableAsTokenURI: SoulTokenURILogic;
-  let extendableAsTransfer: SoulTransferLogic;
+  let extendableAsTokenURI: HumanboundTokenURILogic;
+  let extendableAsTransfer: HumanboundTransferLogic;
 
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
@@ -40,13 +40,15 @@ export function shouldBehaveLikeTransfer(): void {
     const erc721HooksArtifact: Artifact = await artifacts.readArtifact("ERC721HooksLogic");
     const erc721HooksLogic = <ERC721HooksLogic>await waffle.deployContract(this.signers.admin, erc721HooksArtifact, []);
 
-    const soulTokenURILogicArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
-    const soulTokenURILogic = <SoulTokenURILogic>(
-      await waffle.deployContract(this.signers.admin, soulTokenURILogicArtifact, [])
+    const humanboundTokenURILogicArtifact: Artifact = await artifacts.readArtifact("HumanboundTokenURILogic");
+    const humanboundTokenURILogic = <HumanboundTokenURILogic>(
+      await waffle.deployContract(this.signers.admin, humanboundTokenURILogicArtifact, [])
     );
 
-    const transferLogicArtifact: Artifact = await artifacts.readArtifact("SoulTransferLogic");
-    const transferLogic = <SoulTransferLogic>await waffle.deployContract(this.signers.admin, transferLogicArtifact, []);
+    const transferLogicArtifact: Artifact = await artifacts.readArtifact("HumanboundTransferLogic");
+    const transferLogic = <HumanboundTransferLogic>(
+      await waffle.deployContract(this.signers.admin, transferLogicArtifact, [])
+    );
 
     const onReceiveArtifact: Artifact = await artifacts.readArtifact("OnReceiveLogic");
     const onReceiveLogic = <OnReceiveLogic>await waffle.deployContract(this.signers.admin, onReceiveArtifact, []);
@@ -60,8 +62,8 @@ export function shouldBehaveLikeTransfer(): void {
     const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
     const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
 
-    const permission = <SoulPermissionLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    const permission = <HumanboundPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundPermissionLogic")
     );
     await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
 
@@ -69,7 +71,7 @@ export function shouldBehaveLikeTransfer(): void {
     await extend.connect(this.signers.operator).extend(this.mintLogic.address);
     await extend.connect(this.signers.operator).extend(erc721GetterLogic.address);
     await extend.connect(this.signers.operator).extend(erc721HooksLogic.address);
-    await extend.connect(this.signers.operator).extend(soulTokenURILogic.address);
+    await extend.connect(this.signers.operator).extend(humanboundTokenURILogic.address);
     await extend.connect(this.signers.operator).extend(transferLogic.address);
     await extend.connect(this.signers.operator).extend(onReceiveLogic.address);
     await extend.connect(this.signers.operator).extend(approveLogic.address);
@@ -80,13 +82,15 @@ export function shouldBehaveLikeTransfer(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
-    extendableAsTransfer = <SoulTransferLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulTransferLogic")
+    extendableAsMint = <HumanboundMintLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
+    );
+    extendableAsTransfer = <HumanboundTransferLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundTransferLogic")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
-    extendableAsTokenURI = <SoulTokenURILogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
+    extendableAsTokenURI = <HumanboundTokenURILogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundTokenURILogic")
     );
     const extendableAsRefund = <GasRefundLogic>(
       await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
@@ -375,7 +379,7 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.be.revertedWith("SoulTransferLogic-transferFrom: disallowed without EAT");
+            ).to.be.revertedWith("HumanboundTransferLogic-transferFrom: disallowed without EAT");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
@@ -622,7 +626,7 @@ export function shouldBehaveLikeTransfer(): void {
                   this.signers.user1.address,
                   tokenId,
                 ),
-            ).to.be.revertedWith("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
+            ).to.be.revertedWith("HumanboundTransferLogic-safeTransferFrom: disallowed without EAT");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
@@ -877,7 +881,7 @@ export function shouldBehaveLikeTransfer(): void {
                   tokenId,
                   "0xab",
                 ),
-            ).to.be.revertedWith("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
+            ).to.be.revertedWith("HumanboundTransferLogic-safeTransferFrom: disallowed without EAT");
 
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           });
