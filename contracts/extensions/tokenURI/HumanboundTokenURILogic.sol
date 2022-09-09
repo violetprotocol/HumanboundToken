@@ -5,19 +5,39 @@ import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/MintLogi
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/PermissionedSetTokenURILogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/getter/MetadataGetterLogic.sol";
 import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../storage/HumanboundPermissionStorage.sol";
+import { ContractMetadataState, ContractMetadataStorage } from "../../storage/ContractMetadataStorage.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
+import "./IContractMetadata.sol";
 
-contract HumanboundTokenURILogic is SetTokenURILogic, MetadataGetterLogic, BasicSetTokenURIExtension {
+contract HumanboundTokenURILogic is
+    SetTokenURILogic,
+    MetadataGetterLogic,
+    BasicSetTokenURIExtension,
+    ContractMetadataExtension
+{
     event BaseURISet(string newBaseURI);
     event TokenURISet(uint256 tokenId, string newTokenURI);
+    event ContractURISet(string newContractURI);
 
     modifier onlyOperator() virtual {
         HumanboundPermissionState storage state = HumanboundPermissionStorage._getState();
         require(
             _lastExternalCaller() == state.operator || _lastCaller() == state.operator,
-            "SetTokenURI: unauthorised"
+            "HumanboundTokenURILogic: unauthorised"
         );
         _;
+    }
+
+    function contractURI() public virtual override(IContractMetadata) returns (string memory) {
+        ContractMetadataState storage state = ContractMetadataStorage._getState();
+        return state.contractURI;
+    }
+
+    function setContractURI(string memory uri) public virtual override(IContractMetadata) onlyOperator {
+        ContractMetadataState storage state = ContractMetadataStorage._getState();
+        state.contractURI = uri;
+
+        emit ContractURISet(uri);
     }
 
     function tokenURI(uint256 tokenId) public virtual override(MetadataGetterLogic) returns (string memory) {
@@ -56,7 +76,7 @@ contract HumanboundTokenURILogic is SetTokenURILogic, MetadataGetterLogic, Basic
         public
         pure
         virtual
-        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension)
+        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
         returns (string memory)
     {
         return
@@ -64,7 +84,8 @@ contract HumanboundTokenURILogic is SetTokenURILogic, MetadataGetterLogic, Basic
                 abi.encodePacked(
                     SetTokenURIExtension.getSolidityInterface(),
                     BasicSetTokenURIExtension.getSolidityInterface(),
-                    MetadataGetterExtension.getSolidityInterface()
+                    MetadataGetterExtension.getSolidityInterface(),
+                    ContractMetadataExtension.getSolidityInterface()
                 )
             );
     }
@@ -72,13 +93,14 @@ contract HumanboundTokenURILogic is SetTokenURILogic, MetadataGetterLogic, Basic
     function getInterface()
         public
         virtual
-        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension)
+        override(SetTokenURIExtension, BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
         returns (Interface[] memory interfaces)
     {
-        interfaces = new Interface[](3);
+        interfaces = new Interface[](4);
 
         interfaces[0] = SetTokenURIExtension.getInterface()[0];
         interfaces[1] = BasicSetTokenURIExtension.getInterface()[0];
         interfaces[2] = MetadataGetterExtension.getInterface()[0];
+        interfaces[3] = ContractMetadataExtension.getInterface()[0];
     }
 }

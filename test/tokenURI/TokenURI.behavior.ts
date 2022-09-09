@@ -89,6 +89,7 @@ export function shouldBehaveLikeTokenURI(): void {
     const tokenId = 42;
     const baseURI = "violet.co/";
     const tokenURI = "humanbound/";
+    const contractURI = "violet.co/contract";
 
     context("with minted tokens", async function () {
       beforeEach("mint token", async function () {
@@ -136,7 +137,7 @@ export function shouldBehaveLikeTokenURI(): void {
         context("from invalid address", async function () {
           it("should fail to set Base URI", async function () {
             await expect(extendableAsTokenURI.connect(this.signers.user0).setBaseURI(baseURI)).to.be.revertedWith(
-              "SetTokenURI: unauthorised",
+              "HumanboundTokenURILogic: unauthorised",
             );
             expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal("");
             expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal("");
@@ -159,7 +160,7 @@ export function shouldBehaveLikeTokenURI(): void {
           it("should fail to set Token URI", async function () {
             await expect(
               extendableAsTokenURI.connect(this.signers.user0).setTokenURI(tokenId, `${tokenURI}${tokenId.toString()}`),
-            ).to.be.revertedWith("SetTokenURI: unauthorised");
+            ).to.be.revertedWith("HumanboundTokenURILogic: unauthorised");
             expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal("");
           });
         });
@@ -214,6 +215,38 @@ export function shouldBehaveLikeTokenURI(): void {
             expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(
               `${tokenURI}${tokenId.toString()}`,
             );
+          });
+        });
+      });
+    });
+
+    context("Contract URI", async function () {
+      context("setContractURI", async function () {
+        it("as operator should succeed", async function () {
+          await expect(extendableAsTokenURI.connect(this.signers.operator).setContractURI(contractURI))
+            .to.emit(extendableAsTokenURI, "ContractURISet")
+            .withArgs(contractURI);
+
+          expect(await extendableAsTokenURI.callStatic.contractURI()).to.equal(contractURI);
+        });
+
+        it("as non-operator should fail", async function () {
+          await expect(extendableAsTokenURI.connect(this.signers.owner).setContractURI(contractURI)).to.be.revertedWith(
+            "HumanboundTokenURILogic: unauthorised",
+          );
+
+          expect(await extendableAsTokenURI.callStatic.contractURI()).to.equal("");
+        });
+      });
+
+      context("get contractURI", async function () {
+        context("with set contractURI", async function () {
+          beforeEach("set contract uri", async function () {
+            await extendableAsTokenURI.connect(this.signers.operator).setContractURI(contractURI);
+          });
+
+          it("should return contract URI correctly", async function () {
+            expect(await extendableAsTokenURI.callStatic.contractURI()).to.equal(contractURI);
           });
         });
       });
