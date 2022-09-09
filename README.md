@@ -1,17 +1,10 @@
-# Solidity Template
+# Humanbound Token
 
-My favorite setup for writing Solidity smart contracts.
+An ERC721-based non-transferable token.
 
-- [Hardhat](https://github.com/nomiclabs/hardhat): compile and run the smart contracts on a local development network
-- [TypeChain](https://github.com/ethereum-ts/TypeChain): generate TypeScript types for smart contracts
-- [Ethers](https://github.com/ethers-io/ethers.js/): renowned Ethereum library and wallet implementation
-- [Waffle](https://github.com/EthWorks/Waffle): tooling for writing comprehensive smart contract tests
-- [Solhint](https://github.com/protofire/solhint): linter
-- [Solcover](https://github.com/sc-forks/solidity-coverage): code coverage
-- [Prettier Plugin Solidity](https://github.com/prettier-solidity/prettier-plugin-solidity): code formatter
+The Humanbound Token is bound to a wallet upon minting with a valid Ethereum Access Token (EAT). A valid issuer can issue the minting rights to a user through an EAT, where only the authorised user is able to mint and make use of the humanbound token. The token can be transfered only in the case of wallet rotation, where the user will authenticate his identity and be issued an EAT that authorises his rotation.
 
-This is a GitHub template, which means you can reuse it as many times as you want. You can do that by clicking the "Use this
-template" button at the top of the page.
+Built from the Extendable variant of ERC721 to allow dynamic modification of the contracts during runtime.
 
 ## Usage
 
@@ -40,22 +33,6 @@ Compile the smart contracts and generate TypeChain artifacts:
 
 ```sh
 $ yarn typechain
-```
-
-### Lint Solidity
-
-Lint the Solidity code:
-
-```sh
-$ yarn lint:sol
-```
-
-### Lint TypeScript
-
-Lint the TypeScript code:
-
-```sh
-$ yarn lint:ts
 ```
 
 ### Test
@@ -92,20 +69,29 @@ $ yarn clean
 
 ### Deploy
 
-Deploy the contracts to Hardhat Network:
+To deploy an instance of the Humanbound contract, you first need to deploy or ensure deployment of all necessary Extensions:
+
+- ExtendLogic
+- HumanboundPermissionLogic
+- ApproveLogic
+- GetterLogic
+- OnReceiveLogic
+- HumanboundTransferLogic
+- ERC721HooksLogic
+- HumanboundMintLogic
+- HumanboundBurnLogic
+- HumanboundTokenURILogic
+- GasRefundLogic
+- EATVerifierConnector
+
+To deploy all extensions use the hardhat task `deploy:all`:
 
 ```sh
-$ yarn deploy --greeting "Bonjour, le monde!"
+$ yarn hardhat --network <network> deploy:all
 ```
 
-## Syntax Highlighting
+With the deployed Extension addresses, populate the `humanboundConfig` object in the `tasks/deploy/humanbound.ts` file and deploy the Humanbound token:
 
-If you use VSCode, you can enjoy syntax highlighting for your Solidity code via the [hardhat-vscode](https://github.com/NomicFoundation/hardhat-vscode) extension.
-
-## Caveats
-
-### Ethers and Waffle
-
-If you can't get the [Waffle matchers](https://ethereum-waffle.readthedocs.io/en/latest/matchers.html) to work, try to
-make your `ethers` package version match the version used by the `@ethereum-waffle/chai` package. Seem
-[#111](https://github.com/paulrberg/solidity-template/issues/111) for more details.
+```sh
+$ yarn hardhat --network <network> deploy:humanboundtoken
+```

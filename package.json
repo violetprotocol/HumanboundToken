@@ -1,10 +1,9 @@
 {
-  "name": "@prb/solidity-template",
-  "description": "Template for writing Solidity smart contracts",
+  "description": "Humanbound Token Contract",
   "version": "1.0.0",
   "author": {
-    "name": "Paul Razvan Berg",
-    "url": "https://github.com/paulrberg"
+    "name": "0xpApaSmURf",
+    "url": "https://github.com/0xpApaSmURf"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.2",
@@ -26,6 +25,7 @@
     "@types/node": "^17.0.42",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
+    "@violetprotocol/ethereum-access-token-helpers": "^0.2.0",
     "chai": "^4.3.6",
     "commitizen": "^4.2.4",
     "cross-env": "^7.0.3",
@@ -85,5 +85,11 @@
     "prettier:check": "prettier --check --config ./.prettierrc.yaml \"**/*.{js,json,md,sol,ts,yaml,yml}\"",
     "test": "hardhat test",
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.0",
+    "@violetprotocol/erc721extendable": "^1.2.0",
+    "@violetprotocol/ethereum-access-token": "^0.2.0",
+    "@violetprotocol/extendable": "^1.2.1"
   }
 }
