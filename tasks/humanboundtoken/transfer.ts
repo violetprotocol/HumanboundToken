@@ -6,20 +6,20 @@ import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { EATVerifierConnector, SoulTransferLogic } from "../../src/types";
+import { EATVerifierConnector, HumanboundTransferLogic } from "../../src/types";
 
-task("soultoken:transfer")
-  .addParam("address", "Contract address of SoulToken")
+task("humanboundtoken:transfer")
+  .addParam("address", "Contract address of HumanboundToken")
   .addParam("to", "Recipient address of the token to be transferred")
   .addParam("id", "TokenID of the token being transferred")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulTokenAsEATVerifierConnector = <EATVerifierConnector>(
+    const humanboundTokenAsEATVerifierConnector = <EATVerifierConnector>(
       await ethers.getContractAt("EATVerifierConnector", taskArguments.address)
     );
-    const verifier = await soulTokenAsEATVerifierConnector.callStatic.getVerifier();
+    const verifier = await humanboundTokenAsEATVerifierConnector.callStatic.getVerifier();
 
-    const soulTokenAsTransfer = <SoulTransferLogic>(
-      await ethers.getContractAt("SoulTransferLogic", taskArguments.address)
+    const humanboundTokenAsTransfer = <HumanboundTransferLogic>(
+      await ethers.getContractAt("HumanboundTransferLogic", taskArguments.address)
     );
 
     const signers = await ethers.getSigners();
@@ -35,13 +35,13 @@ task("soultoken:transfer")
     const accessToken: AccessTokenStruct = {
       expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 120),
       functionCall: {
-        functionSignature: soulTokenAsTransfer.interface.getSighash(
+        functionSignature: humanboundTokenAsTransfer.interface.getSighash(
           "transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
         ),
-        target: soulTokenAsTransfer.address.toLowerCase(),
+        target: humanboundTokenAsTransfer.address.toLowerCase(),
         caller: signers[0].address,
         parameters: packParameters(
-          soulTokenAsTransfer.interface,
+          humanboundTokenAsTransfer.interface,
           "transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)",
           [signers[0].address, taskArguments.to, taskArguments.id],
         ),
@@ -53,7 +53,7 @@ task("soultoken:transfer")
 
     console.log("Transferring...");
     try {
-      const tx = await soulTokenAsTransfer["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
+      const tx = await humanboundTokenAsTransfer["transferFrom(uint8,bytes32,bytes32,uint256,address,address,uint256)"](
         signature.v,
         signature.r,
         signature.s,
@@ -64,7 +64,9 @@ task("soultoken:transfer")
       );
       const receipt = await tx.wait();
 
-      console.log(`Soul token ${taskArguments.id} transferred from ${signers[0].address} to ${taskArguments.to}!`);
+      console.log(
+        `Humanbound token ${taskArguments.id} transferred from ${signers[0].address} to ${taskArguments.to}!`,
+      );
       console.log(`Transaction: ${receipt.transactionHash}`);
     } catch (e) {
       console.log(e);

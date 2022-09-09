@@ -3,14 +3,14 @@ import { ContractTransaction } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import { Extendable, SoulExtendLogic, SoulPermissionLogic } from "../../src/types";
+import { Extendable, HumanboundExtendLogic, HumanboundPermissionLogic } from "../../src/types";
 import { PERMISSIONING } from "../utils/constants";
 import { expectEvent, getExtendedContractWithInterface } from "../utils/utils";
 
 const NULL_ADDRESS = "0x000000000000000000000000000000000000dEaD";
 
-export function shouldBehaveLikeSoulPermissioning(): void {
-  let extendableAsPermissioning: SoulPermissionLogic;
+export function shouldBehaveLikeHumanboundPermissioning(): void {
+  let extendableAsPermissioning: HumanboundPermissionLogic;
 
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
@@ -20,18 +20,22 @@ export function shouldBehaveLikeSoulPermissioning(): void {
       await waffle.deployContract(this.signers.owner, extendableArtifact, [this.extend.address])
     );
 
-    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
-    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+    const permissionArtifact: Artifact = await artifacts.readArtifact("HumanboundPermissionLogic");
+    this.permissioning = <HumanboundPermissionLogic>(
+      await waffle.deployContract(this.signers.admin, permissionArtifact, [])
+    );
 
-    const extend = <SoulExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulExtendLogic");
+    const extend = <HumanboundExtendLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundExtendLogic")
+    );
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
 
-    extendableAsPermissioning = <SoulPermissionLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    extendableAsPermissioning = <HumanboundPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundPermissionLogic")
     );
   });
 
-  describe("SoulPermissionLogic", async function () {
+  describe("HumanboundPermissionLogic", async function () {
     let tx: ContractTransaction | any;
 
     context("with initialised owner", async function () {

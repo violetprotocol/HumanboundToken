@@ -1,9 +1,9 @@
 {
-  "description": "Template for writing Solidity smart contracts",
+  "description": "Humanbound Token Contract",
   "version": "1.0.0",
   "author": {
-    "name": "Paul Razvan Berg",
-    "url": "https://github.com/paulrberg"
+    "name": "0xpApaSmURf",
+    "url": "https://github.com/0xpApaSmURf"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.2",

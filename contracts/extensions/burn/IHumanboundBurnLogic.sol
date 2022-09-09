@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/base/burn/Burn.sol";
 
-interface ISoulBurnLogic {
+interface IHumanboundBurnLogic {
     event BurntWithProof(uint256 tokenId, string burnProofURI);
     event BurntByOwner(uint256 tokenId);
 
@@ -12,7 +12,7 @@ interface ISoulBurnLogic {
     function burn(uint256 tokenId) external;
 }
 
-abstract contract SoulBurnExtension is ISoulBurnLogic, Extension {
+abstract contract HumanboundBurnExtension is IHumanboundBurnLogic, Extension {
     /**
      * @dev see {IExtension-getSolidityInterface}
      */
@@ -32,6 +32,6 @@ abstract contract SoulBurnExtension is ISoulBurnLogic, Extension {
         functions[0] = bytes4(keccak256("burn(uint256,string)"));
         functions[1] = bytes4(keccak256("burn(uint256)"));
 
-        interfaces[0] = Interface(type(ISoulBurnLogic).interfaceId, functions);
+        interfaces[0] = Interface(type(IHumanboundBurnLogic).interfaceId, functions);
     }
 }

@@ -2,26 +2,28 @@ import { ContractTransaction } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { SoulBurnLogic } from "../../src/types";
+import { HumanboundBurnLogic } from "../../src/types";
 
-task("soultoken:burn")
-  .addParam("address", "Contract address of SoulToken")
+task("humanboundtoken:burn")
+  .addParam("address", "Contract address of HumanboundToken")
   .addParam("id", "TokenID of the token being burnt")
   .addOptionalParam("burnproof", "URI containing a proof of why the token is to be burned")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulTokenAsBurn = <SoulBurnLogic>await ethers.getContractAt("SoulBurnLogic", taskArguments.address);
+    const humanboundTokenAsBurn = <HumanboundBurnLogic>(
+      await ethers.getContractAt("HumanboundBurnLogic", taskArguments.address)
+    );
 
     let tx: ContractTransaction;
     console.log("Burning...");
     try {
       if (taskArguments.burnproof) {
-        tx = await soulTokenAsBurn["burn(uint256,string)"](taskArguments.id, taskArguments.burnproof);
+        tx = await humanboundTokenAsBurn["burn(uint256,string)"](taskArguments.id, taskArguments.burnproof);
       } else {
-        tx = await soulTokenAsBurn["burn(uint256)"](taskArguments.id);
+        tx = await humanboundTokenAsBurn["burn(uint256)"](taskArguments.id);
       }
       const receipt = await tx.wait();
 
-      console.log(`Soul token ${taskArguments.id} burnt!`);
+      console.log(`Humanbound token ${taskArguments.id} burnt!`);
       console.log(`Transaction: ${receipt.transactionHash}`);
     } catch (e) {
       console.log(e);

@@ -1,14 +1,27 @@
 const deployExtension = require("./deploy/extension");
-const deploySoul = require("./deploy/soul");
+const deployAll = require("./deploy/all");
+const deployHumanbound = require("./deploy/humanbound");
 
 const extend = require("./extend");
 const accounts = require("./accounts");
 
-const eatVerifier = require("./soultoken/eatVerifier");
-const mint = require("./soultoken/mint");
-const burn = require("./soultoken/burn");
-const transfer = require("./soultoken/transfer");
-const getter = require("./soultoken/getter");
-const uri = require("./soultoken/uri");
+const eatVerifier = require("./humanboundtoken/eatVerifier");
+const mint = require("./humanboundtoken/mint");
+const burn = require("./humanboundtoken/burn");
+const transfer = require("./humanboundtoken/transfer");
+const getter = require("./humanboundtoken/getter");
+const uri = require("./humanboundtoken/uri");
 
-export { accounts, deployExtension, extend, deploySoul, eatVerifier, mint, burn, transfer, getter, uri };
+export {
+  accounts,
+  deployExtension,
+  deployAll,
+  extend,
+  deployHumanbound,
+  eatVerifier,
+  mint,
+  burn,
+  transfer,
+  getter,
+  uri,
+};

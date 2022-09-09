@@ -4,7 +4,13 @@ import { ContractTransaction } from "ethers";
 import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
-import { Extendable, GasRefundLogic, MockRefund, SoulExtendLogic, SoulPermissionLogic } from "../../src/types";
+import {
+  Extendable,
+  GasRefundLogic,
+  HumanboundExtendLogic,
+  HumanboundPermissionLogic,
+  MockRefund,
+} from "../../src/types";
 import { PERMISSIONING } from "../utils/constants";
 import { expectEvent, getExtendedContractWithInterface } from "../utils/utils";
 
@@ -28,14 +34,18 @@ export function shouldBehaveLikeGasRefund(): void {
     const mockRefundArtifact: Artifact = await artifacts.readArtifact("MockRefund");
     const mockRefund = <MockRefund>await waffle.deployContract(this.signers.admin, mockRefundArtifact, []);
 
-    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
-    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+    const permissionArtifact: Artifact = await artifacts.readArtifact("HumanboundPermissionLogic");
+    this.permissioning = <HumanboundPermissionLogic>(
+      await waffle.deployContract(this.signers.admin, permissionArtifact, [])
+    );
 
-    const extend = <SoulExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulExtendLogic");
+    const extend = <HumanboundExtendLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundExtendLogic")
+    );
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
 
-    const permission = <SoulPermissionLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    const permission = <HumanboundPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundPermissionLogic")
     );
     await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
 

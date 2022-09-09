@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/ERC721Metadata.sol";
 
-contract SoulToken is ERC721Metadata {
+contract HumanboundToken is ERC721Metadata {
     constructor(
         string memory name_,
         string memory symbol_,

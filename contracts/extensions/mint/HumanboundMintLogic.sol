@@ -3,10 +3,10 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/metadata/setTokenURI/ISetTokenURILogic.sol";
 import "../EAT/AccessTokenConsumerExtension.sol";
-import "./ISoulMintLogic.sol";
+import "./IHumanboundMintLogic.sol";
 import "../refund/IGasRefundLogic.sol";
 
-contract SoulMintLogic is SoulMintExtension, Mint, AccessTokenConsumerExtension {
+contract HumanboundMintLogic is HumanboundMintExtension, Mint, AccessTokenConsumerExtension {
     function mint(
         uint8 v,
         bytes32 r,

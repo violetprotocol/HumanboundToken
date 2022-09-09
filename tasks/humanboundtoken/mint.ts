@@ -5,20 +5,22 @@ import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { EATVerifierConnector, SoulMintLogic } from "../../src/types";
+import { EATVerifierConnector, HumanboundMintLogic } from "../../src/types";
 
-task("soultoken:mint")
-  .addParam("address", "Contract address of SoulToken")
+task("humanboundtoken:mint")
+  .addParam("address", "Contract address of HumanboundToken")
   .addParam("to", "Recipient address of the token to be minted")
   .addParam("id", "TokenID of the token being minted")
   .addParam("tokenuri", "TokenURI resource link that contains the token metadata", "")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
-    const soulTokenAsEATVerifierConnector = <EATVerifierConnector>(
+    const humanboundTokenAsEATVerifierConnector = <EATVerifierConnector>(
       await ethers.getContractAt("EATVerifierConnector", taskArguments.address)
     );
-    const verifier = await soulTokenAsEATVerifierConnector.callStatic.getVerifier();
+    const verifier = await humanboundTokenAsEATVerifierConnector.callStatic.getVerifier();
 
-    const soulTokenAsMint = <SoulMintLogic>await ethers.getContractAt("SoulMintLogic", taskArguments.address);
+    const humanboundTokenAsMint = <HumanboundMintLogic>(
+      await ethers.getContractAt("HumanboundMintLogic", taskArguments.address)
+    );
 
     const signers = await ethers.getSigners();
 
@@ -33,10 +35,10 @@ task("soultoken:mint")
     const accessToken: AccessTokenStruct = {
       expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 120),
       functionCall: {
-        functionSignature: soulTokenAsMint.interface.getSighash("mint"),
-        target: soulTokenAsMint.address.toLowerCase(),
+        functionSignature: humanboundTokenAsMint.interface.getSighash("mint"),
+        target: humanboundTokenAsMint.address.toLowerCase(),
         caller: signers[0].address,
-        parameters: packParameters(soulTokenAsMint.interface, "mint", [
+        parameters: packParameters(humanboundTokenAsMint.interface, "mint", [
           taskArguments.to,
           taskArguments.id,
           taskArguments.tokenuri,
@@ -48,7 +50,7 @@ task("soultoken:mint")
     const signature = splitSignature(await signAccessToken(signers[0], domain, accessToken));
 
     console.log("Minting...");
-    const tx = await soulTokenAsMint.mint(
+    const tx = await humanboundTokenAsMint.mint(
       signature.v,
       signature.r,
       signature.s,
@@ -59,6 +61,6 @@ task("soultoken:mint")
     );
     const receipt = await tx.wait();
 
-    console.log(`Soul token ${taskArguments.id} minted to ${taskArguments.to}!`);
+    console.log(`Humanbound token ${taskArguments.id} minted to ${taskArguments.to}!`);
     console.log(`Transaction: ${receipt.transactionHash}`);
   });

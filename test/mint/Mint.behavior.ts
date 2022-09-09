@@ -14,16 +14,16 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
-  SoulMintLogic,
-  SoulPermissionLogic,
+  HumanboundMintLogic,
+  HumanboundPermissionLogic,
 } from "../../src/types";
-import { SoulTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/SoulTokenURILogic";
+import { HumanboundTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/HumanboundTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
-export function shouldBehaveLikeSoulMint(): void {
-  let extendableAsMint: SoulMintLogic;
+export function shouldBehaveLikeHumanboundMint(): void {
+  let extendableAsMint: HumanboundMintLogic;
   let extendableAsGetter: GetterLogic;
-  let extendableAsTokenURI: SoulTokenURILogic;
+  let extendableAsTokenURI: HumanboundTokenURILogic;
 
   beforeEach("setup", async function () {
     const extendableArtifact: Artifact = await artifacts.readArtifact("Extendable");
@@ -37,11 +37,15 @@ export function shouldBehaveLikeSoulMint(): void {
     const erc721HooksArtifact: Artifact = await artifacts.readArtifact("ERC721HooksLogic");
     const erc721HooksLogic = <ERC721HooksLogic>await waffle.deployContract(this.signers.admin, erc721HooksArtifact, []);
 
-    const tokenURILogicArtifact: Artifact = await artifacts.readArtifact("SoulTokenURILogic");
-    const tokenURILogic = <SoulTokenURILogic>await waffle.deployContract(this.signers.admin, tokenURILogicArtifact, []);
+    const tokenURILogicArtifact: Artifact = await artifacts.readArtifact("HumanboundTokenURILogic");
+    const tokenURILogic = <HumanboundTokenURILogic>(
+      await waffle.deployContract(this.signers.admin, tokenURILogicArtifact, [])
+    );
 
-    const permissionArtifact: Artifact = await artifacts.readArtifact("SoulPermissionLogic");
-    this.permissioning = <SoulPermissionLogic>await waffle.deployContract(this.signers.admin, permissionArtifact, []);
+    const permissionArtifact: Artifact = await artifacts.readArtifact("HumanboundPermissionLogic");
+    this.permissioning = <HumanboundPermissionLogic>(
+      await waffle.deployContract(this.signers.admin, permissionArtifact, [])
+    );
 
     const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
     const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
@@ -49,8 +53,8 @@ export function shouldBehaveLikeSoulMint(): void {
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
 
-    const permission = <SoulPermissionLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulPermissionLogic")
+    const permission = <HumanboundPermissionLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundPermissionLogic")
     );
     await permission.connect(this.signers.owner).updateOperator(this.signers.operator.address);
 
@@ -66,10 +70,12 @@ export function shouldBehaveLikeSoulMint(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <SoulMintLogic>await getExtendedContractWithInterface(this.extendable.address, "SoulMintLogic");
+    extendableAsMint = <HumanboundMintLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
+    );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
-    extendableAsTokenURI = <SoulTokenURILogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "SoulTokenURILogic")
+    extendableAsTokenURI = <HumanboundTokenURILogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundTokenURILogic")
     );
     const extendableAsRefund = <GasRefundLogic>(
       await getExtendedContractWithInterface(this.extendable.address, "GasRefundLogic")
@@ -82,7 +88,7 @@ export function shouldBehaveLikeSoulMint(): void {
   describe("Mint", async () => {
     const tokenId = 42;
     const baseURI = "violet.co/";
-    const tokenURI = "soul/";
+    const tokenURI = "humanbound/";
 
     context("with EAT", async () => {
       context("from correct signer", async function () {

@@ -2,9 +2,9 @@
 pragma solidity >=0.8.13;
 
 import "../EAT/AccessTokenConsumerExtension.sol";
-import "./ISoulTransferLogic.sol";
+import "./IHumanboundTransferLogic.sol";
 
-contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtension {
+contract HumanboundTransferLogic is HumanboundTransferExtension, AccessTokenConsumerExtension {
     /**
      * @dev See {ITransferLogic-transferFrom}.
      */
@@ -13,7 +13,7 @@ contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtensio
         address to,
         uint256 tokenId
     ) public virtual override {
-        revert("SoulTransferLogic-transferFrom: disallowed without EAT");
+        revert("HumanboundTransferLogic-transferFrom: disallowed without EAT");
     }
 
     /**
@@ -24,7 +24,7 @@ contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtensio
         address to,
         uint256 tokenId
     ) public virtual override {
-        revert("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
+        revert("HumanboundTransferLogic-safeTransferFrom: disallowed without EAT");
     }
 
     /**
@@ -36,7 +36,7 @@ contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtensio
         uint256 tokenId,
         bytes memory _data
     ) public virtual override {
-        revert("SoulTransferLogic-safeTransferFrom: disallowed without EAT");
+        revert("HumanboundTransferLogic-safeTransferFrom: disallowed without EAT");
     }
 
     function transferFrom(
@@ -47,7 +47,7 @@ contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtensio
         address from,
         address to,
         uint256 tokenId
-    ) public override(ISoulTransferLogic) requiresAuth(v, r, s, expiry) {
+    ) public override(IHumanboundTransferLogic) requiresAuth(v, r, s, expiry) {
         _transfer(from, to, tokenId);
     }
 
@@ -59,7 +59,7 @@ contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtensio
         address from,
         address to,
         uint256 tokenId
-    ) public override(ISoulTransferLogic) requiresAuth(v, r, s, expiry) {
+    ) public override(IHumanboundTransferLogic) requiresAuth(v, r, s, expiry) {
         _safeTransfer(from, to, tokenId, "");
     }
 
@@ -72,7 +72,7 @@ contract SoulTransferLogic is SoulTransferExtension, AccessTokenConsumerExtensio
         address to,
         uint256 tokenId,
         bytes memory data
-    ) public override(ISoulTransferLogic) requiresAuth(v, r, s, expiry) {
+    ) public override(IHumanboundTransferLogic) requiresAuth(v, r, s, expiry) {
         _safeTransfer(from, to, tokenId, data);
     }
 }

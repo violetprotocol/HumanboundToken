@@ -6,21 +6,21 @@ import {
   AccessTokenVerifier,
   EATVerifierConnector,
   ExtendLogic,
+  HumanboundExtendLogic,
+  HumanboundMintLogic,
+  HumanboundPermissionLogic,
   RequiresAuthExtension,
-  SoulExtendLogic,
-  SoulMintLogic,
-  SoulPermissionLogic,
 } from "../src/types";
 
 declare module "mocha" {
   export interface Context {
-    extend: SoulExtendLogic;
-    permissioning: SoulPermissionLogic;
+    extend: HumanboundExtendLogic;
+    permissioning: HumanboundPermissionLogic;
     verifier: AccessTokenVerifier;
     verifierExtension: EATVerifierConnector;
     requiresAuth: RequiresAuthExtension;
     consumerCaller: AccessTokenConsumerCaller;
-    mintLogic: SoulMintLogic;
+    mintLogic: HumanboundMintLogic;
     loadFixture: <T>(fixture: Fixture<T>) => Promise<T>;
     signers: Signers;
   }

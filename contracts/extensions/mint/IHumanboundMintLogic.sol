@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/base/mint/Mint.sol";
 
-interface ISoulMintLogic {
+interface IHumanboundMintLogic {
     event Minted(address indexed to, uint256 indexed tokenId);
 
     function mint(
@@ -17,7 +17,7 @@ interface ISoulMintLogic {
     ) external;
 }
 
-abstract contract SoulMintExtension is ISoulMintLogic, Extension {
+abstract contract HumanboundMintExtension is IHumanboundMintLogic, Extension {
     /**
      * @dev see {IExtension-getSolidityInterface}
      */
@@ -32,8 +32,8 @@ abstract contract SoulMintExtension is ISoulMintLogic, Extension {
         interfaces = new Interface[](1);
 
         bytes4[] memory functions = new bytes4[](1);
-        functions[0] = ISoulMintLogic.mint.selector;
+        functions[0] = IHumanboundMintLogic.mint.selector;
 
-        interfaces[0] = Interface(type(ISoulMintLogic).interfaceId, functions);
+        interfaces[0] = Interface(type(IHumanboundMintLogic).interfaceId, functions);
     }
 }
