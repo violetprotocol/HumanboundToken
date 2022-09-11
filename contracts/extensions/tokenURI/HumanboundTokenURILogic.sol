@@ -90,10 +90,11 @@ contract HumanboundTokenURILogic is MetadataGetterLogic, BasicSetTokenURIExtensi
         override(BasicSetTokenURIExtension, MetadataGetterExtension, ContractMetadataExtension)
         returns (Interface[] memory interfaces)
     {
-        interfaces = new Interface[](3);
+        interfaces = new Interface[](4);
 
         interfaces[0] = BasicSetTokenURIExtension.getInterface()[0];
-        interfaces[1] = MetadataGetterExtension.getInterface()[0];
-        interfaces[2] = ContractMetadataExtension.getInterface()[0];
+        interfaces[1] = BasicSetTokenURIExtension.getInterface()[1];
+        interfaces[2] = MetadataGetterExtension.getInterface()[0];
+        interfaces[3] = ContractMetadataExtension.getInterface()[0];
     }
 }
