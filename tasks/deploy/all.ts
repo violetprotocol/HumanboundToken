@@ -2,7 +2,10 @@ import { task } from "hardhat/config";
 
 import { deploy } from "../helpers";
 
-task("deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function ({ ethers }) {
+task("deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function (
+  taskArguments,
+  { ethers },
+) {
   let contract = await deploy(ethers, "HumanboundExtendLogic");
   console.log(`HumanboundExtendLogic deployed to: `, contract.address);
 
@@ -34,7 +37,7 @@ task("deploy:all", "Deploys all extensions needed for Humanbound token").setActi
   console.log(`HumanboundTokenURILogic deployed to: `, contract.address);
 
   contract = await deploy(ethers, "GasRefundLogic");
-  console.log(`HumanboundTokenURILogic deployed to: `, contract.address);
+  console.log(`GasRefundLogic deployed to: `, contract.address);
 
   contract = await deploy(ethers, "EATVerifierConnector");
   console.log(`EATVerifierConnector deployed to: `, contract.address);
