@@ -3243,13 +3243,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@violetprotocol/erc721extendable@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@violetprotocol/erc721extendable@npm:1.2.0"
+"@violetprotocol/erc721extendable@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@violetprotocol/erc721extendable@npm:1.2.1"
   dependencies:
     "@openzeppelin/contracts": ^4.3.0
-    "@violetprotocol/extendable": ^1.2.0
-  checksum: f294d8ff2fa178d6efb7552e8d86c2219036d7236c1b063f8e213ee5ae344240e7f24dc380c782faf7fbd69ed89e5f043f455af8188a3f530078d8c1863bf4ae
+    "@violetprotocol/extendable": ^1.2.2
+  checksum: 0e7cf08f557f5c23fa9dff0dd1318b9b547a3eff2b2c6d057d6d2377b710e53dac1ed186eeec279dac489b48878937802760f5ab1817e32c4ac6586b4d012149
   languageName: node
   linkType: hard
 
@@ -3267,21 +3267,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@violetprotocol/extendable@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@violetprotocol/extendable@npm:1.2.0"
+"@violetprotocol/extendable@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@violetprotocol/extendable@npm:1.2.2"
   dependencies:
     "@openzeppelin/contracts": ^4.3.0
-  checksum: 7b92c0fd7509d0a658248fe3a39ded74d10a605d97e7a56a708d8e70a18d0229b352feea8b251d3a376f451677b3e9a6f8514059239861c6ec11e4e3a7cbc831
-  languageName: node
-  linkType: hard
-
-"@violetprotocol/extendable@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@violetprotocol/extendable@npm:1.2.1"
-  dependencies:
-    "@openzeppelin/contracts": ^4.3.0
-  checksum: af6b9d651e30db0e4f480655f900e78486e43179915860cd715fb9cc4f1a2ad180e7155d06e0875cd51374671397ac6401cb0fd2c7264e5f72affce4d93d36c2
+  checksum: 2362fce6a3bd8c5bb765412e11eeb1385c0fdcb73b2fbf930531cfde2a960fcabb5355bcb4cfb1bd0f9d2a3d3965c84281ef5ed4ff093ddc57785e35491ba908
   languageName: node
   linkType: hard
 
@@ -14042,10 +14033,10 @@ resolve@1.1.x:
     "@types/node": ^17.0.42
     "@typescript-eslint/eslint-plugin": ^5.27.1
     "@typescript-eslint/parser": ^5.27.1
-    "@violetprotocol/erc721extendable": ^1.2.0
+    "@violetprotocol/erc721extendable": ^1.2.1
     "@violetprotocol/ethereum-access-token": ^0.2.0
     "@violetprotocol/ethereum-access-token-helpers": ^0.2.0
-    "@violetprotocol/extendable": ^1.2.1
+    "@violetprotocol/extendable": ^1.2.2
     chai: ^4.3.6
     commitizen: ^4.2.4
     cross-env: ^7.0.3
