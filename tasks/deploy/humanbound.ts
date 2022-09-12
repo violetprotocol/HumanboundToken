@@ -1,7 +1,8 @@
+import { ContractReceipt } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { ERC721Metadata, ExtendLogic, Extension, HumanboundToken, IERC165 } from "../../src/types";
+import { ExtendLogic, Extension } from "../../src/types";
 import { deploy } from "../helpers";
 
 // Populate this config for your HumanboundToken deployment
@@ -20,6 +21,16 @@ const humanboundConfig = {
   tokenuri: "0x596724AeAA60765654FF8a064aaaB034Fc84860C",
   gasrefund: "0xD55e09ce5a88F034f70A94804894E3D5de7433bA",
   eatverifierconnector: "0xA255aE2E449c44E843A0A30F3e1e06CA33bE6FA5",
+};
+
+const extend = async (humanboundAsExtend: ExtendLogic, extensionAddress: string) => {
+  const tx = await humanboundAsExtend.extend(extensionAddress);
+  const receipt: ContractReceipt = await tx.wait();
+  if (receipt.status === 0) {
+    throw new Error(`Error while extending with ${extensionAddress}, tx hash: ${receipt.transactionHash}`);
+  } else {
+    console.log(`Successfully extended with ${extensionAddress}!`);
+  }
 };
 
 task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArguments, { ethers }) {
@@ -41,12 +52,19 @@ task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArgu
   await humanboundTokenAsERC165.registerInterface("0x5b5e139f");
 
   const humanboundTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", humanboundToken.address);
-  console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.permission)).wait());
-  console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.mint)).wait());
-  console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.burn)).wait());
-  console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.tokenuri)).wait());
-  console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.gasrefund)).wait());
-  console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.eatverifierconnector)).wait());
+
+  console.log(`Extending with Permission Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.permission);
+  console.log(`Extending with Minting Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.mint);
+  console.log(`Extending with Burn Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.burn);
+  console.log(`Extending with Token URI Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.tokenuri);
+  console.log(`Extending with Gas Refund Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.gasrefund);
+  console.log(`Extending with EAT Verifier Connector Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.eatverifierconnector);
 
   console.log("HumanboundToken extended with all functionality!");
 });
