@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { ExtendLogic } from "../../src/types";
+import { ERC721Metadata, ExtendLogic, Extension, HumanboundToken, IERC165 } from "../../src/types";
 import { deploy } from "../helpers";
 
 // Populate this config for your HumanboundToken deployment
@@ -37,6 +37,9 @@ task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArgu
   );
   console.log("HumanboundToken deployed to: ", humanboundToken.address);
 
+  const humanboundTokenAsERC165 = <Extension>await ethers.getContractAt("Extension", humanboundToken.address);
+  await humanboundTokenAsERC165.registerInterface("0x5b5e139f");
+
   const humanboundTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", humanboundToken.address);
   console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.permission)).wait());
   console.log(await (await humanboundTokenAsExtend.extend(humanboundConfig.mint)).wait());
@@ -47,9 +50,3 @@ task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArgu
 
   console.log("HumanboundToken extended with all functionality!");
 });
-
-// const extend = async (humanboundContract: ExtendLogic, extension: string) => {
-//   let try: number = 0;
-
-//   const humanboundTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", humanboundToken.address);
-// }
