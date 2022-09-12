@@ -4,7 +4,7 @@ import "@typechain/hardhat";
 import { config as dotenvConfig } from "dotenv";
 import "hardhat-gas-reporter";
 import { HardhatUserConfig } from "hardhat/config";
-import { HDAccountsUserConfig, NetworkUserConfig } from "hardhat/types";
+import { NetworkUserConfig } from "hardhat/types";
 import { resolve } from "path";
 import "solidity-coverage";
 
@@ -35,6 +35,7 @@ const chainIds = {
   polygonMainnet: 137,
   rinkeby: 4,
   kovan: 42,
+  goerli: 5,
 };
 
 function getChainConfig(network: keyof typeof chainIds): NetworkUserConfig {
@@ -75,6 +76,7 @@ const config: HardhatUserConfig = {
       polygon: process.env.POLYGONSCAN_API_KEY || "",
       rinkeby: process.env.ETHERSCAN_API_KEY || "",
       kovan: process.env.ETHERSCAN_API_KEY || "",
+      goerli: process.env.ETHERSCAN_API_KEY || "",
     },
   },
   networks: {
@@ -92,6 +94,7 @@ const config: HardhatUserConfig = {
     polygon: getChainConfig("polygonMainnet"),
     rinkeby: getChainConfig("rinkeby"),
     kovan: getChainConfig("kovan"),
+    goerli: getChainConfig("goerli"),
   },
   paths: {
     artifacts: "./artifacts",
