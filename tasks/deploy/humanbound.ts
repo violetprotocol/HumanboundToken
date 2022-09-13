@@ -25,11 +25,18 @@ const humanboundConfig = {
 
 const extend = async (humanboundAsExtend: ExtendLogic, extensionAddress: string) => {
   const tx = await humanboundAsExtend.extend(extensionAddress);
-  const receipt: ContractReceipt = await tx.wait();
-  if (receipt.status === 0) {
-    throw new Error(`Error while extending with ${extensionAddress}, tx hash: ${receipt.transactionHash}`);
-  } else {
-    console.log(`Successfully extended with ${extensionAddress}!`);
+  try {
+    const receipt: ContractReceipt = await tx.wait();
+    if (receipt.status === 0) {
+      throw new Error(
+        `Error while extending with ${extensionAddress}, Transaction Reverted! Tx hash: ${receipt.transactionHash}`,
+      );
+    } else {
+      console.log(`Successfully extended with ${extensionAddress}!`);
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error(`Error while extending with ${extensionAddress}`);
   }
 };
 
