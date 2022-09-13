@@ -3,6 +3,7 @@ const deployAll = require("./deploy/all");
 const deployHumanbound = require("./deploy/humanbound");
 
 const extend = require("./extend");
+const getInterface = require("./getInterface");
 const accounts = require("./accounts");
 
 const eatVerifier = require("./humanboundtoken/eatVerifier");
@@ -17,6 +18,7 @@ export {
   deployExtension,
   deployAll,
   extend,
+  getInterface,
   deployHumanbound,
   eatVerifier,
   mint,
