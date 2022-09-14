@@ -1,6 +1,7 @@
+import { LedgerSigner } from "@anders-t/ethers-ledger";
 import { task } from "hardhat/config";
 
-import { deploy } from "../helpers";
+import { deploy, deployWithLedger } from "../helpers";
 
 task("deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function (
   taskArguments,
@@ -40,5 +41,48 @@ task("deploy:all", "Deploys all extensions needed for Humanbound token").setActi
   console.log(`GasRefundLogic deployed to: `, contract.address);
 
   contract = await deploy(ethers, "EATVerifierConnector");
+  console.log(`EATVerifierConnector deployed to: `, contract.address);
+});
+
+task("hd:deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function (
+  _taskArguments,
+  { ethers },
+) {
+  const ledger = new LedgerSigner(ethers.provider);
+
+  let contract = await deployWithLedger(ledger, ethers, "HumanboundExtendLogic");
+  console.log(`HumanboundExtendLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "HumanboundPermissionLogic");
+  console.log(`HumanboundPermissionLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "ApproveLogic");
+  console.log(`ApproveLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "GetterLogic");
+  console.log(`GetterLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "OnReceiveLogic");
+  console.log(`OnReceiveLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "HumanboundTransferLogic");
+  console.log(`HumanboundTransferLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "ERC721HooksLogic");
+  console.log(`ERC721HooksLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "HumanboundMintLogic");
+  console.log(`HumanboundMintLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "HumanboundBurnLogic");
+  console.log(`HumanboundBurnLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "HumanboundTokenURILogic");
+  console.log(`HumanboundTokenURILogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "GasRefundLogic");
+  console.log(`GasRefundLogic deployed to: `, contract.address);
+
+  contract = await deployWithLedger(ledger, ethers, "EATVerifierConnector");
   console.log(`EATVerifierConnector deployed to: `, contract.address);
 });

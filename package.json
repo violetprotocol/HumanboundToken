@@ -9,7 +9,7 @@
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
     "@ethersproject/abi": "^5.6.3",
-    "@ethersproject/abstract-signer": "^5.6.2",
+    "@ethersproject/abstract-signer": "^5.6.8",
     "@ethersproject/bignumber": "^5.6.2",
     "@ethersproject/bytes": "^5.6.1",
     "@ethersproject/providers": "^5.6.8",
@@ -34,7 +34,7 @@
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "ethereum-waffle": "^3.4.4",
-    "ethers": "^5.6.8",
+    "ethers": "^5.7.1",
     "fs-extra": "^10.1.0",
     "hardhat": "^2.9.9",
     "hardhat-gas-reporter": "^1.0.8",
@@ -87,6 +87,7 @@
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
   },
   "dependencies": {
+    "@anders-t/ethers-ledger": "^1.0.4",
     "@openzeppelin/contracts": "^4.7.0",
     "@violetprotocol/erc721extendable": "^1.2.1",
     "@violetprotocol/ethereum-access-token": "^0.2.0",

@@ -1,30 +1,42 @@
-import { ContractReceipt } from "ethers";
+import { LedgerSigner } from "@anders-t/ethers-ledger";
+import { ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
 import { ExtendLogic, Extension } from "../../src/types";
-import { deploy } from "../helpers";
+import { deploy, deployWithLedger } from "../helpers";
 
 // Populate this config for your HumanboundToken deployment
 const humanboundConfig = {
   name: "Humanbound Token",
   symbol: "HBT",
-  extend: "0x9521C3596A20Ea196f9f391F03f182BaB4e0ca3D",
-  permission: "0xC9AfC2a45D9F58356CcDF01Fa5F7e9Cee23763E1",
-  approve: "0x4ea1A7512cdF67dE7F76034a8b1B483A67154Cc7",
-  getter: "0xf93C6c23d8968d255946C916f46732797e76236e",
-  onreceive: "0x079Fa8A293A925cd60C47DF3C1e01C63F51f5E45",
-  transfer: "0x25e29De8E4e14Ff44a5380995340e9aBe087b3ef",
-  hooks: "0xFd01d0ce486a125F358fc1b2AaC6073ae51444E8",
-  mint: "0x71d743C76f3F37a476eAD5D730430628B1f5F1F9",
-  burn: "0x52759d249e234749F86F3A4663b8e662B2a1176C",
-  tokenuri: "0x596724AeAA60765654FF8a064aaaB034Fc84860C",
-  gasrefund: "0xD55e09ce5a88F034f70A94804894E3D5de7433bA",
-  eatverifierconnector: "0xA255aE2E449c44E843A0A30F3e1e06CA33bE6FA5",
+  extend: "0x75d98059da05DD2488706E11E629991B0fF272e3",
+  permission: "0x0A3fA62ac17D62c8B494dA90A9C3f4f7c369b0d8",
+  approve: "0xaf3D08525df81F8B663c938b4C7f2df228414495",
+  getter: "0x62fc47d44FE3e956DecAa31E8205d09B763FF879",
+  onreceive: "0x68202bDc0cf83aAe3a4775feb527Cbbf27375E0A",
+  transfer: "0xb0Be194274d1Eba69565a058623c5CdA00B3FAc2",
+  hooks: "0x9441123031563717582dFd8dEd514B4548c1410C",
+  mint: "0x9f885FAF4897A6958B8d3579BE818fA4517D06DB",
+  burn: "0xF910f3D06da42C052f52e335f3b8De757f2e13D7",
+  tokenuri: "0x1Dd3028e8A7defeA09044eB9ADa0eC6B88c2bcc5",
+  gasrefund: "0xD39E01C769D228B698C671896a76bEb6716Ec22E",
+  eatverifierconnector: "0x242F15303bf19D239f44F56F87fdE4De0d6Da8d0",
 };
 
-const extend = async (humanboundAsExtend: ExtendLogic, extensionAddress: string) => {
-  const tx = await humanboundAsExtend.extend(extensionAddress);
+const extend = async (humanboundAsExtend: ExtendLogic, extensionAddress: string, signer?: Signer) => {
+  let tx: ContractTransaction;
+  try {
+    if (signer) {
+      tx = await humanboundAsExtend.connect(signer).extend(extensionAddress);
+    } else {
+      tx = await humanboundAsExtend.extend(extensionAddress);
+    }
+  } catch (err) {
+    console.error(`Failed to extend with ${extensionAddress}`);
+    throw err;
+  }
+
   try {
     const receipt: ContractReceipt = await tx.wait();
     if (receipt.status === 0) {
@@ -72,6 +84,45 @@ task("deploy:humanboundtoken").setAction(async function (taskArguments: TaskArgu
   await extend(humanboundTokenAsExtend, humanboundConfig.gasrefund);
   console.log(`Extending with EAT Verifier Connector Logic...`);
   await extend(humanboundTokenAsExtend, humanboundConfig.eatverifierconnector);
+
+  console.log("HumanboundToken extended with all functionality!");
+});
+
+task("hd:deploy:humanboundtoken").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const ledger = new LedgerSigner(ethers.provider);
+
+  const humanboundToken = await deployWithLedger(
+    ledger,
+    ethers,
+    "HumanboundToken",
+    humanboundConfig.name,
+    humanboundConfig.symbol,
+    humanboundConfig.extend,
+    humanboundConfig.approve,
+    humanboundConfig.getter,
+    humanboundConfig.onreceive,
+    humanboundConfig.transfer,
+    humanboundConfig.hooks,
+  );
+  console.log("HumanboundToken deployed to: ", humanboundToken.address);
+
+  const humanboundTokenAsERC165 = <Extension>await ethers.getContractAt("Extension", humanboundToken.address);
+  await humanboundTokenAsERC165.connect(ledger).registerInterface("0x5b5e139f");
+
+  const humanboundTokenAsExtend = <ExtendLogic>await ethers.getContractAt("ExtendLogic", humanboundToken.address);
+
+  console.log(`Extending with Permission Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.permission, ledger);
+  console.log(`Extending with Minting Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.mint, ledger);
+  console.log(`Extending with Burn Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.burn, ledger);
+  console.log(`Extending with Token URI Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.tokenuri, ledger);
+  console.log(`Extending with Gas Refund Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.gasrefund, ledger);
+  console.log(`Extending with EAT Verifier Connector Logic...`);
+  await extend(humanboundTokenAsExtend, humanboundConfig.eatverifierconnector, ledger);
 
   console.log("HumanboundToken extended with all functionality!");
 });
