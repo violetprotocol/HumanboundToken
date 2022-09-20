@@ -26,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
     "@violetprotocol/ethereum-access-token-helpers": "^0.2.0",
+    "axios": "^0.27.2",
     "chai": "^4.3.6",
     "commitizen": "^4.2.4",
     "cross-env": "^7.0.3",
