@@ -46,43 +46,43 @@ task("deploy:all", "Deploys all extensions needed for Humanbound token").setActi
 
 task("hd:deploy:all", "Deploys all extensions needed for Humanbound token").setAction(async function (
   _taskArguments,
-  { ethers },
+  { ethers, network },
 ) {
   const ledger = new LedgerSigner(ethers.provider);
 
-  let contract = await deployWithLedger(ledger, ethers, "HumanboundExtendLogic");
+  let contract = await deployWithLedger(ledger, network, ethers, "HumanboundExtendLogic");
   console.log(`HumanboundExtendLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "HumanboundPermissionLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "HumanboundPermissionLogic");
   console.log(`HumanboundPermissionLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "ApproveLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "ApproveLogic");
   console.log(`ApproveLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "GetterLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "GetterLogic");
   console.log(`GetterLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "OnReceiveLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "OnReceiveLogic");
   console.log(`OnReceiveLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "HumanboundTransferLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "HumanboundTransferLogic");
   console.log(`HumanboundTransferLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "ERC721HooksLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "ERC721HooksLogic");
   console.log(`ERC721HooksLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "HumanboundMintLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "HumanboundMintLogic");
   console.log(`HumanboundMintLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "HumanboundBurnLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "HumanboundBurnLogic");
   console.log(`HumanboundBurnLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "HumanboundTokenURILogic");
+  contract = await deployWithLedger(ledger, network, ethers, "HumanboundTokenURILogic");
   console.log(`HumanboundTokenURILogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "GasRefundLogic");
+  contract = await deployWithLedger(ledger, network, ethers, "GasRefundLogic");
   console.log(`GasRefundLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, ethers, "EATVerifierConnector");
+  contract = await deployWithLedger(ledger, network, ethers, "EATVerifierConnector");
   console.log(`EATVerifierConnector deployed to: `, contract.address);
 });
