@@ -7,23 +7,24 @@ import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import {
+  ApproveLogic,
   EATVerifierConnector,
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
   GasRefundLogic,
   GetterLogic,
-  HumanboundApproveLogic,
   HumanboundBurnLogic,
   HumanboundMintLogic,
   HumanboundPermissionLogic,
   SetTokenURILogic,
 } from "../../src/types";
+import { HumanboundApproveLogic } from "../../src/types/contracts/extensions/approve";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeHumanboundBurn(): void {
   let extendableAsMint: HumanboundMintLogic;
-  let extendableAsBurn: HumanboundBurnLogic;
+  let extendableAsApprove: HumanboundApproveLogic;
   let extendableAsGetter: GetterLogic;
 
   beforeEach("setup", async function () {
@@ -75,8 +76,8 @@ export function shouldBehaveLikeHumanboundBurn(): void {
     extendableAsMint = <HumanboundMintLogic>(
       await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
     );
-    extendableAsBurn = <HumanboundBurnLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "HumanboundBurnLogic")
+    extendableAsApprove = <HumanboundApproveLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundApproveLogic")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
     const extendableAsRefund = <GasRefundLogic>(
@@ -87,7 +88,7 @@ export function shouldBehaveLikeHumanboundBurn(): void {
     ).to.not.be.reverted;
   });
 
-  describe("Burn", async () => {
+  describe("Approve", async () => {
     const tokenId = 42;
     const burnProofURI = "violet.co/burn";
 
@@ -123,45 +124,23 @@ export function shouldBehaveLikeHumanboundBurn(): void {
         ).to.not.be.reverted;
       });
 
-      context("burn", async function () {
-        context("as user owner", async function () {
-          it("should burn token successfully", async function () {
-            await expect(extendableAsBurn.connect(this.signers.user0)["burn(uint256)"](tokenId))
-              .to.emit(extendableAsBurn, "BurntByOwner")
-              .withArgs(tokenId);
-            await expect(extendableAsGetter.callStatic.ownerOf(tokenId)).to.be.revertedWith(
-              "ERC721: owner query for nonexistent token",
-            );
-          });
+      context("approve", async function () {
+        it("should fail", async function () {
+          await expect(
+            extendableAsApprove.connect(this.signers.user0).approve(this.signers.user1.address, tokenId),
+          ).to.be.revertedWith("HumanboundApproveLogic: approvals disallowed");
         });
+      });
 
-        context("as contract operator", async function () {
-          it("should burn token successfully", async function () {
-            await expect(extendableAsBurn.connect(this.signers.operator)["burn(uint256,string)"](tokenId, burnProofURI))
-              .to.emit(extendableAsBurn, "BurntWithProof")
-              .withArgs(tokenId, burnProofURI);
-            await expect(extendableAsGetter.callStatic.ownerOf(tokenId)).to.be.revertedWith(
-              "ERC721: owner query for nonexistent token",
-            );
-          });
-        });
+      context("setApprovalForAll", async function () {
+        it("should fail", async function () {
+          await expect(
+            extendableAsApprove.connect(this.signers.user0).setApprovalForAll(this.signers.user1.address, true),
+          ).to.be.revertedWith("HumanboundApproveLogic: approvals disallowed");
 
-        context("as invalid user", async function () {
-          it("should fail to burn token", async function () {
-            await expect(extendableAsBurn.connect(this.signers.user1)["burn(uint256)"](tokenId)).to.be.revertedWith(
-              "HumanboundBurnLogic: not token owner",
-            );
-            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
-          });
-        });
-
-        context("as contract owner", async function () {
-          it("should fail to burn token", async function () {
-            await expect(
-              extendableAsBurn.connect(this.signers.owner)["burn(uint256,string)"](tokenId, burnProofURI),
-            ).to.be.revertedWith("HumanboundBurnLogic: unauthorised");
-            expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
-          });
+          await expect(
+            extendableAsApprove.connect(this.signers.user0).setApprovalForAll(this.signers.user1.address, false),
+          ).to.be.revertedWith("HumanboundApproveLogic: approvals disallowed");
         });
       });
     });
