@@ -2,7 +2,6 @@
 pragma solidity >=0.8.13;
 
 import "@violetprotocol/erc721extendable/contracts/extensions/base/approve/ApproveLogic.sol";
-import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../storage/HumanboundPermissionStorage.sol";
 
 contract HumanboundApproveLogic is ApproveLogic {
     function approve(address to, uint256 tokenId) public pure override {
