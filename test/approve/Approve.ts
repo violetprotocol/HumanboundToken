@@ -7,9 +7,9 @@ import type {
   HumanboundExtendLogic,
   HumanboundMintLogic,
 } from "../../src/types";
-import { shouldBehaveLikeHumanboundBurn } from "./Approve.behavior";
+import { shouldBehaveLikeHumanboundApprove } from "./Approve.behavior";
 
-describe("Humanbound Burn Extension", function () {
+describe("Humanbound Approve Extension", function () {
   before(async function () {
     const extendArtifact: Artifact = await artifacts.readArtifact("HumanboundExtendLogic");
     this.extend = <HumanboundExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
@@ -37,5 +37,5 @@ describe("Humanbound Burn Extension", function () {
     };
   });
 
-  shouldBehaveLikeHumanboundBurn();
+  shouldBehaveLikeHumanboundApprove();
 });

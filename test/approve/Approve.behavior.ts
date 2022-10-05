@@ -22,7 +22,7 @@ import {
 import { HumanboundApproveLogic } from "../../src/types/contracts/extensions/approve";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
-export function shouldBehaveLikeHumanboundBurn(): void {
+export function shouldBehaveLikeHumanboundApprove(): void {
   let extendableAsMint: HumanboundMintLogic;
   let extendableAsApprove: HumanboundApproveLogic;
   let extendableAsGetter: GetterLogic;
