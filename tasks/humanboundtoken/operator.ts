@@ -33,7 +33,7 @@ task("humanboundtoken:getOperator")
   .addParam("address", "Address of HumanboundToken smart contract")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
     const humanboundTokenAsPermissionLogic = <HumanboundPermissionLogic>(
-      await ethers.getContractAt("HumanboundPermissionLogic", taskArguments.operator)
+      await ethers.getContractAt("HumanboundPermissionLogic", taskArguments.address)
     );
 
     const operator = await humanboundTokenAsPermissionLogic.callStatic.getOperator();

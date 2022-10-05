@@ -12,6 +12,7 @@ const burn = require("./humanboundtoken/burn");
 const transfer = require("./humanboundtoken/transfer");
 const getter = require("./humanboundtoken/getter");
 const uri = require("./humanboundtoken/uri");
+const operator = require("./humanboundtoken/operator");
 
 export {
   accounts,
@@ -26,4 +27,5 @@ export {
   transfer,
   getter,
   uri,
+  operator,
 };
