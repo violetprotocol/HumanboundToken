@@ -104,7 +104,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
             beforeEach("construct ethereum access token", async function () {
               this.params = [this.signers.user0.address, tokenId];
               this.value = {
-                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 200),
+                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
                 functionCall: {
                   functionSignature: extendableAsMint.interface.getSighash("mint"),
                   target: extendableAsMint.address.toLowerCase(),
@@ -178,7 +178,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
             beforeEach("construct ethereum access token", async function () {
               this.params = [this.signers.user0.address, tokenId];
               this.value = {
-                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 200),
+                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
                 functionCall: {
                   functionSignature: extendableAsMint.interface.getSighash("mint"),
                   target: extendableAsMint.address.toLowerCase(),

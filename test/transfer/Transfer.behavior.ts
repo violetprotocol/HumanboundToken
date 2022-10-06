@@ -7,13 +7,13 @@ import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import {
-  ApproveLogic,
   EATVerifierConnector,
   ERC721HooksLogic,
   ExtendLogic,
   Extendable,
   GasRefundLogic,
   GetterLogic,
+  HumanboundApproveLogic,
   HumanboundMintLogic,
   HumanboundPermissionLogic,
   HumanboundTransferLogic,
@@ -53,8 +53,8 @@ export function shouldBehaveLikeTransfer(): void {
     const onReceiveArtifact: Artifact = await artifacts.readArtifact("OnReceiveLogic");
     const onReceiveLogic = <OnReceiveLogic>await waffle.deployContract(this.signers.admin, onReceiveArtifact, []);
 
-    const approveArtifact: Artifact = await artifacts.readArtifact("ApproveLogic");
-    const approveLogic = <ApproveLogic>await waffle.deployContract(this.signers.admin, approveArtifact, []);
+    const approveArtifact: Artifact = await artifacts.readArtifact("HumanboundApproveLogic");
+    const approveLogic = <HumanboundApproveLogic>await waffle.deployContract(this.signers.admin, approveArtifact, []);
 
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.connect(this.signers.owner).extend(this.permissioning.address);

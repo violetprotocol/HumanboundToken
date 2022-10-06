@@ -73,7 +73,7 @@ To deploy an instance of the Humanbound contract, you first need to deploy or en
 
 - ExtendLogic
 - HumanboundPermissionLogic
-- ApproveLogic
+- HumanboundApproveLogic
 - GetterLogic
 - OnReceiveLogic
 - HumanboundTransferLogic
