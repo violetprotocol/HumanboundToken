@@ -56,8 +56,8 @@ task("hd:deploy:all", "Deploys all extensions needed for Humanbound token").setA
   contract = await deployWithLedger(ledger, network, ethers, "HumanboundPermissionLogic");
   console.log(`HumanboundPermissionLogic deployed to: `, contract.address);
 
-  contract = await deployWithLedger(ledger, network, ethers, "ApproveLogic");
-  console.log(`ApproveLogic deployed to: `, contract.address);
+  contract = await deployWithLedger(ledger, network, ethers, "HumanboundApproveLogic");
+  console.log(`HumanboundApproveLogic deployed to: `, contract.address);
 
   contract = await deployWithLedger(ledger, network, ethers, "GetterLogic");
   console.log(`GetterLogic deployed to: `, contract.address);

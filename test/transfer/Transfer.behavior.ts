@@ -7,7 +7,6 @@ import { artifacts, ethers, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import {
-  ApproveLogic,
   EATVerifierConnector,
   ERC721HooksLogic,
   ExtendLogic,
