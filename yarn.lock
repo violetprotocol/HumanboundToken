@@ -3661,6 +3661,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@violetprotocol/extendable@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "@violetprotocol/extendable@npm:1.2.3"
+  dependencies:
+    "@openzeppelin/contracts": ^4.3.0
+  checksum: b7e2cdeceb8664d094f5f669c8d6d0e5720118f0418a4c4c5062e9ec586c751fe6cd0933e3b3af2c1c56675b827f22813784b6d2e7b2fcff2be334319c8ff723
+  languageName: node
+  linkType: hard
+
 "@yarnpkg/lockfile@npm:^1.1.0":
   version: 1.1.0
   resolution: "@yarnpkg/lockfile@npm:1.1.0"
@@ -14629,7 +14638,7 @@ resolve@1.1.x:
     "@violetprotocol/erc721extendable": ^1.2.1
     "@violetprotocol/ethereum-access-token": ^0.2.0
     "@violetprotocol/ethereum-access-token-helpers": ^0.2.0
-    "@violetprotocol/extendable": ^1.2.2
+    "@violetprotocol/extendable": ^1.2.3
     axios: ^0.27.2
     chai: ^4.3.6
     commitizen: ^4.2.4
