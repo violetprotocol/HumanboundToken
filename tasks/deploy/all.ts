@@ -13,7 +13,7 @@ task("deploy:all", "Deploys all extensions needed for Humanbound token").setActi
   contract = await deploy(ethers, "HumanboundPermissionLogic");
   console.log(`HumanboundPermissionLogic deployed to: `, contract.address);
 
-  contract = await deploy(ethers, "ApproveLogic");
+  contract = await deploy(ethers, "HumanboundApproveLogic");
   console.log(`HumanboundApproveLogic deployed to: `, contract.address);
 
   contract = await deploy(ethers, "GetterLogic");
