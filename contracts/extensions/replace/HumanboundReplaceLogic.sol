@@ -5,8 +5,6 @@ import "@violetprotocol/extendable/extensions/replace/StrictReplaceLogic.sol";
 import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../storage/HumanboundPermissionStorage.sol";
 
 contract HumanboundReplaceLogic is StrictReplaceLogic {
-    event OperatorInitialised(address initialOperator);
-
     modifier onlyOperatorOrSelf() virtual {
         HumanboundPermissionState storage state = HumanboundPermissionStorage._getState();
 
