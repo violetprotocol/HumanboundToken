@@ -7,7 +7,7 @@ import { HumanboundPermissionState, HumanboundPermissionStorage } from "../../st
 contract HumanboundExtendLogic is ExtendLogic {
     event OperatorInitialised(address initialOperator);
 
-    modifier onlyOperator() virtual {
+    modifier onlyOperatorOrSelf() virtual {
         initialise();
 
         HumanboundPermissionState storage state = HumanboundPermissionStorage._getState();
@@ -18,7 +18,10 @@ contract HumanboundExtendLogic is ExtendLogic {
             emit OperatorInitialised(_lastCaller());
         }
 
-        require(_lastCaller() == state.operator, "HumanboundExtendLogic: unauthorised");
+        require(
+            _lastCaller() == state.operator || _lastCaller() == address(this),
+            "HumanboundExtendLogic: unauthorised"
+        );
         _;
     }
 
@@ -27,7 +30,7 @@ contract HumanboundExtendLogic is ExtendLogic {
         _;
     }
 
-    function extend(address extension) public override onlyOperator {
+    function extend(address extension) public override onlyOperatorOrSelf {
         super.extend(extension);
     }
 }
