@@ -22,7 +22,7 @@ contract HumanboundMintLogic is HumanboundMintExtension, Mint, AccessTokenConsum
         emit Minted(to, tokenId);
 
         // refund the cost of entire transaction
-        // gas steps 228306 includes the minting and the refund execution
-        IGasRefund(address(this)).refundExecution(228306);
+        // gas steps 1000000 includes the minting and the refund execution and L1 costs
+        IGasRefund(address(this)).refundExecution(1000000);
     }
 }
