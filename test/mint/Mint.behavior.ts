@@ -14,14 +14,14 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
-  HumanboundMintLogic,
+  HumanboundMintLogicWithRefund,
   HumanboundPermissionLogic,
 } from "../../src/types";
 import { HumanboundTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/HumanboundTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeHumanboundMint(): void {
-  let extendableAsMint: HumanboundMintLogic;
+  let extendableAsMint: HumanboundMintLogicWithRefund;
   let extendableAsGetter: GetterLogic;
   let extendableAsTokenURI: HumanboundTokenURILogic;
 
@@ -70,8 +70,8 @@ export function shouldBehaveLikeHumanboundMint(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <HumanboundMintLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
+    extendableAsMint = <HumanboundMintLogicWithRefund>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogicWithRefund")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
     extendableAsTokenURI = <HumanboundTokenURILogic>(
@@ -86,7 +86,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
   });
 
   describe("Mint", async () => {
-    const tokenId = 42;
+    const tokenId = BigNumber.from("115792089237316195423570985008687907853269984665640564039457584007913129639935");
     const baseURI = "violet.co/";
     const tokenURI = "humanbound/";
 
@@ -597,6 +597,87 @@ export function shouldBehaveLikeHumanboundMint(): void {
           await expect(extendableAsGetter.ownerOf(tokenId)).to.be.revertedWith(
             "ERC721: owner query for nonexistent token",
           );
+        });
+      });
+    });
+
+    context("with refunds", async () => {
+      beforeEach("set baseURI", async function () {
+        await extendableAsTokenURI.connect(this.signers.operator).setBaseURI(baseURI);
+        expect(await extendableAsTokenURI.callStatic.baseURI()).to.equal(baseURI);
+      });
+
+      context("with baseURI", async () => {
+        beforeEach("construct ethereum access token", async function () {
+          this.params = [this.signers.user0.address, tokenId];
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
+            functionCall: {
+              functionSignature: extendableAsMint.interface.getSighash("mint"),
+              target: extendableAsMint.address.toLowerCase(),
+              caller: this.signers.user0.address.toLowerCase(),
+              parameters: utils.packParameters(extendableAsMint.interface, "mint", [
+                this.signers.user0.address.toLowerCase(),
+                tokenId,
+                "",
+              ]),
+            },
+          };
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+        });
+
+        it("should successfully refund mint transaction fee", async function () {
+          const userBalanceBefore = await ethers.provider.getBalance(this.signers.user0.address);
+          const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+
+          const tx: any = await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                tokenId,
+                "",
+              ),
+          ).to.not.be.reverted;
+
+          const receipt = await tx.wait();
+          const ethSpent = receipt.gasUsed.mul(receipt.effectiveGasPrice);
+          // console.log(receipt);
+          // console.log(ethSpent);
+
+          const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
+          const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+          console.log(userBalanceBefore.sub(userBalanceAfter));
+
+          expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}`);
+          expect(userBalanceAfter).to.be.gte(userBalanceBefore);
+          expect(contractBalanceAfter).to.equal(contractBalanceBefore.sub(ethSpent));
+        });
+
+        it("should fail to refund failed mint transaction", async function () {
+          const contractBalanceBefore = await ethers.provider.getBalance(this.extendable.address);
+
+          await expect(
+            extendableAsMint
+              .connect(this.signers.user0)
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                this.signers.user0.address,
+                0,
+                "",
+              ),
+          ).to.be.reverted;
+
+          const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);
+          expect(contractBalanceBefore).to.equal(contractBalanceAfter);
         });
       });
     });
