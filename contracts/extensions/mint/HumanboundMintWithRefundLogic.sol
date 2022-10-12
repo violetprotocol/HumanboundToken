@@ -4,7 +4,7 @@ pragma solidity >=0.8.13;
 import "./HumanboundMintLogic.sol";
 import "../refund/IGasRefundLogic.sol";
 
-contract HumanboundMintLogicWithRefund is HumanboundMintLogic {
+contract HumanboundMintWithRefundLogic is HumanboundMintLogic {
     function mint(
         uint8 v,
         bytes32 r,
