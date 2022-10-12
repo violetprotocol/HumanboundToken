@@ -14,14 +14,14 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
-  HumanboundMintLogicWithRefund,
+  HumanboundMintWithRefundLogic,
   HumanboundPermissionLogic,
 } from "../../src/types";
 import { HumanboundTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/HumanboundTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeHumanboundMint(): void {
-  let extendableAsMint: HumanboundMintLogicWithRefund;
+  let extendableAsMint: HumanboundMintWithRefundLogic;
   let extendableAsGetter: GetterLogic;
   let extendableAsTokenURI: HumanboundTokenURILogic;
 
@@ -70,8 +70,8 @@ export function shouldBehaveLikeHumanboundMint(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <HumanboundMintLogicWithRefund>(
-      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogicWithRefund")
+    extendableAsMint = <HumanboundMintWithRefundLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintWithRefundLogic")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
     extendableAsTokenURI = <HumanboundTokenURILogic>(
