@@ -1,11 +1,12 @@
 {
   "description": "Humanbound Token Contract",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "0xpApaSmURf",
     "url": "https://github.com/0xpApaSmURf"
   },
   "devDependencies": {
+    "@anders-t/ethers-ledger": "^1.0.4",
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
     "@ethersproject/abi": "^5.6.3",
@@ -88,7 +89,6 @@
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
   },
   "dependencies": {
-    "@anders-t/ethers-ledger": "^1.0.4",
     "@openzeppelin/contracts": "^4.7.0",
     "@violetprotocol/erc721extendable": "^1.2.1",
     "@violetprotocol/ethereum-access-token": "^0.2.0",
