@@ -646,8 +646,8 @@ export function shouldBehaveLikeHumanboundMint(): void {
 
           const receipt = await tx.wait();
           const ethSpent = receipt.gasUsed.mul(receipt.effectiveGasPrice);
-          // console.log(receipt);
-          // console.log(ethSpent);
+          console.log(receipt);
+          console.log(ethSpent);
 
           const userBalanceAfter = await ethers.provider.getBalance(this.signers.user0.address);
           const contractBalanceAfter = await ethers.provider.getBalance(this.extendable.address);

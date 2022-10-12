@@ -17,7 +17,7 @@ contract HumanboundMintLogicWithRefund is HumanboundMintLogic {
         super.mint(v, r, s, expiry, to, tokenId, tokenURI);
 
         // refund the cost of entire transaction
-        // gas steps 228306 includes the minting and the refund execution assuming max uint size
-        IGasRefund(address(this)).refundExecution(228306);
+        // gas steps 253756 includes the minting and the refund execution assuming max uint size
+        IGasRefund(address(this)).refundExecution(253756);
     }
 }

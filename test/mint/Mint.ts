@@ -6,7 +6,7 @@ import type {
   AccessTokenVerifier,
   EATVerifierConnector,
   HumanboundExtendLogic,
-  HumanboundMintLogic,
+  HumanboundMintLogicWithRefund,
 } from "../../src/types";
 import { Signers } from "../types";
 import { shouldBehaveLikeHumanboundMint } from "./Mint.behavior";
@@ -28,8 +28,8 @@ describe("Humanbound Mint Extension", function () {
       await waffle.deployContract(this.signers.admin, EATVerifierConnectorArtifact)
     );
 
-    const mintArtifact: Artifact = await artifacts.readArtifact("HumanboundMintLogic");
-    this.mintLogic = <HumanboundMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
+    const mintArtifact: Artifact = await artifacts.readArtifact("HumanboundMintLogicWithRefund");
+    this.mintLogic = <HumanboundMintLogicWithRefund>await waffle.deployContract(this.signers.admin, mintArtifact);
 
     this.domain = {
       name: "Ethereum Access Token",
