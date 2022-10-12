@@ -1,17 +1,15 @@
-import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { artifacts, ethers, waffle } from "hardhat";
+import { artifacts, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import type {
   AccessTokenVerifier,
   EATVerifierConnector,
   HumanboundExtendLogic,
-  HumanboundMintWithRefundLogic,
+  HumanboundMintLogic,
 } from "../../src/types";
-import { Signers } from "../types";
-import { shouldBehaveLikeHumanboundMint } from "./Mint.behavior";
+import { shouldBehaveLikeHumanboundApprove } from "./Approve.behavior";
 
-describe("Humanbound Mint Extension", function () {
+describe("Humanbound Approve Extension", function () {
   before(async function () {
     const extendArtifact: Artifact = await artifacts.readArtifact("HumanboundExtendLogic");
     this.extend = <HumanboundExtendLogic>await waffle.deployContract(this.signers.admin, extendArtifact, []);
@@ -28,8 +26,8 @@ describe("Humanbound Mint Extension", function () {
       await waffle.deployContract(this.signers.admin, EATVerifierConnectorArtifact)
     );
 
-    const mintArtifact: Artifact = await artifacts.readArtifact("HumanboundMintWithRefundLogic");
-    this.mintLogic = <HumanboundMintWithRefundLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
+    const mintArtifact: Artifact = await artifacts.readArtifact("HumanboundMintLogic");
+    this.mintLogic = <HumanboundMintLogic>await waffle.deployContract(this.signers.admin, mintArtifact);
 
     this.domain = {
       name: "Ethereum Access Token",
@@ -39,5 +37,5 @@ describe("Humanbound Mint Extension", function () {
     };
   });
 
-  shouldBehaveLikeHumanboundMint();
+  shouldBehaveLikeHumanboundApprove();
 });

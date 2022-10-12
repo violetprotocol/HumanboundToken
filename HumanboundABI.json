@@ -1753,7 +1753,7 @@
         "type": "string"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1766,7 +1766,7 @@
         "type": "string"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -2209,6 +2209,69 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "extension",
+        "type": "address"
+      }
+    ],
+    "name": "retract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "extension",
+        "type": "address"
+      }
+    ],
+    "name": "Retracted",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "oldExtension",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "newExtension",
+        "type": "address"
+      }
+    ],
+    "name": "replace",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "oldExtension",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newExtension",
+        "type": "address"
+      }
+    ],
+    "name": "Replaced",
+    "type": "event"
   },
   {
     "stateMutability": "payable",

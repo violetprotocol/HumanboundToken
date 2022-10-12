@@ -14,14 +14,14 @@ import {
   Extendable,
   GasRefundLogic,
   GetterLogic,
-  HumanboundMintLogic,
+  HumanboundMintWithRefundLogic,
   HumanboundPermissionLogic,
 } from "../../src/types";
 import { HumanboundTokenURILogic } from "../../src/types/contracts/extensions/tokenURI/HumanboundTokenURILogic";
 import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeHumanboundMint(): void {
-  let extendableAsMint: HumanboundMintLogic;
+  let extendableAsMint: HumanboundMintWithRefundLogic;
   let extendableAsGetter: GetterLogic;
   let extendableAsTokenURI: HumanboundTokenURILogic;
 
@@ -70,8 +70,8 @@ export function shouldBehaveLikeHumanboundMint(): void {
     );
     await extendableAsVerifierExtension.connect(this.signers.operator).setVerifier(this.verifier.address);
 
-    extendableAsMint = <HumanboundMintLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
+    extendableAsMint = <HumanboundMintWithRefundLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintWithRefundLogic")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
     extendableAsTokenURI = <HumanboundTokenURILogic>(
@@ -86,7 +86,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
   });
 
   describe("Mint", async () => {
-    const tokenId = 42;
+    const tokenId = BigNumber.from("115792089237316195423570985008687907853269984665640564039457584007913129639935");
     const baseURI = "violet.co/";
     const tokenURI = "humanbound/";
 
@@ -104,7 +104,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
             beforeEach("construct ethereum access token", async function () {
               this.params = [this.signers.user0.address, tokenId];
               this.value = {
-                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 200),
+                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
                 functionCall: {
                   functionSignature: extendableAsMint.interface.getSighash("mint"),
                   target: extendableAsMint.address.toLowerCase(),
@@ -178,7 +178,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
             beforeEach("construct ethereum access token", async function () {
               this.params = [this.signers.user0.address, tokenId];
               this.value = {
-                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 200),
+                expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 2000),
                 functionCall: {
                   functionSignature: extendableAsMint.interface.getSighash("mint"),
                   target: extendableAsMint.address.toLowerCase(),
@@ -652,7 +652,7 @@ export function shouldBehaveLikeHumanboundMint(): void {
 
           expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
           expect(await extendableAsTokenURI.callStatic.tokenURI(tokenId)).to.equal(`${baseURI}`);
-          expect(userBalanceAfter).to.equal(userBalanceBefore);
+          expect(userBalanceAfter).to.be.gte(userBalanceBefore);
           expect(contractBalanceAfter).to.equal(contractBalanceBefore.sub(ethSpent));
         });
 

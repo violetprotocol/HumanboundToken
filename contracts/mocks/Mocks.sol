@@ -2,6 +2,8 @@
 pragma solidity >=0.8.13;
 
 import "@violetprotocol/extendable/extensions/extend/ExtendLogic.sol";
+import "@violetprotocol/extendable/extensions/retract/RetractLogic.sol";
+import "@violetprotocol/extendable/extensions/replace/ReplaceLogic.sol";
 import "@violetprotocol/ethereum-access-token/contracts/AccessTokenVerifier.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/base/approve/ApproveLogic.sol";
 import "@violetprotocol/erc721extendable/contracts/extensions/base/getter/GetterLogic.sol";
@@ -17,6 +19,10 @@ abstract contract MockVerifier is AccessTokenVerifier {}
 
 abstract contract MockExtend is ExtendLogic {}
 
+contract MockRetractLogic is RetractLogic {}
+
+contract MockReplaceLogic is ReplaceLogic {}
+
 contract MockApprove is ApproveLogic {}
 
 contract MockERC721Getter is GetterLogic {}
@@ -30,6 +36,32 @@ contract MockBasicTokenURI is BasicSetTokenURILogic {}
 contract MockMetadataGetterLogic is MetadataGetterLogic {}
 
 contract MockOnReceive is OnReceiveLogic {}
+
+interface IMockInternalExtend {
+    function internalExtend(address extension) external;
+}
+
+contract MockInternalExtend is IMockInternalExtend, Extension {
+    function internalExtend(address extension) public override {
+        IExtendLogic(address(this)).extend(extension);
+    }
+
+    function getSolidityInterface() public pure virtual override returns (string memory) {
+        return "function internalExtend(address extension) external;\n";
+    }
+
+    /**
+     * @dev see {IExtension-getInterface}
+     */
+    function getInterface() public virtual override returns (Interface[] memory interfaces) {
+        interfaces = new Interface[](1);
+
+        bytes4[] memory functions = new bytes4[](1);
+        functions[0] = IMockInternalExtend.internalExtend.selector;
+
+        interfaces[0] = Interface(type(IMockInternalExtend).interfaceId, functions);
+    }
+}
 
 interface IMockExtension {
     function hashing(uint256 times) external;

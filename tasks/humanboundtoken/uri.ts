@@ -62,3 +62,34 @@ task("humanboundtoken:setTokenURI")
     console.log(`TokenURI set!`);
     console.log(`Transaction: ${receipt.transactionHash}`);
   });
+
+task("humanboundtoken:setContractURI")
+  .addParam("address", "Contract address of HumanboundToken")
+  .addParam("contracturi", "Contract URI to set")
+  .setAction(async function (taskArguments: TaskArguments, { ethers }) {
+    const humanboundTokenAsTokenURI = <HumanboundTokenURILogic>(
+      await ethers.getContractAt("HumanboundTokenURILogic", taskArguments.address)
+    );
+
+    try {
+      const tx = await humanboundTokenAsTokenURI.setContractURI(taskArguments.contracturi);
+      const receipt = await tx.wait();
+
+      console.log(`ContractURI set!`);
+      console.log(`Transaction: ${receipt.transactionHash}`);
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+task("humanboundtoken:getContractURI")
+  .addParam("address", "Contract address of HumanboundToken")
+  .setAction(async function (taskArguments: TaskArguments, { ethers }) {
+    const humanboundTokenAsTokenURI = <HumanboundTokenURILogic>(
+      await ethers.getContractAt("HumanboundTokenURILogic", taskArguments.address)
+    );
+
+    const contractURI = await humanboundTokenAsTokenURI.callStatic.contractURI();
+
+    console.log(`Contract URI: ${contractURI}`);
+  });
