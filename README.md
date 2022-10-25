@@ -2,7 +2,7 @@
 
 An ERC721-based non-transferable token.
 
-The Humanbound Token is bound to a wallet upon minting with a valid Ethereum Access Token (EAT). A valid issuer can issue the minting rights to a user through an EAT, where only the authorised user is able to mint and make use of the humanbound token. The token can be transfered only in the case of wallet rotation, where the user will authenticate his identity and be issued an EAT that authorises his rotation.
+The Humanbound Token is bound to a wallet upon minting with a valid Ethereum Access Token (EAT). A valid issuer can issue the minting rights to a user through an EAT, where only the authorised user is able to mint and make use of the humanbound token. The token can be transferred only in the case of wallet rotation, where the user will authenticate his identity and be issued an EAT that authorises his rotation.
 
 Built from the Extendable variant of ERC721 to allow dynamic modification of the contracts during runtime.
 
