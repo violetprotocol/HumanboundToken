@@ -19,5 +19,5 @@
   },
   "exclude": ["node_modules"],
   "files": ["./useHumanbound.ts"],
-  "include": ["utils/**/*", "messages/**/*", "types/**/*"]
+  "include": ["types/**/*"]
 }
