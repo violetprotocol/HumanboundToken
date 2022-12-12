@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
     "lib": ["es6", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -19,5 +20,5 @@
   },
   "exclude": ["node_modules"],
   "files": ["./useHumanbound.ts"],
-  "include": ["types/**/*"]
+  "include": ["useHumanbound.ts", "deployments.ts", "types/**/*"]
 }

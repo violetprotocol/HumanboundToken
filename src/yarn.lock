@@ -3338,7 +3338,7 @@ __metadata:
     "@ethersproject/providers": ^5.7.2
     "@types/react": ^18.0.25
     ethers: ^5.7.2
-    react: ^18.2.0
+    react: latest
     react-scripts: ^5.0.1
   languageName: unknown
   linkType: soft
@@ -10653,7 +10653,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
+"react@npm:latest":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:

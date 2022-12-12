@@ -1,10 +1,10 @@
 {
   "name": "@violetprotocol/humanbound-helpers",
-  "description": "Typescript bindings and utilities for Ethereum Access Token",
-  "version": "0.2.0",
+  "description": "Typescript bindings and utilities for Humanbound Token",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "files": [
-    "dist/*"
+    "dist/**"
   ],
   "scripts": {
     "prepare": "bash ../scripts/prepare-artifacts.sh && tsc"
@@ -31,7 +31,7 @@
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "ethers": "^5.7.2",
-    "react": "^18.2.0",
+    "react": "latest",
     "react-scripts": "^5.0.1"
   },
   "devDependencies": {

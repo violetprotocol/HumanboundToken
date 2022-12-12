@@ -2,7 +2,7 @@ import { BigNumber, getDefaultProvider, providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
 import { Web3ChainReference, humanboundDeployments } from "./deployments";
-import { GetterLogic__factory, IHumanboundToken, IHumanboundToken__factory } from "./types";
+import { IHumanboundToken, IHumanboundToken__factory } from "./types";
 
 interface UseHumanboundInitializer {
   infuraKey?: string;
@@ -30,6 +30,8 @@ export const useHumanbound = ({ infuraKey, alchemyKey }: UseHumanboundInitialize
     if (infuraKey) provider = new providers.InfuraProvider(chainId, infuraKey);
     else provider = new providers.AlchemyProvider(chainId, alchemyKey);
 
+    console.log(chainId);
+
     const humanbound = IHumanboundToken__factory.connect(
       humanboundDeployments[chainId as Web3ChainReference],
       provider,
@@ -48,7 +50,7 @@ export const useHumanbound = ({ infuraKey, alchemyKey }: UseHumanboundInitialize
 
   const getHBTIdOfOwner = useCallback(
     async (address: string, tokenId: BigNumber) => {
-      if (!humanboundContract) throw new Error("hasHBT: contract is null, check your usage of useHumanbound");
+      if (!humanboundContract) throw new Error("getHBTIdOfOwner: contract is null, check your usage of useHumanbound");
 
       const filter = humanboundContract.filters.Minted(address, null);
       const events = await humanboundContract.queryFilter(filter);
@@ -61,7 +63,7 @@ export const useHumanbound = ({ infuraKey, alchemyKey }: UseHumanboundInitialize
 
   const getOwnerOf = useCallback(
     async (tokenId: BigNumber) => {
-      if (!humanboundContract) throw new Error("hasHBT: contract is null, check your usage of useHumanbound");
+      if (!humanboundContract) throw new Error("getOwnerOf: contract is null, check your usage of useHumanbound");
       return await humanboundContract.callStatic.ownerOf(tokenId);
     },
     [humanboundContract],
