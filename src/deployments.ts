@@ -33,3 +33,23 @@ export const humanboundDeployments: Record<Web3ChainReference, string> = {
 
   [Web3ChainReference.EIP155_POLYGON_MUMBAI]: "0x1888649d566908e0a4ac17978740f6a04f600a51",
 };
+
+export const InfuraNetworkNames: Record<Web3ChainReference, string> = {
+  [Web3ChainReference.EIP155_ETHEREUM_MAINNET]: "mainnet",
+
+  [Web3ChainReference.EIP155_ETHEREUM_RINKEBY]: "deprecated",
+
+  [Web3ChainReference.EIP155_ETHEREUM_KOVAN]: "deprecated",
+
+  [Web3ChainReference.EIP155_OPTIMISM]: "optimism-mainnet",
+
+  [Web3ChainReference.EIP155_OPTIMISM_GOERLI]: "optimism-goerli",
+
+  [Web3ChainReference.EIP155_ARBITRUM_ONE]: "arbitrum-mainnet",
+
+  [Web3ChainReference.EIP155_ARBITRUM_GOERLI]: "arbitrum-goerli",
+
+  [Web3ChainReference.EIP155_POLYGON_MAINNET]: "polygon-mainnet",
+
+  [Web3ChainReference.EIP155_POLYGON_MUMBAI]: "polygon-mumbai",
+};

@@ -19,6 +19,6 @@
     "target": "es6"
   },
   "exclude": ["node_modules"],
-  "files": ["./useHumanbound.ts"],
+  "files": ["./index.ts"],
   "include": ["useHumanbound.ts", "deployments.ts", "types/**/*"]
 }

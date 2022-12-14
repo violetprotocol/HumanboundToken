@@ -1,36 +1,28 @@
-import { BigNumber, getDefaultProvider, providers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
-import { Web3ChainReference, humanboundDeployments } from "./deployments";
+import { InfuraNetworkNames, Web3ChainReference, humanboundDeployments } from "./deployments";
 import { IHumanboundToken, IHumanboundToken__factory } from "./types";
 
-interface UseHumanboundInitializer {
-  infuraKey?: string;
-  alchemyKey?: string;
-}
-
-export const useHumanbound = ({ infuraKey, alchemyKey }: UseHumanboundInitializer) => {
-  const [chainId, setChainId] = useState<number>(0);
+export const useHumanbound = (infuraApiKey: string) => {
   const [humanboundContract, setHumanboundContract] = useState<IHumanboundToken>();
 
-  if (!infuraKey && !alchemyKey) throw new Error("useHumanbound: provide `infuraKey` or `alchemyKey`");
-
   const ethereum = (window as any).ethereum;
-
   if (!ethereum) throw new Error("useHumanbound: your browser does not support injected web3 provider");
-  ethereum.on("chainChanged", (chainId: string) => {
-    setChainId(parseInt(chainId));
-  });
-  ethereum.on("connect", ({ chainId }: { chainId: string }) => {
-    setChainId(parseInt(chainId));
-  });
+
+  const [chainId, setChainId] = useState<number>(ethereum.networkVersion);
 
   useEffect(() => {
-    let provider: providers.Provider;
-    if (infuraKey) provider = new providers.InfuraProvider(chainId, infuraKey);
-    else provider = new providers.AlchemyProvider(chainId, alchemyKey);
+    ethereum?.on("chainChanged", (chainId: string) => {
+      setChainId(parseInt(chainId, 16));
+    });
+  }, []);
 
-    console.log(chainId);
+  useEffect(() => {
+    if (ethereum.networkVersion === 0) return;
+    const provider = new providers.JsonRpcProvider(
+      `https://${InfuraNetworkNames[chainId as Web3ChainReference]}.infura.io/v3/${infuraApiKey}`,
+    );
 
     const humanbound = IHumanboundToken__factory.connect(
       humanboundDeployments[chainId as Web3ChainReference],
@@ -49,13 +41,13 @@ export const useHumanbound = ({ infuraKey, alchemyKey }: UseHumanboundInitialize
   );
 
   const getHBTIdOfOwner = useCallback(
-    async (address: string, tokenId: BigNumber) => {
+    async (address: string) => {
       if (!humanboundContract) throw new Error("getHBTIdOfOwner: contract is null, check your usage of useHumanbound");
 
       const filter = humanboundContract.filters.Minted(address, null);
       const events = await humanboundContract.queryFilter(filter);
 
-      if (events.length == 0) return undefined;
+      if (events.length == 0) return BigNumber.from(null);
       return events[0].args[1];
     },
     [humanboundContract],
@@ -69,5 +61,7 @@ export const useHumanbound = ({ infuraKey, alchemyKey }: UseHumanboundInitialize
     [humanboundContract],
   );
 
-  return { hasHBT, getHBTIdOfOwner, getOwnerOf };
+  return humanboundContract
+    ? { hasHBT, getHBTIdOfOwner, getOwnerOf }
+    : { hasHBT: undefined, getHBTIdOfOwner: undefined, getOwnerOf: undefined };
 };
