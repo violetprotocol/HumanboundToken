@@ -20,6 +20,20 @@ type AlchemyAPIKeyConfig = PartialRecord<
   string
 >;
 
+/**
+ * useHumanbound react hook for humanbound token data
+ * Provides access to three functions:
+ *  - hasHBT: @param `address`
+ *  - getHBTIdOfOwner: @param `address`
+ *  - getOwnerOf: @param `tokenId`
+ *
+ * Usage:
+ * const { hasHBT, getHBTIdOfOwner, getOwnerOf } = useHumanbound(alchemyConfig);
+ *
+ * `alchemyConfig` is a configuration for your Alchemy node API keys.
+ * You must provide a map of networks to API keys for the supported networks above.
+ * These networks are all optional.
+ */
 export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
   const [humanboundContract, setHumanboundContract] = useState<IHumanboundToken>();
 
@@ -57,6 +71,8 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     setHumanboundContract(humanbound);
   }, [chainId, ethereum.networkVersion]);
 
+  // async hasHBT(address: string)
+  // returns a boolean reporting if `address` owns a humanbound token
   const hasHBT = useCallback(
     async (address: string) => {
       if (!humanboundContract) throw new Error("hasHBT: contract is null, check your usage of useHumanbound");
@@ -65,6 +81,9 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     [humanboundContract],
   );
 
+  // async getHBTIdOfOwner(address: string)
+  // returns the ID of the humanbound token owned by `address`
+  // if `address` does not own one, returns a null BigNumber
   const getHBTIdOfOwner = useCallback(
     async (address: string) => {
       if (!humanboundContract) throw new Error("getHBTIdOfOwner: contract is null, check your usage of useHumanbound");
@@ -78,6 +97,8 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     [humanboundContract],
   );
 
+  // async getOwnerOf(tokenId: BigNumber)
+  // returns a string of the account address that owns `tokenId`
   const getOwnerOf = useCallback(
     async (tokenId: BigNumber) => {
       if (!humanboundContract) throw new Error("getOwnerOf: contract is null, check your usage of useHumanbound");
