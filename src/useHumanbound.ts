@@ -36,8 +36,13 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
 
   useEffect(() => {
     if (ethereum.networkVersion === 0) return;
+    if (!Object.values(Web3ChainReference).find(value => value == chainId)) {
+      console.error(`useHumanbound: unsuppported network ${chainId}`);
+      return;
+    }
     if (!alchemyConfig[chainId as Web3ChainReference])
       throw new Error(`useHumanbound: missing apikey for chainId ${chainId}`);
+
     const provider = new providers.JsonRpcProvider(
       `https://${AlchemyNetworkNames[chainId as Web3ChainReference]}.g.alchemy.com/v2/${
         alchemyConfig[chainId as Web3ChainReference]
@@ -50,7 +55,7 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     );
 
     setHumanboundContract(humanbound);
-  }, [chainId]);
+  }, [chainId, ethereum.networkVersion]);
 
   const hasHBT = useCallback(
     async (address: string) => {
