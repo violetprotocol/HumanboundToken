@@ -40,14 +40,17 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
   const ethereum = (window as any).ethereum;
   if (!ethereum) throw new Error("useHumanbound: your browser does not support injected web3 provider");
 
+  // Initialise chainId as the initial provider chain
   const [chainId, setChainId] = useState<number>(ethereum.networkVersion);
 
+  // Setup provider listener to update chainId if a chain switch occurs
   useEffect(() => {
     ethereum?.on("chainChanged", (chainId: string) => {
       setChainId(parseInt(chainId, 16));
     });
   }, []);
 
+  // Update the contract instance if the chain switches
   useEffect(() => {
     if (ethereum.networkVersion === 0) return;
     if (!Object.values(Web3ChainReference).find(value => value == chainId)) {
