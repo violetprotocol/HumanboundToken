@@ -38,7 +38,7 @@ type AlchemyAPIKeyConfig = PartialRecord<
 export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
   const [humanboundContract, setHumanboundContract] = useState<IHumanboundToken>();
 
-  const ethereum = (window as any).ethereum;
+  const ethereum = (window as any)?.ethereum;
   if (!ethereum) throw new Error("useHumanbound: your browser does not support injected web3 provider");
 
   // Initialise chainId as the initial provider chain
