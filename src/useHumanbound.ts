@@ -27,9 +27,10 @@ type AlchemyAPIKeyConfig = PartialRecord<
  *  - getHBTIdOfOwner: @param `address`
  *  - getOwnerOf: @param `tokenId`
  *
- * Usage:
+ * @example
  * const { hasHBT, getHBTIdOfOwner, getOwnerOf } = useHumanbound(alchemyConfig);
  *
+ * @remarks
  * `alchemyConfig` is a configuration for your Alchemy node API keys.
  * You must provide a map of networks to API keys for the supported networks above.
  * These networks are all optional.
@@ -74,8 +75,15 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     setHumanboundContract(humanbound);
   }, [chainId, ethereum.networkVersion]);
 
-  // async hasHBT(address: string)
-  // returns a boolean reporting if `address` owns a humanbound token
+  /**
+   * returns a boolean reporting if `address` owns a humanbound token
+   *
+   * @remarks
+   * This function is returned by the hook to be used by the developer
+   *
+   * @param address - The account address of the owner to check
+   * @returns a boolean representing if `address` owns a humanbound token
+   * */
   const hasHBT = useCallback(
     async (address: string) => {
       if (!humanboundContract) throw new Error("hasHBT: contract is null, check your usage of useHumanbound");
@@ -84,9 +92,15 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     [humanboundContract],
   );
 
-  // async getHBTIdOfOwner(address: string)
-  // returns the ID of the humanbound token owned by `address`
-  // if `address` does not own one, returns a null BigNumber
+  /**
+   * returns the ID of the humanbound token owned by `address`
+   *
+   * @remarks
+   * This function is returned by the hook to be used by the developer
+   *
+   * @param address - The account address of the owner to check
+   * @returns The token id owned by `address` or BigNumber(null) if does not own one
+   * */
   const getHBTIdOfOwner = useCallback(
     async (address: string) => {
       if (!humanboundContract) throw new Error("getHBTIdOfOwner: contract is null, check your usage of useHumanbound");
@@ -100,8 +114,15 @@ export const useHumanbound = (alchemyConfig: AlchemyAPIKeyConfig) => {
     [humanboundContract],
   );
 
-  // async getOwnerOf(tokenId: BigNumber)
-  // returns a string of the account address that owns `tokenId`
+  /**
+   * returns a string of the account address that owns `tokenId`
+   *
+   * @remarks
+   * This function is returned by the hook to be used by the developer
+   *
+   * @param tokenId - The id of the humanbound token
+   * @returns The account address that owns `tokenId`
+   */
   const getOwnerOf = useCallback(
     async (tokenId: BigNumber) => {
       if (!humanboundContract) throw new Error("getOwnerOf: contract is null, check your usage of useHumanbound");
