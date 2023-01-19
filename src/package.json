@@ -1,0 +1,40 @@
+{
+  "name": "@violetprotocol/humanbound-helpers",
+  "description": "Typescript bindings and utilities for Humanbound Token",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "prepare": "bash ../scripts/prepare-artifacts.sh && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/violetprotocol/HumanboundToken.git"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "access",
+    "token"
+  ],
+  "author": "Violet",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/violetprotocol/HumanboundToken/issues"
+  },
+  "homepage": "https://github.com/violetprotocol/HumanboundToken#readme",
+  "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "ethers": "^5.7.2",
+    "react": "latest",
+    "react-scripts": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.25"
+  }
+}
