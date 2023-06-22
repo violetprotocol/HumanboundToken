@@ -1,9 +1,9 @@
 import { splitSignature } from "@ethersproject/bytes";
 import { utils } from "@violetprotocol/ethereum-access-token-helpers";
 import { expect } from "chai";
-import { BigNumber, ContractTransaction } from "ethers";
+import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { artifacts, ethers, waffle } from "hardhat";
+import { artifacts, waffle } from "hardhat";
 import { Artifact } from "hardhat/types";
 
 import {
@@ -14,7 +14,7 @@ import {
   GasRefundLogic,
   GetterLogic,
   HumanboundApproveLogic,
-  HumanboundBurnLogic,
+  HumanboundBurnBatchLogic,
   HumanboundMintLogic,
   HumanboundPermissionLogic,
   SetTokenURILogic,
@@ -23,7 +23,7 @@ import { getExtendedContractWithInterface } from "../utils/utils";
 
 export function shouldBehaveLikeHumanboundBurn(): void {
   let extendableAsMint: HumanboundMintLogic;
-  let extendableAsBurn: HumanboundBurnLogic;
+  let extendableAsBurn: HumanboundBurnBatchLogic;
   let extendableAsGetter: GetterLogic;
 
   beforeEach("setup", async function () {
@@ -47,8 +47,8 @@ export function shouldBehaveLikeHumanboundBurn(): void {
     const gasRefundArtifact: Artifact = await artifacts.readArtifact("GasRefundLogic");
     const refund = <GasRefundLogic>await waffle.deployContract(this.signers.admin, gasRefundArtifact, []);
 
-    const burnArtifact: Artifact = await artifacts.readArtifact("HumanboundBurnLogic");
-    this.burnLogic = <HumanboundBurnLogic>await waffle.deployContract(this.signers.admin, burnArtifact);
+    const burnArtifact: Artifact = await artifacts.readArtifact("HumanboundBurnBatchLogic");
+    this.burnLogic = <HumanboundBurnBatchLogic>await waffle.deployContract(this.signers.admin, burnArtifact);
 
     const extend = <ExtendLogic>await getExtendedContractWithInterface(this.extendable.address, "ExtendLogic");
     await extend.connect(this.signers.owner).extend(this.permissioning.address);
@@ -75,8 +75,8 @@ export function shouldBehaveLikeHumanboundBurn(): void {
     extendableAsMint = <HumanboundMintLogic>(
       await getExtendedContractWithInterface(this.extendable.address, "HumanboundMintLogic")
     );
-    extendableAsBurn = <HumanboundBurnLogic>(
-      await getExtendedContractWithInterface(this.extendable.address, "HumanboundBurnLogic")
+    extendableAsBurn = <HumanboundBurnBatchLogic>(
+      await getExtendedContractWithInterface(this.extendable.address, "HumanboundBurnBatchLogic")
     );
     extendableAsGetter = <GetterLogic>await getExtendedContractWithInterface(this.extendable.address, "GetterLogic");
     const extendableAsRefund = <GasRefundLogic>(
@@ -161,6 +161,81 @@ export function shouldBehaveLikeHumanboundBurn(): void {
               extendableAsBurn.connect(this.signers.owner)["burn(uint256,string)"](tokenId, burnProofURI),
             ).to.be.revertedWith("HumanboundBurnLogic: unauthorised");
             expect(await extendableAsGetter.callStatic.ownerOf(tokenId)).to.equal(this.signers.user0.address);
+          });
+        });
+      });
+    });
+  });
+
+  describe("BurnBatch", async () => {
+    const tokenIds = [42, 69, 420, 1337];
+    const burnProofURI = "violet.co/burn";
+
+    context("with minted tokens", async function () {
+      beforeEach("mint token", async function () {
+        const users = [this.signers.user0, this.signers.user1, this.signers.user2, this.signers.user3];
+        for (const [idx, tokenId] of tokenIds.entries()) {
+          this.value = {
+            expiry: BigNumber.from(Math.floor(new Date().getTime() / 1000) + 300),
+            functionCall: {
+              functionSignature: extendableAsMint.interface.getSighash("mint"),
+              target: extendableAsMint.address.toLowerCase(),
+              caller: users[idx].address.toLowerCase(),
+              parameters: utils.packParameters(extendableAsMint.interface, "mint", [
+                users[idx].address.toLowerCase(),
+                tokenId,
+                "",
+              ]),
+            },
+          };
+          this.signature = splitSignature(await utils.signAccessToken(this.signers.admin, this.domain, this.value));
+
+          await expect(
+            extendableAsMint
+              .connect(users[idx])
+              .mint(
+                this.signature.v,
+                this.signature.r,
+                this.signature.s,
+                this.value.expiry,
+                users[idx].address,
+                tokenId,
+                "",
+              ),
+          ).to.not.be.reverted;
+        }
+      });
+
+      context("burnBatch", async function () {
+        context("as user owner", async function () {
+          it("should fail to burn batch", async function () {
+            await expect(
+              extendableAsBurn.connect(this.signers.user0).burnBatch([tokenIds[0]], burnProofURI),
+            ).to.be.revertedWith("HumanboundBurnLogic: unauthorised");
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenIds[0])).to.equal(this.signers.user0.address);
+          });
+        });
+
+        context("as contract operator", async function () {
+          it("should burn token successfully", async function () {
+            await expect(extendableAsBurn.connect(this.signers.operator).burnBatch(tokenIds, burnProofURI))
+              .to.emit(extendableAsBurn, "BurntWithProof")
+              .withArgs(tokenIds[0], burnProofURI);
+
+            for (const tokenId of tokenIds) {
+              await expect(extendableAsGetter.callStatic.ownerOf(tokenId)).to.be.revertedWith(
+                "ERC721: owner query for nonexistent token",
+              );
+            }
+          });
+        });
+
+        context("as contract owner", async function () {
+          it("should fail to burn token", async function () {
+            await expect(
+              extendableAsBurn.connect(this.signers.owner).burnBatch(tokenIds, burnProofURI),
+            ).to.be.revertedWith("HumanboundBurnLogic: unauthorised");
+            expect(await extendableAsGetter.callStatic.ownerOf(tokenIds[0])).to.equal(this.signers.user0.address);
           });
         });
       });
