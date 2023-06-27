@@ -17,6 +17,7 @@ before("setup", async function () {
     this.signers.user0 = signers[3];
     this.signers.user1 = signers[4];
     this.signers.user2 = signers[5];
+    this.signers.user3 = signers[6];
 
     await deployERC165Singleton(this.signers.admin);
   });
